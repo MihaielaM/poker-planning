@@ -8,6 +8,7 @@ import ParticipantsList from './ParticipantsList';
 import RevealedResults from './RevealedResults';
 import ReactionBar from './ReactionBar';
 import SessionStats from './SessionStats';
+import ConsensusAlert from './ConsensusAlert';
 
 type Session = {
   token: string;
@@ -33,7 +34,9 @@ export default function RoomClient({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
   const [isSubmittingVote, setIsSubmittingVote] = useState(false);
 
+  const [showConsensus, setShowConsensus] = useState(false);
   const lastRoundRef = useRef<number | null>(null);
+  const lastStatusRef = useRef<string | null>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -68,8 +71,20 @@ export default function RoomClient({ code }: { code: string }) {
       // Reset card selection when a new round starts
       if (lastRoundRef.current !== null && lastRoundRef.current !== data.room.roundNumber) {
         setSelectedCard(null);
+        setShowConsensus(false);
       }
       lastRoundRef.current = data.room.roundNumber;
+
+      // Detect consensus on the moment of reveal
+      const justBecameRevealed = lastStatusRef.current === 'waiting' && data.room.status === 'revealed';
+      lastStatusRef.current = data.room.status;
+      if (justBecameRevealed) {
+        const votedVoters = data.participants.filter(p => p.isVoter && p.hasVoted);
+        const uniqueVotes = new Set(votedVoters.map(p => p.vote));
+        if (votedVoters.length > 1 && uniqueVotes.size === 1) {
+          setShowConsensus(true);
+        }
+      }
 
       setInitialLoading(false);
     } catch {
@@ -266,6 +281,7 @@ export default function RoomClient({ code }: { code: string }) {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
+      {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
       {/* ── Header ── */}
       <header className="bg-slate-800 border-b border-slate-700 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
