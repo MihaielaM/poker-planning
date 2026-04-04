@@ -1,11 +1,18 @@
+import { EXTREME_BANNER_MESSAGES, seededPick } from '@/lib/messages';
+
 type Stats = {
   average: number | null;
   nearestFibonacci: number | null;
   totalVoters: number;
 };
 
-export default function RevealedResults({ stats }: { stats: Stats }) {
+export default function RevealedResults({ stats, hasExtremeVotes, roundNumber }: { stats: Stats; hasExtremeVotes: boolean; roundNumber: number }) {
+  const bannerMessage = hasExtremeVotes
+    ? seededPick(EXTREME_BANNER_MESSAGES, String(roundNumber))
+    : null;
+
   return (
+    <div className="space-y-3">
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
       <p className="text-slate-400 text-xs mb-4 font-medium uppercase tracking-wider">
         Rezultate rundă
@@ -37,6 +44,15 @@ export default function RevealedResults({ stats }: { stats: Stats }) {
           Nu există voturi numerice în această rundă.
         </p>
       )}
+    </div>
+
+    {/* Debate banner for extreme votes */}
+    {bannerMessage && (
+      <div className="bg-amber-950/60 border border-amber-700/60 rounded-xl px-4 py-3 flex items-start gap-3">
+        <span className="text-xl mt-0.5">🔥</span>
+        <p className="text-amber-300 text-sm font-medium leading-snug">{bannerMessage}</p>
+      </div>
+    )}
     </div>
   );
 }

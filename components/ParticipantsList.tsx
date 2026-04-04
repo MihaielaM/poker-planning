@@ -1,13 +1,18 @@
 import { Participant } from '@/lib/types';
+import { SLOW_VOTER_MESSAGES, EXTREME_CARD_MESSAGES, seededPick } from '@/lib/messages';
 
 type Props = {
   participants: Participant[];
   currentUserId: string;
   isRevealed: boolean;
+  roundNumber: number;
 };
 
-export default function ParticipantsList({ participants, currentUserId, isRevealed }: Props) {
-  const votedCount = participants.filter(p => p.hasVoted).length;
+export default function ParticipantsList({ participants, currentUserId, isRevealed, roundNumber }: Props) {
+  const voters = participants.filter(p => p.isVoter);
+  const votedCount = voters.filter(p => p.hasVoted).length;
+  const totalVoters = voters.length;
+  const majorityVoted = totalVoters > 0 && votedCount / totalVoters > 0.5;
 
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
@@ -16,7 +21,7 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
           Participanți
         </p>
         <span className="text-slate-500 text-xs">
-          {votedCount}/{participants.length} au votat
+          {votedCount}/{totalVoters} au votat
         </span>
       </div>
 
@@ -27,6 +32,8 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
             participant={p}
             isCurrentUser={p.id === currentUserId}
             isRevealed={isRevealed}
+            showSlowMessage={!isRevealed && majorityVoted && p.isVoter && !p.hasVoted}
+            roundNumber={roundNumber}
           />
         ))}
       </div>
@@ -38,11 +45,24 @@ function ParticipantCard({
   participant: p,
   isCurrentUser,
   isRevealed,
+  showSlowMessage,
+  roundNumber,
 }: {
   participant: Participant;
   isCurrentUser: boolean;
   isRevealed: boolean;
+  showSlowMessage: boolean;
+  roundNumber: number;
 }) {
+  const slowMessage = showSlowMessage
+    ? seededPick(SLOW_VOTER_MESSAGES, p.id + roundNumber)
+    : null;
+
+  const extremeCardMessage =
+    isRevealed && p.isHighlight && p.hasVoted
+      ? seededPick(EXTREME_CARD_MESSAGES, p.id)
+      : null;
+
   return (
     <div
       className={[
@@ -50,6 +70,7 @@ function ParticipantCard({
         isCurrentUser
           ? 'bg-slate-700 border-indigo-700'
           : 'bg-slate-700/50 border-slate-700',
+        showSlowMessage ? 'border-amber-700/50' : '',
       ].join(' ')}
     >
       {/* Card visual */}
@@ -75,8 +96,15 @@ function ParticipantCard({
         <div className="w-12 h-16 rounded-lg border-2 border-indigo-500 card-back" />
       ) : (
         /* Voting in progress: empty slot (not voted yet) */
-        <div className="w-12 h-16 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center">
-          <span className="text-slate-600 text-xs">—</span>
+        <div
+          className={[
+            'w-12 h-16 rounded-lg border-2 border-dashed flex items-center justify-center',
+            showSlowMessage ? 'border-amber-600/60' : 'border-slate-600',
+          ].join(' ')}
+        >
+          <span className={showSlowMessage ? 'text-amber-600 text-sm' : 'text-slate-600 text-xs'}>
+            {showSlowMessage ? '⏳' : '—'}
+          </span>
         </div>
       )}
 
@@ -109,6 +137,20 @@ function ParticipantCard({
       >
         {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Votat' : p.isOnline ? 'Nevotat' : 'Offline'}
       </span>
+
+      {/* Slow voter message */}
+      {slowMessage && (
+        <p className="text-xs text-amber-500/80 text-center italic leading-tight w-full">
+          {slowMessage}
+        </p>
+      )}
+
+      {/* Extreme vote message on card */}
+      {extremeCardMessage && (
+        <p className="text-xs text-amber-400 text-center font-medium w-full">
+          {extremeCardMessage}
+        </p>
+      )}
     </div>
   );
 }

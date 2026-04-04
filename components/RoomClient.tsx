@@ -327,12 +327,17 @@ export default function RoomClient({ code }: { code: string }) {
             participants={roomData.participants}
             currentUserId={session.id}
             isRevealed={isRevealed ?? false}
+            roundNumber={roundNumber}
           />
         )}
 
         {/* Results after reveal */}
         {isRevealed && roomData?.stats && (
-          <RevealedResults stats={roomData.stats} />
+          <RevealedResults
+            stats={roomData.stats}
+            hasExtremeVotes={roomData.participants.some(p => p.isHighlight)}
+            roundNumber={roundNumber}
+          />
         )}
 
         {/* Voting cards — only for voters */}
