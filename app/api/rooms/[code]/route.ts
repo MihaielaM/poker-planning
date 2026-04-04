@@ -58,16 +58,21 @@ export async function GET(
       };
     });
 
-    // Fetch reactions from last 4 seconds
+    // Fetch reactions from last 4 seconds (graceful fallback if table missing)
     const recentCutoff = new Date(Date.now() - 4000).toISOString();
-    const recentReactions = await sql`
-      SELECT participant_name, emoji, created_at
-      FROM reactions
-      WHERE room_id = ${room.id}
-        AND created_at >= ${recentCutoff}::timestamptz
-      ORDER BY created_at DESC
-      LIMIT 20
-    `;
+    let recentReactions: { participant_name: string; emoji: string; created_at: string }[] = [];
+    try {
+      recentReactions = await sql`
+        SELECT participant_name, emoji, created_at
+        FROM reactions
+        WHERE room_id = ${room.id}
+          AND created_at >= ${recentCutoff}::timestamptz
+        ORDER BY created_at DESC
+        LIMIT 20
+      `;
+    } catch {
+      // reactions table may not exist yet — return empty
+    }
 
     return NextResponse.json({
       room: {
