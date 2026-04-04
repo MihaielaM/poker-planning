@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
-const ALLOWED_EMOJIS = ['👍', '🔥', '😱', '😂', '🤔', '🎉', '💀', '🫠'];
+const ALLOWED_EMOJIS = ['👍', '🔥', '😱', '😂', '🤔\uFE0F', '🎉', '💀', '🥴'];
 
 export async function POST(
   request: NextRequest,

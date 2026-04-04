@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Reaction } from '@/lib/types';
 
-const EMOJIS = ['👍', '🔥', '😱', '😂', '🤔', '🎉', '💀', '🫠'];
+const EMOJIS = ['👍', '🔥', '😱', '😂', '🤔\uFE0F', '🎉', '💀', '🥴'];
 
 type FloatingReaction = {
   id: string;
