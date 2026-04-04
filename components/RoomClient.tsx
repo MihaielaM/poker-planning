@@ -20,7 +20,10 @@ const PING_INTERVAL_MS = 30000;
 export default function RoomClient({ code }: { code: string }) {
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [adminToken, setAdminToken] = useState<string | null>(null);
+  const [adminToken, setAdminToken] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(`ppoker-${code}-admin`);
+  });
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const [roomError, setRoomError] = useState('');
@@ -44,7 +47,7 @@ export default function RoomClient({ code }: { code: string }) {
         localStorage.removeItem(`ppoker-${code}-session`);
       }
     }
-    if (storedAdmin) {
+    if (storedAdmin && !adminToken) {
       setAdminToken(storedAdmin);
     }
   }, [code]);
@@ -324,6 +327,7 @@ export default function RoomClient({ code }: { code: string }) {
             participants={roomData.participants}
             currentUserId={session.id}
             isRevealed={isRevealed ?? false}
+            isAdmin={!!adminToken}
           />
         )}
 
