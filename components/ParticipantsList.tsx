@@ -18,10 +18,10 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
         <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
-          Participanți
+          Participants
         </p>
         <span className="text-slate-500 text-xs">
-          {votedCount}/{totalVoters} au votat
+          {votedCount}/{totalVoters} voted
         </span>
       </div>
 
@@ -118,7 +118,7 @@ function ParticipantCard({
       >
         {p.name}
         {isCurrentUser && (
-          <span className="text-indigo-400 font-normal"> (tu)</span>
+          <span className="text-indigo-400 font-normal"> (you)</span>
         )}
       </p>
 
@@ -135,7 +135,7 @@ function ParticipantCard({
                 : 'bg-slate-700 text-slate-600',
         ].join(' ')}
       >
-        {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Votat' : p.isOnline ? 'Nevotat' : 'Offline'}
+        {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Voted' : p.isOnline ? 'Not voted' : 'Offline'}
       </span>
 
       {/* Slow voter message */}

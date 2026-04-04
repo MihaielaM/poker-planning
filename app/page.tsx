@@ -14,11 +14,11 @@ export default function HomePage() {
     try {
       const res = await fetch('/api/rooms', { method: 'POST' });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Eroare la creare cameră');
+      if (!res.ok) throw new Error(data.error || 'Failed to create room');
       localStorage.setItem(`ppoker-${data.code}-admin`, data.adminToken);
       router.push(`/room/${data.code}`);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'A apărut o eroare';
+      const message = err instanceof Error ? err.message : 'An error occurred';
       setError(message);
       setLoading(false);
     }
@@ -31,8 +31,8 @@ export default function HomePage() {
           <div className="text-7xl mb-5">🃏</div>
           <h1 className="text-4xl font-bold text-white mb-3">Planning Poker</h1>
           <p className="text-slate-400 text-lg leading-relaxed">
-            Estimare agilă pentru echipe SCRUM remote.<br />
-            Creează o cameră și trimite link-ul colegilor tăi.
+            Agile estimation for remote SCRUM teams.<br />
+            Create a room and share the link with your team.
           </p>
         </div>
 
@@ -44,10 +44,10 @@ export default function HomePage() {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Se creează camera...
+              Creating room...
             </span>
           ) : (
-            '+ Creează cameră'
+            '+ Create room'
           )}
         </button>
 
@@ -59,10 +59,10 @@ export default function HomePage() {
 
         <div className="mt-10 grid grid-cols-1 gap-3 text-left">
           {[
-            { icon: '🔒', text: 'Votare privată — cardurile se dezvăluie simultan' },
-            { icon: '🔢', text: 'Șirul Fibonacci: 1, 2, 3, 5, 8, 13, 21' },
-            { icon: '📊', text: 'Medie automată + Fibonacci recomandat' },
-            { icon: '⚡', text: 'Auto-reveal când toți participanții activi au votat' },
+            { icon: '🔒', text: 'Private voting — cards are revealed simultaneously' },
+            { icon: '🔢', text: 'Fibonacci sequence: 1, 2, 3, 5, 8, 13, 21' },
+            { icon: '📊', text: 'Automatic average + recommended Fibonacci' },
+            { icon: '⚡', text: 'Auto-reveal when all active participants have voted' },
           ].map(({ icon, text }) => (
             <div key={text} className="flex items-start gap-3 text-slate-400 text-sm">
               <span className="text-base mt-0.5">{icon}</span>

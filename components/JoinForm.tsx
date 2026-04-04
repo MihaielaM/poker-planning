@@ -22,7 +22,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
     try {
       await onJoin(name.trim(), isVoter);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Eroare la intrare în cameră';
+      const message = err instanceof Error ? err.message : 'Error joining room';
       setError(message);
       setLoading(false);
     }
@@ -34,24 +34,24 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
         <div className="text-5xl mb-3">🃏</div>
         <h1 className="text-2xl font-bold text-white mb-1">Planning Poker</h1>
         <p className="text-slate-400 text-sm">
-          Camera{' '}
+          Room{' '}
           <span className="font-mono font-bold text-indigo-400 tracking-widest">{code}</span>
         </p>
       </div>
 
       <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Intră în cameră</h2>
+        <h2 className="text-lg font-semibold text-white mb-4">Join room</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm text-slate-400 mb-1.5">
-              Numele tău <span className="text-red-400">*</span>
+              Your name <span className="text-red-400">*</span>
             </label>
             <input
               id="name"
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="ex: Mihai"
+              placeholder="e.g. Alex"
               maxLength={50}
               autoFocus
               className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-500 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
@@ -62,9 +62,9 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
           {isAdmin && (
             <div className="flex items-center justify-between gap-3 bg-slate-700/60 border border-slate-600 rounded-lg px-4 py-3 select-none">
               <div>
-                <p className="text-sm font-medium text-white">Participi la votare?</p>
+                <p className="text-sm font-medium text-white">Participate in voting?</p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {isVoter ? 'Da — votezi ca un membru al echipei' : 'Nu — observi sesiunea ca facilitator'}
+                  {isVoter ? 'Yes — vote as a team member' : 'No — observe as a facilitator'}
                 </p>
               </div>
               <button
@@ -97,10 +97,10 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Se intră...
+                Joining...
               </span>
             ) : (
-              'Intră în cameră'
+              'Join room'
             )}
           </button>
         </form>

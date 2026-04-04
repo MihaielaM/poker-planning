@@ -57,7 +57,7 @@ export default function RoomClient({ code }: { code: string }) {
     try {
       const res = await fetch(`/api/rooms/${code}`);
       if (!res.ok) {
-        if (res.status === 404) setRoomError('Camera nu a fost găsită.');
+        if (res.status === 404) setRoomError('Room not found.');
         return;
       }
       const data: RoomData = await res.json();
@@ -130,7 +130,7 @@ export default function RoomClient({ code }: { code: string }) {
       body: JSON.stringify({ name, isVoter }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Eroare la intrare');
+    if (!res.ok) throw new Error(data.error || 'Error joining room');
 
     const newSession: Session = {
       token: data.participantToken,
@@ -158,13 +158,13 @@ export default function RoomClient({ code }: { code: string }) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setActionError(data.error || 'Eroare la votare');
+        setActionError(data.error || 'Vote error');
         setSelectedCard(null);
       } else {
         fetchRoom();
       }
     } catch {
-      setActionError('Eroare de rețea la votare');
+      setActionError('Network error while voting');
       setSelectedCard(null);
     } finally {
       setIsSubmittingVote(false);
@@ -183,12 +183,12 @@ export default function RoomClient({ code }: { code: string }) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setActionError(data.error || 'Eroare la reveal');
+        setActionError(data.error || 'Reveal error');
       } else {
         fetchRoom();
       }
     } catch {
-      setActionError('Eroare de rețea');
+      setActionError('Network error');
     }
   };
 
@@ -204,13 +204,13 @@ export default function RoomClient({ code }: { code: string }) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setActionError(data.error || 'Eroare la reset');
+        setActionError(data.error || 'Reset error');
       } else {
         setSelectedCard(null);
         fetchRoom();
       }
     } catch {
-      setActionError('Eroare de rețea');
+      setActionError('Network error');
     }
   };
 
@@ -237,7 +237,7 @@ export default function RoomClient({ code }: { code: string }) {
           <div className="text-5xl mb-4">😕</div>
           <p className="text-red-400 text-lg mb-4">{roomError}</p>
           <a href="/" className="text-indigo-400 hover:text-indigo-300 text-sm">
-            ← Creează o cameră nouă
+            ← Create a new room
           </a>
         </div>
       </div>
@@ -272,7 +272,7 @@ export default function RoomClient({ code }: { code: string }) {
             <div>
               <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span className="text-slate-400 text-xs">Camera:</span>
+                <span className="text-slate-400 text-xs">Room:</span>
                 <span className="font-mono font-bold text-indigo-400 text-sm tracking-widest">
                   {code}
                 </span>
@@ -289,7 +289,7 @@ export default function RoomClient({ code }: { code: string }) {
             onClick={handleCopyLink}
             className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
           >
-            {copied ? '✓ Link copiat!' : '🔗 Copiază link'}
+            {copied ? '✓ Link copied!' : '🔗 Copy link'}
           </button>
         </div>
       </header>
@@ -313,11 +313,11 @@ export default function RoomClient({ code }: { code: string }) {
               ].join(' ')}
             />
             <span className="text-sm font-medium">
-              {isRevealed ? 'Voturi dezvăluite' : 'Votare în progres'}
+              {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
           <span className="text-slate-400 text-sm">
-            {votedCount}/{totalCount} votanți · Runda {roundNumber}
+            {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
 
@@ -354,7 +354,7 @@ export default function RoomClient({ code }: { code: string }) {
         {isWaiting && !isVoter && (
           <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 text-sm flex items-center gap-2">
             <span>👁</span>
-            <span>Ești în modul facilitator — observi votarea fără să participi.</span>
+            <span>You are in facilitator mode — observing the vote without participating.</span>
           </div>
         )}
 
@@ -369,7 +369,7 @@ export default function RoomClient({ code }: { code: string }) {
         {adminToken && (
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
             <p className="text-slate-500 text-xs mb-3 font-medium uppercase tracking-wider">
-              Controale admin
+              Admin controls
             </p>
             <div className="flex gap-3 flex-wrap">
               {isWaiting && (
@@ -377,7 +377,7 @@ export default function RoomClient({ code }: { code: string }) {
                   onClick={handleReveal}
                   className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
-                  🃏 Reveal manual
+                  🃏 Reveal
                 </button>
               )}
               {isRevealed && (
@@ -385,7 +385,7 @@ export default function RoomClient({ code }: { code: string }) {
                   onClick={handleReset}
                   className="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
-                  🔄 Nouă rundă
+                  🔄 New round
                 </button>
               )}
             </div>

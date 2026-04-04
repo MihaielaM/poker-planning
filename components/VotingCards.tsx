@@ -14,8 +14,8 @@ export default function VotingCards({ onVote, selectedCard, hasVoted, disabled }
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
       <p className="text-slate-400 text-xs mb-4 font-medium uppercase tracking-wider">
         {hasVoted
-          ? `Ai votat: ${selectedCard} — poți schimba până la reveal`
-          : 'Alege estimarea ta'}
+          ? `You voted: ${selectedCard} — you can change until reveal`
+          : 'Choose your estimate'}
       </p>
       <div className="flex flex-wrap gap-3 justify-center">
         {DECK.map(card => {

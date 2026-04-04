@@ -15,33 +15,33 @@ export default function RevealedResults({ stats, hasExtremeVotes, roundNumber }:
     <div className="space-y-3">
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
       <p className="text-slate-400 text-xs mb-4 font-medium uppercase tracking-wider">
-        Rezultate rundă
+        Round results
       </p>
 
       {stats.average !== null ? (
         <div className="flex flex-wrap gap-8 items-center">
           <StatBlock
             value={stats.average.toFixed(1)}
-            label="Media voturilor"
+            label="Vote average"
             color="text-white"
           />
           {stats.nearestFibonacci !== null && (
             <StatBlock
               value={String(stats.nearestFibonacci)}
-              label="Fibonacci recomandat"
+              label="Recommended Fibonacci"
               color="text-indigo-400"
               highlight
             />
           )}
           <StatBlock
             value={String(stats.totalVoters)}
-            label="Voturi numerice"
+            label="Numeric votes"
             color="text-slate-300"
           />
         </div>
       ) : (
         <p className="text-slate-500 text-sm">
-          Nu există voturi numerice în această rundă.
+          No numeric votes in this round.
         </p>
       )}
     </div>
