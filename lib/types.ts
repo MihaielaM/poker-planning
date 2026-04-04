@@ -22,9 +22,4 @@ export type RoomData = {
   };
   participants: Participant[];
   reactions: Reaction[];
-  stats?: {
-    average: number | null;
-    nearestFibonacci: number | null;
-    totalVoters: number;
-  } | null;
 };

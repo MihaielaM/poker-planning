@@ -5,7 +5,6 @@ import { RoomData } from '@/lib/types';
 import JoinForm from './JoinForm';
 import VotingCards from './VotingCards';
 import ParticipantsList from './ParticipantsList';
-import RevealedResults from './RevealedResults';
 import ReactionBar from './ReactionBar';
 import SessionStats from './SessionStats';
 import ConsensusAlert from './ConsensusAlert';
@@ -354,14 +353,6 @@ export default function RoomClient({ code }: { code: string }) {
           />
         )}
 
-        {/* Results after reveal */}
-        {isRevealed && roomData?.stats && (
-          <RevealedResults
-            stats={roomData.stats}
-            hasExtremeVotes={roomData.participants.some(p => p.isHighlight)}
-            roundNumber={roundNumber}
-          />
-        )}
 
         {/* Voting cards — only for voters */}
         {isWaiting && isVoter && (
