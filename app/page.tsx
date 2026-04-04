@@ -39,7 +39,7 @@ export default function HomePage() {
         <button
           onClick={createRoom}
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-semibold px-8 py-4 rounded-xl text-lg transition-colors shadow-lg"
+          className="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-semibold px-8 py-4 rounded-xl text-lg transition-colors shadow-lg"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
