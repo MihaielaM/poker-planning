@@ -19,14 +19,14 @@ type Session = {
 const POLL_INTERVAL_MS = 2000;
 const PING_INTERVAL_MS = 30000;
 
-function JesterHat({ size = 56 }: { size?: number }) {
+function JesterHat({ size = 80 }: { size?: number }) {
   return (
-    <div
-      className="rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md flex-shrink-0"
-      style={{ width: size, height: size, padding: size * 0.08 }}
-    >
-      <img src="/joker-hat.jpg" alt="Planning Poker" className="w-full h-full object-contain" />
-    </div>
+    <img
+      src="/joker-hat.png"
+      alt="Planning Poker"
+      style={{ width: size, height: size }}
+      className="object-contain flex-shrink-0 drop-shadow-lg relative z-20"
+    />
   );
 }
 
@@ -275,10 +275,12 @@ export default function RoomClient({ code }: { code: string }) {
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
-      <header className="bg-rd-surface border-b border-rd-border px-4 py-4 sticky top-0 z-10">
+      <header className="bg-rd-surface border-b border-rd-border px-4 py-2 sticky top-0 z-10 overflow-visible">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <JesterHat size={56} />
+            <div className="translate-y-4 relative z-20">
+              <JesterHat size={88} />
+            </div>
             <div>
               <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">

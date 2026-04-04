@@ -77,13 +77,13 @@ export default function HomePage() {
   );
 }
 
-function JesterHat({ size = 80 }: { size?: number }) {
+function JesterHat({ size = 96 }: { size?: number }) {
   return (
-    <div
-      className="rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg"
-      style={{ width: size, height: size, padding: size * 0.08 }}
-    >
-      <img src="/joker-hat.jpg" alt="Planning Poker" className="w-full h-full object-contain" />
-    </div>
+    <img
+      src="/joker-hat.png"
+      alt="Planning Poker"
+      style={{ width: size, height: size }}
+      className="object-contain drop-shadow-xl"
+    />
   );
 }

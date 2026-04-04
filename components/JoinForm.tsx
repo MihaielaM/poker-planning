@@ -111,13 +111,13 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
   );
 }
 
-function JesterHat({ size = 64 }: { size?: number }) {
+function JesterHat({ size = 72 }: { size?: number }) {
   return (
-    <div
-      className="rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg"
-      style={{ width: size, height: size, padding: size * 0.08 }}
-    >
-      <img src="/joker-hat.jpg" alt="Planning Poker" className="w-full h-full object-contain" />
-    </div>
+    <img
+      src="/joker-hat.png"
+      alt="Planning Poker"
+      style={{ width: size, height: size }}
+      className="object-contain drop-shadow-lg"
+    />
   );
 }
