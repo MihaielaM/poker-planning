@@ -18,8 +18,11 @@ type Props = {
   roomCode: string;
 };
 
+const COOLDOWN_MS = 2000;
+
 export default function ReactionBar({ reactions, participantName, roomCode }: Props) {
   const [floating, setFloating] = useState<FloatingReaction[]>([]);
+  const [cooldowns, setCooldowns] = useState<Record<string, boolean>>({});
   const seenIds = useRef<Set<string>>(new Set());
 
   // Detect new reactions from polling and spawn floaters
@@ -44,6 +47,9 @@ export default function ReactionBar({ reactions, participantName, roomCode }: Pr
   }, [reactions]);
 
   const sendReaction = async (emoji: string) => {
+    if (cooldowns[emoji]) return;
+    setCooldowns(prev => ({ ...prev, [emoji]: true }));
+    setTimeout(() => setCooldowns(prev => ({ ...prev, [emoji]: false })), COOLDOWN_MS);
     try {
       await fetch(`/api/rooms/${roomCode}/reactions`, {
         method: 'POST',
@@ -82,7 +88,8 @@ export default function ReactionBar({ reactions, participantName, roomCode }: Pr
               <button
                 key={emoji}
                 onClick={() => sendReaction(emoji)}
-                className="text-xl hover:scale-125 active:scale-95 transition-transform select-none"
+                disabled={!!cooldowns[emoji]}
+                className="text-xl transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed hover:scale-125 active:scale-95"
                 title={emoji}
               >
                 {emoji}
