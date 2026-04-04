@@ -42,6 +42,16 @@ export async function POST() {
       )
     `;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS reactions (
+        id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        room_id        UUID NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+        participant_name VARCHAR(50) NOT NULL,
+        emoji          VARCHAR(10) NOT NULL,
+        created_at     TIMESTAMPTZ DEFAULT NOW()
+      )
+    `;
+
     return NextResponse.json({ success: true, message: 'Database tables created successfully' });
   } catch (error) {
     console.error('Setup error:', error);

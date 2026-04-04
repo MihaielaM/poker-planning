@@ -8,6 +8,12 @@ export type Participant = {
   isHighlight?: boolean;
 };
 
+export type Reaction = {
+  participantName: string;
+  emoji: string;
+  createdAt: string;
+};
+
 export type RoomData = {
   room: {
     code: string;
@@ -15,6 +21,7 @@ export type RoomData = {
     roundNumber: number;
   };
   participants: Participant[];
+  reactions: Reaction[];
   stats?: {
     average: number | null;
     nearestFibonacci: number | null;

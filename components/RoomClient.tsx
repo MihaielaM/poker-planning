@@ -6,6 +6,7 @@ import JoinForm from './JoinForm';
 import VotingCards from './VotingCards';
 import ParticipantsList from './ParticipantsList';
 import RevealedResults from './RevealedResults';
+import ReactionBar from './ReactionBar';
 
 type Session = {
   token: string;
@@ -347,6 +348,15 @@ export default function RoomClient({ code }: { code: string }) {
             selectedCard={selectedCard}
             hasVoted={hasVoted}
             disabled={isSubmittingVote}
+          />
+        )}
+
+        {/* Reaction bar */}
+        {session && (
+          <ReactionBar
+            reactions={roomData?.reactions ?? []}
+            participantName={session.name}
+            roomCode={code}
           />
         )}
 

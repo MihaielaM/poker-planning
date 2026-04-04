@@ -58,6 +58,17 @@ export async function GET(
       };
     });
 
+    // Fetch reactions from last 4 seconds
+    const recentCutoff = new Date(Date.now() - 4000).toISOString();
+    const recentReactions = await sql`
+      SELECT participant_name, emoji, created_at
+      FROM reactions
+      WHERE room_id = ${room.id}
+        AND created_at >= ${recentCutoff}::timestamptz
+      ORDER BY created_at DESC
+      LIMIT 20
+    `;
+
     return NextResponse.json({
       room: {
         code: room.code,
@@ -65,6 +76,11 @@ export async function GET(
         roundNumber: room.round_number,
       },
       participants: participantsData,
+      reactions: recentReactions.map(r => ({
+        participantName: r.participant_name,
+        emoji: r.emoji,
+        createdAt: r.created_at,
+      })),
       stats:
         isRevealed && analysis
           ? {
