@@ -285,7 +285,7 @@ export default function RoomClient({ code }: { code: string }) {
       <header className="bg-slate-800 border-b border-slate-700 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🃏</span>
+            <span className="text-4xl">🃏</span>
             <div>
               <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
@@ -397,13 +397,13 @@ export default function RoomClient({ code }: { code: string }) {
                   onClick={handleReveal}
                   className="bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-slate-900 font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
-                  🃏 Reveal
+                  <span className="text-lg">🃏</span> Reveal
                 </button>
               )}
               {isRevealed && (
                 <button
                   onClick={handleReset}
-                  className="bg-slate-700 hover:bg-slate-600 border border-slate-600 hover:border-yellow-500 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-slate-900 font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
                   🔄 New round
                 </button>
