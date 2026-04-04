@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { analyzeVotes } from '@/lib/utils';
 
 export async function GET(
   _request: NextRequest,
@@ -29,10 +30,22 @@ export async function GET(
 
     const isRevealed = room.status === 'revealed';
     const onlineThreshold = new Date(Date.now() - 3 * 60 * 1000);
+    const votes = participants.filter(p => p.vote != null).map(p => p.vote as string);
+    const analysis = isRevealed ? analyzeVotes(votes) : null;
 
     const participantsData = participants.map(p => {
       const isOnline = new Date(p.last_seen) > onlineThreshold;
       const hasVoted = p.vote != null;
+
+      let isHighlight = false;
+      if (isRevealed && analysis && hasVoted) {
+        const n = p.vote !== '?' && p.vote !== '∞' ? parseInt(p.vote as string, 10) : null;
+        if (n !== null && !isNaN(n)) {
+          isHighlight =
+            analysis.highlightMinValues.includes(n) ||
+            analysis.highlightMaxValues.includes(n);
+        }
+      }
 
       return {
         id: p.id,
@@ -41,7 +54,7 @@ export async function GET(
         isVoter: p.is_voter as boolean,
         hasVoted,
         vote: isRevealed ? p.vote : undefined,
-        isHighlight: false,
+        isHighlight,
       };
     });
 
