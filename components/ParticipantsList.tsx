@@ -4,10 +4,9 @@ type Props = {
   participants: Participant[];
   currentUserId: string;
   isRevealed: boolean;
-  isAdmin?: boolean;
 };
 
-export default function ParticipantsList({ participants, currentUserId, isRevealed, isAdmin }: Props) {
+export default function ParticipantsList({ participants, currentUserId, isRevealed }: Props) {
   const votedCount = participants.filter(p => p.hasVoted).length;
 
   return (
@@ -28,7 +27,6 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
             participant={p}
             isCurrentUser={p.id === currentUserId}
             isRevealed={isRevealed}
-            hideVotingStatus={!isRevealed && isAdmin && p.id !== currentUserId}
           />
         ))}
       </div>
@@ -40,12 +38,10 @@ function ParticipantCard({
   participant: p,
   isCurrentUser,
   isRevealed,
-  hideVotingStatus,
 }: {
   participant: Participant;
   isCurrentUser: boolean;
   isRevealed: boolean;
-  hideVotingStatus?: boolean;
 }) {
   return (
     <div
@@ -73,11 +69,6 @@ function ParticipantCard({
           ].join(' ')}
         >
           {p.vote ?? '?'}
-        </div>
-      ) : hideVotingStatus ? (
-        /* Admin view during voting: all cards hidden equally (no bias) */
-        <div className="w-12 h-16 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center">
-          <span className="text-slate-600 text-xs">—</span>
         </div>
       ) : p.hasVoted ? (
         /* Voting in progress: face-down card (has voted) */
@@ -109,16 +100,14 @@ function ParticipantCard({
           'text-xs px-2 py-0.5 rounded-full font-medium',
           !p.isVoter
             ? 'bg-slate-700 text-slate-400'
-            : hideVotingStatus
-              ? 'bg-slate-700 text-slate-500'
-              : p.hasVoted
-                ? 'bg-emerald-900/70 text-emerald-400'
-                : p.isOnline
-                  ? 'bg-slate-600 text-slate-400'
-                  : 'bg-slate-700 text-slate-600',
+            : p.hasVoted
+              ? 'bg-emerald-900/70 text-emerald-400'
+              : p.isOnline
+                ? 'bg-slate-600 text-slate-400'
+                : 'bg-slate-700 text-slate-600',
         ].join(' ')}
       >
-        {!p.isVoter ? 'Facilitator' : hideVotingStatus ? '?' : p.hasVoted ? '✓ Votat' : p.isOnline ? 'Nevotat' : 'Offline'}
+        {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Votat' : p.isOnline ? 'Nevotat' : 'Offline'}
       </span>
     </div>
   );

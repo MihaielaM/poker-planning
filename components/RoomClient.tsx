@@ -327,7 +327,6 @@ export default function RoomClient({ code }: { code: string }) {
             participants={roomData.participants}
             currentUserId={session.id}
             isRevealed={isRevealed ?? false}
-            isAdmin={!!adminToken}
           />
         )}
 
