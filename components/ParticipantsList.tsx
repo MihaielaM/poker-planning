@@ -43,11 +43,10 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {participants.map((p, index) => (
+        {participants.map(p => (
           <ParticipantCard
             key={p.id}
             participant={p}
-            index={index}
             isCurrentUser={p.id === currentUserId}
             isRevealed={isRevealed}
             justRevealed={justRevealed}
@@ -62,7 +61,6 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
 
 function ParticipantCard({
   participant: p,
-  index,
   isCurrentUser,
   isRevealed,
   justRevealed,
@@ -70,7 +68,6 @@ function ParticipantCard({
   roundNumber,
 }: {
   participant: Participant;
-  index: number;
   isCurrentUser: boolean;
   isRevealed: boolean;
   justRevealed: boolean;
@@ -86,11 +83,8 @@ function ParticipantCard({
       ? seededPick(EXTREME_CARD_MESSAGES, p.id)
       : null;
 
-  // Stagger delay: each card flips 80ms after the previous
-  const flipDelay = justRevealed ? index * 80 : 0;
-
   // Highlight-pulse starts after flip animation completes
-  const highlightDelay = justRevealed ? `${flipDelay + 600}ms` : '0ms';
+  const highlightDelay = justRevealed ? '600ms' : '0ms';
 
   return (
     <div
@@ -117,7 +111,7 @@ function ParticipantCard({
               isRevealed ? 'is-flipped' : '',
               isRevealed && !justRevealed ? 'no-transition' : '',
             ].join(' ')}
-            style={{ transitionDelay: `${flipDelay}ms` }}
+            style={{}}
           >
             {/* Back face */}
             <div className="card-3d-face card-back border-2 border-indigo-500" />
