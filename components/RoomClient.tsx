@@ -7,6 +7,7 @@ import VotingCards from './VotingCards';
 import ParticipantsList from './ParticipantsList';
 import RevealedResults from './RevealedResults';
 import ReactionBar from './ReactionBar';
+import SessionStats from './SessionStats';
 
 type Session = {
   token: string;
@@ -286,12 +287,17 @@ export default function RoomClient({ code }: { code: string }) {
             </div>
           </div>
 
-          <button
-            onClick={handleCopyLink}
-            className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
-          >
-            {copied ? '✓ Link copied!' : '🔗 Copy link'}
-          </button>
+          <div className="flex items-center gap-2">
+            {adminToken && (
+              <SessionStats roomCode={code} adminToken={adminToken} />
+            )}
+            <button
+              onClick={handleCopyLink}
+              className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
+            >
+              {copied ? '✓ Link copied!' : '🔗 Copy link'}
+            </button>
+          </div>
         </div>
       </header>
 
