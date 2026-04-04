@@ -60,7 +60,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
 
           {/* Voter toggle — only shown to admin */}
           {isAdmin && (
-            <label className="flex items-center justify-between gap-3 bg-slate-700/60 border border-slate-600 rounded-lg px-4 py-3 cursor-pointer select-none">
+            <div className="flex items-center justify-between gap-3 bg-slate-700/60 border border-slate-600 rounded-lg px-4 py-3 select-none">
               <div>
                 <p className="text-sm font-medium text-white">Participi la votare?</p>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -69,20 +69,22 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={isVoter}
                 onClick={() => setIsVoter(v => !v)}
                 className={[
-                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0',
+                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500',
                   isVoter ? 'bg-indigo-600' : 'bg-slate-500',
                 ].join(' ')}
               >
                 <span
                   className={[
-                    'absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
-                    isVoter ? 'translate-x-5' : 'translate-x-0.5',
+                    'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                    isVoter ? 'translate-x-5' : 'translate-x-0',
                   ].join(' ')}
                 />
               </button>
-            </label>
+            </div>
           )}
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
