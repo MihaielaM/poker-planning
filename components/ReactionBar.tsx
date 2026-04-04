@@ -69,7 +69,7 @@ export default function ReactionBar({ reactions, participantName, roomCode }: Pr
             style={{ left: `${f.x}%` }}
           >
             <span className="text-3xl">{f.emoji}</span>
-            <span className="text-xs text-white/70 bg-black/60 px-1.5 py-0.5 whitespace-nowrap font-bold uppercase tracking-wide">
+            <span className="text-xs text-white/70 bg-black/40 px-1.5 py-0.5 rounded-full whitespace-nowrap">
               {f.name}
             </span>
           </div>
@@ -77,16 +77,16 @@ export default function ReactionBar({ reactions, participantName, roomCode }: Pr
       </div>
 
       {/* Reaction buttons */}
-      <div className="bg-zinc-900 border border-zinc-800 px-5 py-3">
-        <div className="flex items-center gap-4 flex-wrap">
-          <span className="text-xs font-black uppercase tracking-widest text-zinc-600">React</span>
+      <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-slate-500 text-xs font-medium uppercase tracking-wider">React</span>
           <div className="flex gap-2 flex-wrap">
             {EMOJIS.map(emoji => (
               <button
                 key={emoji}
                 onClick={() => sendReaction(emoji)}
                 disabled={!!cooldowns[emoji]}
-                className="text-xl transition-all select-none disabled:opacity-25 disabled:cursor-not-allowed hover:scale-125 active:scale-95"
+                className="text-xl transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed hover:scale-125 active:scale-95"
                 title={emoji}
               >
                 {emoji}

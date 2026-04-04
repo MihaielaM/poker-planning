@@ -57,94 +57,89 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
       <button
         onClick={load}
         disabled={loading}
-        className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-yellow-400 text-zinc-400 hover:text-yellow-400 text-xs font-black uppercase tracking-widest px-3 py-2 transition-colors flex items-center gap-2 disabled:opacity-50"
+        className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
       >
-        📊 Stats
+        📊 Session stats
       </button>
 
       {open && stats && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-zinc-900 border border-zinc-800 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+            className="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
-            {/* Modal header */}
-            <div className="border-b-2 border-yellow-400 px-5 py-4 flex items-center justify-between">
+            <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-sm font-black uppercase tracking-widest text-white">Session Summary</h2>
-                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-0.5">
+                <h2 className="text-lg font-bold text-white">Session Summary</h2>
+                <p className="text-slate-400 text-sm">
                   {stats.totalRounds} completed round{stats.totalRounds !== 1 ? 's' : ''}
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-zinc-600 hover:text-yellow-400 text-xl font-black transition-colors"
+                className="text-slate-500 hover:text-slate-300 text-xl"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-5">
-              {stats.totalRounds === 0 ? (
-                <p className="text-zinc-600 text-xs font-bold uppercase tracking-widest text-center py-8">
-                  No completed rounds yet. Finish at least one round to see stats.
+            {stats.totalRounds === 0 ? (
+              <p className="text-slate-500 text-sm text-center py-8">
+                No completed rounds yet. Finish at least one round to see stats.
+              </p>
+            ) : stats.podium.length === 0 ? (
+              <p className="text-slate-500 text-sm text-center py-8">
+                No numeric votes recorded.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4">
+                  🏆 Best estimators this session
                 </p>
-              ) : stats.podium.length === 0 ? (
-                <p className="text-zinc-600 text-xs font-bold uppercase tracking-widest text-center py-8">
-                  No numeric votes recorded.
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-zinc-600 text-xs font-black uppercase tracking-widest mb-4">
-                    🏆 Best estimators this session
-                  </p>
-                  {stats.podium.map((entry, i) => {
-                    const badge = getBadge(entry.matches, entry.totalRounds);
-                    const pct = Math.round((entry.matches / entry.totalRounds) * 100);
-                    return (
-                      <div
-                        key={entry.name}
-                        className={[
-                          'flex items-center gap-4 px-4 py-3 border-l-4',
-                          i === 0
-                            ? 'bg-zinc-800 border-l-yellow-400'
-                            : 'bg-zinc-950 border-l-zinc-700',
-                        ].join(' ')}
-                      >
-                        {/* Rank */}
-                        <span className="text-2xl w-8 text-center flex-shrink-0">
-                          {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
-                        </span>
+                {stats.podium.map((entry, i) => {
+                  const badge = getBadge(entry.matches, entry.totalRounds);
+                  const pct = Math.round((entry.matches / entry.totalRounds) * 100);
+                  return (
+                    <div
+                      key={entry.name}
+                      className={[
+                        'flex items-center gap-4 p-4 rounded-xl border',
+                        i === 0
+                          ? 'bg-yellow-950/50 border-yellow-700/60'
+                          : 'bg-slate-700/40 border-slate-700',
+                      ].join(' ')}
+                    >
+                      {/* Rank */}
+                      <span className="text-2xl w-8 text-center flex-shrink-0">
+                        {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                      </span>
 
-                        {/* Name + badge */}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white font-black uppercase tracking-wide text-sm truncate">
-                            {entry.name}
-                          </p>
-                          <p className="text-zinc-500 text-xs mt-0.5 font-bold">
-                            {badge.emoji}{' '}
-                            <span className="text-yellow-400">{badge.label}</span>
-                            {' — '}{badge.message}
-                          </p>
-                        </div>
-
-                        {/* Score */}
-                        <div className="text-right flex-shrink-0">
-                          <p className={[
-                            'font-black text-lg',
-                            i === 0 ? 'text-yellow-400' : 'text-white',
-                          ].join(' ')}>{pct}%</p>
-                          <p className="text-zinc-600 text-xs font-bold">{entry.matches}/{entry.totalRounds}</p>
-                        </div>
+                      {/* Name + badge */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-semibold truncate">{entry.name}</p>
+                        <p className="text-slate-400 text-xs mt-0.5">
+                          {badge.emoji}{' '}
+                          <span className="text-yellow-400 font-medium">{badge.label}</span>
+                          {' — '}{badge.message}
+                        </p>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+
+                      {/* Score */}
+                      <div className="text-right flex-shrink-0">
+                        <p className={[
+                          'font-bold text-lg',
+                          i === 0 ? 'text-yellow-400' : 'text-white',
+                        ].join(' ')}>{pct}%</p>
+                        <p className="text-slate-500 text-xs">{entry.matches}/{entry.totalRounds}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -30,90 +30,80 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-4xl">🃏</span>
-          <div className="h-10 w-1 bg-yellow-400" />
-          <div>
-            <h1 className="text-3xl font-black uppercase tracking-tight text-white leading-none">
-              Planning Poker
-            </h1>
-          </div>
-        </div>
-        <p className="text-zinc-500 text-sm border-l-2 border-zinc-700 pl-3">
-          Room <span className="font-black text-yellow-400 tracking-widest">{code}</span>
+      <div className="text-center mb-8">
+        <div className="text-5xl mb-3">🃏</div>
+        <h1 className="text-2xl font-bold text-white mb-1">Planning Poker</h1>
+        <p className="text-slate-400 text-sm">
+          Room{' '}
+          <span className="font-mono font-bold text-yellow-400 tracking-widest">{code}</span>
         </p>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800">
-        <div className="border-b-2 border-yellow-400 px-5 py-3">
-          <h2 className="text-sm font-black uppercase tracking-widest text-white">Join room</h2>
-        </div>
-        <div className="p-5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">
-                Your name <span className="text-yellow-400">*</span>
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. Alex"
-                maxLength={50}
-                autoFocus
-                className="w-full bg-zinc-950 border border-zinc-700 focus:border-yellow-400 text-white placeholder-zinc-600 px-4 py-3 outline-none transition-colors text-sm"
-              />
-            </div>
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+        <h2 className="text-lg font-semibold text-white mb-4">Join room</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm text-slate-400 mb-1.5">
+              Your name <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Alex"
+              maxLength={50}
+              autoFocus
+              className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-500 rounded-lg px-4 py-3 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition"
+            />
+          </div>
 
-            {/* Voter toggle — only shown to admin */}
-            {isAdmin && (
-              <div className="flex items-center justify-between gap-3 bg-zinc-950 border border-zinc-700 px-4 py-3 select-none">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-wide text-white">Participate in voting?</p>
-                  <p className="text-xs text-zinc-500 mt-0.5">
-                    {isVoter ? 'Yes — vote as a team member' : 'No — observe as a facilitator'}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={isVoter}
-                  onClick={() => setIsVoter(v => !v)}
-                  className={[
-                    'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none',
-                    isVoter ? 'bg-yellow-400' : 'bg-zinc-700',
-                  ].join(' ')}
-                >
-                  <span
-                    className={[
-                      'absolute top-0.5 left-0.5 w-5 h-5 rounded-full shadow transition-transform',
-                      isVoter ? 'bg-zinc-950 translate-x-5' : 'bg-zinc-400 translate-x-0',
-                    ].join(' ')}
-                  />
-                </button>
+          {/* Voter toggle — only shown to admin */}
+          {isAdmin && (
+            <div className="flex items-center justify-between gap-3 bg-slate-700/60 border border-slate-600 rounded-lg px-4 py-3 select-none">
+              <div>
+                <p className="text-sm font-medium text-white">Participate in voting?</p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {isVoter ? 'Yes — vote as a team member' : 'No — observe as a facilitator'}
+                </p>
               </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={isVoter}
+                onClick={() => setIsVoter(v => !v)}
+                className={[
+                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none focus:ring-2 focus:ring-yellow-500',
+                  isVoter ? 'bg-yellow-500' : 'bg-slate-500',
+                ].join(' ')}
+              >
+                <span
+                  className={[
+                    'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                    isVoter ? 'translate-x-5' : 'translate-x-0',
+                  ].join(' ')}
+                />
+              </button>
+            </div>
+          )}
+
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading || !name.trim()}
+            className="w-full bg-yellow-500 hover:bg-yellow-400 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-slate-900 font-semibold py-3 rounded-lg transition-colors"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                Joining...
+              </span>
+            ) : (
+              'Join room'
             )}
-
-            {error && <p className="text-red-400 text-xs font-bold uppercase tracking-wide">{error}</p>}
-
-            <button
-              type="submit"
-              disabled={loading || !name.trim()}
-              className="w-full bg-yellow-400 hover:bg-yellow-300 disabled:bg-zinc-700 disabled:text-zinc-500 disabled:cursor-not-allowed text-zinc-950 font-black uppercase tracking-widest py-3 transition-colors text-sm"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-zinc-600 border-t-zinc-950 rounded-full animate-spin" />
-                  Joining...
-                </span>
-              ) : (
-                'Join room'
-              )}
-            </button>
-          </form>
-        </div>
+          </button>
+        </form>
       </div>
     </div>
   );

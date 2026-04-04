@@ -21,21 +21,27 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
   const prevRevealedRef = useRef(isRevealed);
 
   useEffect(() => {
-    if (isRevealed && !prevRevealedRef.current) setJustRevealed(true);
-    if (!isRevealed) setJustRevealed(false);
+    if (isRevealed && !prevRevealedRef.current) {
+      setJustRevealed(true);
+    }
+    if (!isRevealed) {
+      setJustRevealed(false);
+    }
     prevRevealedRef.current = isRevealed;
   }, [isRevealed]);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800">
-      <div className="border-b border-zinc-800 px-5 py-3 flex items-center justify-between">
-        <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Participants</p>
-        <span className="text-xs font-bold text-zinc-500">
+    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+          Participants
+        </p>
+        <span className="text-slate-500 text-xs">
           {votedCount}/{totalVoters} voted
         </span>
       </div>
 
-      <div className="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {participants.map(p => (
           <ParticipantCard
             key={p.id}
@@ -81,16 +87,16 @@ function ParticipantCard({
   return (
     <div
       className={[
-        'flex flex-col items-center gap-2 p-3 border transition-all',
+        'flex flex-col items-center gap-2 p-3 rounded-xl border transition-all',
         isCurrentUser
-          ? 'bg-zinc-800 border-yellow-400/50'
-          : 'bg-zinc-900 border-zinc-800',
-        showSlowMessage ? 'border-yellow-600/40' : '',
+          ? 'bg-slate-700 border-yellow-700'
+          : 'bg-slate-700/50 border-slate-700',
+        showSlowMessage ? 'border-yellow-700/50' : '',
       ].join(' ')}
     >
       {/* Card visual */}
       {!p.isVoter ? (
-        <div className="w-12 h-16 border-2 border-dashed border-zinc-700 flex items-center justify-center text-zinc-600 text-xl">
+        <div className="w-12 h-16 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center text-slate-500 text-xl">
           👁
         </div>
       ) : p.hasVoted ? (
@@ -103,14 +109,15 @@ function ParticipantCard({
             ].join(' ')}
           >
             {/* Back face */}
-            <div className="card-3d-face card-back border-2 border-yellow-400/40" />
+            <div className="card-3d-face card-back border-2 border-yellow-600" />
+
             {/* Front face */}
             <div
               className={[
-                'card-3d-face card-3d-face-front flex items-center justify-center font-black text-xl border-2',
+                'card-3d-face card-3d-face-front flex items-center justify-center font-bold text-lg border-2',
                 p.isHighlight
-                  ? 'bg-yellow-400 border-yellow-300 text-zinc-950 card-highlight'
-                  : 'bg-white border-zinc-300 text-zinc-950',
+                  ? 'bg-yellow-400 border-yellow-300 text-slate-900 card-highlight'
+                  : 'bg-white border-slate-300 text-slate-900',
               ].join(' ')}
               style={p.isHighlight ? { animationDelay: highlightDelay } : undefined}
             >
@@ -121,11 +128,11 @@ function ParticipantCard({
       ) : (
         <div
           className={[
-            'w-12 h-16 border-2 border-dashed flex items-center justify-center',
-            showSlowMessage ? 'border-yellow-600/50' : 'border-zinc-700',
+            'w-12 h-16 rounded-lg border-2 border-dashed flex items-center justify-center',
+            showSlowMessage ? 'border-yellow-600/60' : 'border-slate-600',
           ].join(' ')}
         >
-          <span className={showSlowMessage ? 'text-yellow-600 text-sm' : 'text-zinc-700 text-xs'}>
+          <span className={showSlowMessage ? 'text-yellow-600 text-sm' : 'text-slate-600 text-xs'}>
             {showSlowMessage ? '⏳' : '—'}
           </span>
         </div>
@@ -134,39 +141,41 @@ function ParticipantCard({
       {/* Name */}
       <p
         className={[
-          'text-xs font-bold uppercase tracking-wide text-center truncate w-full',
-          isCurrentUser ? 'text-yellow-400' : 'text-zinc-300',
+          'text-xs font-medium text-center truncate w-full',
+          isCurrentUser ? 'text-white' : 'text-slate-300',
         ].join(' ')}
         title={p.name}
       >
         {p.name}
-        {isCurrentUser && <span className="text-zinc-600 font-normal normal-case"> (you)</span>}
+        {isCurrentUser && (
+          <span className="text-yellow-400 font-normal"> (you)</span>
+        )}
       </p>
 
       {/* Status badge */}
       <span
         className={[
-          'text-xs px-2 py-0.5 font-bold uppercase tracking-wide border',
+          'text-xs px-2 py-0.5 rounded-full font-medium',
           !p.isVoter
-            ? 'border-zinc-700 text-zinc-600'
+            ? 'bg-slate-700 text-slate-400'
             : p.hasVoted
-              ? 'border-yellow-400/50 text-yellow-400'
+              ? 'bg-yellow-900/70 text-yellow-400'
               : p.isOnline
-                ? 'border-zinc-700 text-zinc-500'
-                : 'border-zinc-800 text-zinc-700',
+                ? 'bg-slate-600 text-slate-400'
+                : 'bg-slate-700 text-slate-600',
         ].join(' ')}
       >
-        {!p.isVoter ? 'Observer' : p.hasVoted ? '✓ Voted' : p.isOnline ? 'Waiting' : 'Offline'}
+        {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Voted' : p.isOnline ? 'Not voted' : 'Offline'}
       </span>
 
       {slowMessage && (
-        <p className="text-xs text-yellow-600/80 text-center italic leading-tight w-full">
+        <p className="text-xs text-yellow-500/80 text-center italic leading-tight w-full">
           {slowMessage}
         </p>
       )}
 
       {extremeCardMessage && (
-        <p className="text-xs text-yellow-400 text-center font-bold uppercase tracking-wide w-full">
+        <p className="text-xs text-yellow-400 text-center font-medium w-full">
           {extremeCardMessage}
         </p>
       )}
