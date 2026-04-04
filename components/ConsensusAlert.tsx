@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const COLORS = ['#eab308', '#fbbf24', '#fde68a', '#ffffff', '#ca8a04', '#f59e0b', '#fef08a'];
+const COLORS = ['#FFD000', '#FFE033', '#FFF0A0', '#ffffff', '#CCAA00', '#FFB800', '#FFF5CC'];
 
 const MESSAGES = [
   "Perfect consensus! The team is one mind 🧠",
@@ -54,7 +54,6 @@ export default function ConsensusAlert({ roundNumber }: { roundNumber: number })
 
   return (
     <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
-      {/* Confetti particles */}
       {particles.map(p => (
         <div
           key={p.id}
@@ -72,11 +71,10 @@ export default function ConsensusAlert({ roundNumber }: { roundNumber: number })
         />
       ))}
 
-      {/* Banner */}
       <div className="pointer-events-auto absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-sm px-4">
-        <div className="bg-slate-800 border border-yellow-500 rounded-2xl px-5 py-4 shadow-2xl shadow-yellow-500/20 text-center">
+        <div className="bg-rd-surface border border-rd-yellow rounded-2xl px-5 py-4 shadow-2xl shadow-rd-yellow/10 text-center">
           <div className="text-4xl mb-2">🎉</div>
-          <p className="text-yellow-400 font-bold text-base leading-snug">
+          <p className="text-rd-yellow font-bold text-base leading-snug">
             {seededMessage(roundNumber)}
           </p>
         </div>

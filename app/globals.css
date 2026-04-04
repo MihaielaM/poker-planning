@@ -1,14 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  --color-rd-dark:          #121212;
+  --color-rd-surface:       #1a1a1a;
+  --color-rd-surface-2:     #222222;
+  --color-rd-border:        #2a2a2a;
+  --color-rd-border-2:      #383838;
+  --color-rd-muted:         #555555;
+  --color-rd-subtle:        #888888;
+  --color-rd-text:          #cccccc;
+  --color-rd-yellow:        #FFD000;
+  --color-rd-yellow-hover:  #FFE033;
+  --color-rd-yellow-active: #CCAA00;
+  --color-rd-yellow-dim:    #1a1500;
+  --color-rd-yellow-border: #4d3f00;
+  --color-rd-yellow-light:  #FFE566;
+}
+
 :root {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
+  --background: #121212;
+  --foreground: #ffffff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* Card back diagonal stripe pattern */
@@ -25,8 +42,8 @@ body {
 
 /* Highlight pulse for extreme vote cards */
 @keyframes highlight-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5); }
-  50%       { box-shadow: 0 0 0 8px rgba(251, 191, 36, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 208, 0, 0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(255, 208, 0, 0); }
 }
 .card-highlight {
   animation: highlight-pulse 2s ease-in-out infinite;

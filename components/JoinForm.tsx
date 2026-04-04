@@ -31,19 +31,21 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
   return (
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
-        <div className="text-5xl mb-3">🃏</div>
+        <div className="flex justify-center mb-3">
+          <JesterHat size={52} />
+        </div>
         <h1 className="text-2xl font-bold text-white mb-1">Planning Poker</h1>
-        <p className="text-slate-400 text-sm">
+        <p className="text-rd-subtle text-sm">
           Room{' '}
-          <span className="font-mono font-bold text-yellow-400 tracking-widest">{code}</span>
+          <span className="font-mono font-bold text-rd-yellow tracking-widest">{code}</span>
         </p>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+      <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
         <h2 className="text-lg font-semibold text-white mb-4">Join room</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm text-slate-400 mb-1.5">
+            <label htmlFor="name" className="block text-sm text-rd-subtle mb-1.5">
               Your name <span className="text-red-400">*</span>
             </label>
             <input
@@ -54,16 +56,16 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
               placeholder="e.g. Alex"
               maxLength={50}
               autoFocus
-              className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-500 rounded-lg px-4 py-3 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition"
+              className="w-full bg-rd-surface-2 border border-rd-border-2 text-white placeholder-rd-muted rounded-lg px-4 py-3 focus:outline-none focus:border-rd-yellow focus:ring-1 focus:ring-rd-yellow transition"
             />
           </div>
 
           {/* Voter toggle — only shown to admin */}
           {isAdmin && (
-            <div className="flex items-center justify-between gap-3 bg-slate-700/60 border border-slate-600 rounded-lg px-4 py-3 select-none">
+            <div className="flex items-center justify-between gap-3 bg-rd-surface-2 border border-rd-border-2 rounded-lg px-4 py-3 select-none">
               <div>
                 <p className="text-sm font-medium text-white">Participate in voting?</p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-rd-muted mt-0.5">
                   {isVoter ? 'Yes — vote as a team member' : 'No — observe as a facilitator'}
                 </p>
               </div>
@@ -73,8 +75,8 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
                 aria-checked={isVoter}
                 onClick={() => setIsVoter(v => !v)}
                 className={[
-                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none focus:ring-2 focus:ring-yellow-500',
-                  isVoter ? 'bg-yellow-500' : 'bg-slate-500',
+                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none focus:ring-2 focus:ring-rd-yellow',
+                  isVoter ? 'bg-rd-yellow' : 'bg-rd-border-2',
                 ].join(' ')}
               >
                 <span
@@ -92,11 +94,11 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            className="w-full bg-yellow-500 hover:bg-yellow-400 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-slate-900 font-semibold py-3 rounded-lg transition-colors"
+            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-lg transition-colors"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <span className="w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-rd-dark/30 border-t-rd-dark rounded-full animate-spin" />
                 Joining...
               </span>
             ) : (
@@ -106,5 +108,18 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
         </form>
       </div>
     </div>
+  );
+}
+
+function JesterHat({ size = 44 }: { size?: number }) {
+  const h = Math.round(size * 0.9);
+  return (
+    <svg width={size} height={h} viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 35 L6 15 L14 22 L22 2 L30 22 L38 15 L43 35 Z" fill="#FFD000" />
+      <rect x="0" y="33" width="44" height="7" rx="3.5" fill="#FFD000" />
+      <circle cx="6" cy="13" r="4" fill="#121212" />
+      <circle cx="22" cy="1.5" r="4" fill="#121212" />
+      <circle cx="38" cy="13" r="4" fill="#121212" />
+    </svg>
   );
 }

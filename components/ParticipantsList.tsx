@@ -31,12 +31,12 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
   }, [isRevealed]);
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
+    <div className="bg-rd-surface border border-rd-border rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+        <p className="text-rd-subtle text-xs font-medium uppercase tracking-wider">
           Participants
         </p>
-        <span className="text-slate-500 text-xs">
+        <span className="text-rd-muted text-xs">
           {votedCount}/{totalVoters} voted
         </span>
       </div>
@@ -89,14 +89,14 @@ function ParticipantCard({
       className={[
         'flex flex-col items-center gap-2 p-3 rounded-xl border transition-all',
         isCurrentUser
-          ? 'bg-slate-700 border-yellow-700'
-          : 'bg-slate-700/50 border-slate-700',
-        showSlowMessage ? 'border-yellow-700/50' : '',
+          ? 'bg-rd-surface-2 border-rd-yellow/40'
+          : 'bg-rd-surface/50 border-rd-border',
+        showSlowMessage ? 'border-rd-yellow/30' : '',
       ].join(' ')}
     >
       {/* Card visual */}
       {!p.isVoter ? (
-        <div className="w-12 h-16 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center text-slate-500 text-xl">
+        <div className="w-12 h-16 rounded-lg border-2 border-dashed border-rd-border-2 flex items-center justify-center text-rd-muted text-xl">
           👁
         </div>
       ) : p.hasVoted ? (
@@ -109,15 +109,15 @@ function ParticipantCard({
             ].join(' ')}
           >
             {/* Back face */}
-            <div className="card-3d-face card-back border-2 border-yellow-600" />
+            <div className="card-3d-face card-back border-2 border-rd-yellow/50" />
 
             {/* Front face */}
             <div
               className={[
                 'card-3d-face card-3d-face-front flex items-center justify-center font-bold text-lg border-2',
                 p.isHighlight
-                  ? 'bg-yellow-400 border-yellow-300 text-slate-900 card-highlight'
-                  : 'bg-white border-slate-300 text-slate-900',
+                  ? 'bg-rd-yellow border-rd-yellow-hover text-rd-dark card-highlight'
+                  : 'bg-white border-rd-border text-rd-dark',
               ].join(' ')}
               style={p.isHighlight ? { animationDelay: highlightDelay } : undefined}
             >
@@ -129,10 +129,10 @@ function ParticipantCard({
         <div
           className={[
             'w-12 h-16 rounded-lg border-2 border-dashed flex items-center justify-center',
-            showSlowMessage ? 'border-yellow-600/60' : 'border-slate-600',
+            showSlowMessage ? 'border-rd-yellow/40' : 'border-rd-border-2',
           ].join(' ')}
         >
-          <span className={showSlowMessage ? 'text-yellow-600 text-sm' : 'text-slate-600 text-xs'}>
+          <span className={showSlowMessage ? 'text-rd-yellow/60 text-sm' : 'text-rd-muted text-xs'}>
             {showSlowMessage ? '⏳' : '—'}
           </span>
         </div>
@@ -142,13 +142,13 @@ function ParticipantCard({
       <p
         className={[
           'text-xs font-medium text-center truncate w-full',
-          isCurrentUser ? 'text-white' : 'text-slate-300',
+          isCurrentUser ? 'text-white' : 'text-rd-text',
         ].join(' ')}
         title={p.name}
       >
         {p.name}
         {isCurrentUser && (
-          <span className="text-yellow-400 font-normal"> (you)</span>
+          <span className="text-rd-yellow/70 font-normal"> (you)</span>
         )}
       </p>
 
@@ -157,25 +157,25 @@ function ParticipantCard({
         className={[
           'text-xs px-2 py-0.5 rounded-full font-medium',
           !p.isVoter
-            ? 'bg-slate-700 text-slate-400'
+            ? 'bg-rd-surface-2 text-rd-muted'
             : p.hasVoted
-              ? 'bg-yellow-900/70 text-yellow-400'
+              ? 'bg-rd-yellow/15 text-rd-yellow'
               : p.isOnline
-                ? 'bg-slate-600 text-slate-400'
-                : 'bg-slate-700 text-slate-600',
+                ? 'bg-rd-surface-2 text-rd-subtle'
+                : 'bg-rd-surface-2 text-rd-muted',
         ].join(' ')}
       >
         {!p.isVoter ? 'Facilitator' : p.hasVoted ? '✓ Voted' : p.isOnline ? 'Not voted' : 'Offline'}
       </span>
 
       {slowMessage && (
-        <p className="text-xs text-yellow-500/80 text-center italic leading-tight w-full">
+        <p className="text-xs text-rd-yellow/70 text-center italic leading-tight w-full">
           {slowMessage}
         </p>
       )}
 
       {extremeCardMessage && (
-        <p className="text-xs text-yellow-400 text-center font-medium w-full">
+        <p className="text-xs text-rd-yellow text-center font-medium w-full">
           {extremeCardMessage}
         </p>
       )}

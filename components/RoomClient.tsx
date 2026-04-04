@@ -19,6 +19,19 @@ type Session = {
 const POLL_INTERVAL_MS = 2000;
 const PING_INTERVAL_MS = 30000;
 
+function JesterHat({ size = 44 }: { size?: number }) {
+  const h = Math.round(size * 0.9);
+  return (
+    <svg width={size} height={h} viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 35 L6 15 L14 22 L22 2 L30 22 L38 15 L43 35 Z" fill="#FFD000" />
+      <rect x="0" y="33" width="44" height="7" rx="3.5" fill="#FFD000" />
+      <circle cx="6" cy="13" r="4" fill="#121212" />
+      <circle cx="22" cy="1.5" r="4" fill="#121212" />
+      <circle cx="38" cy="13" r="4" fill="#121212" />
+    </svg>
+  );
+}
+
 export default function RoomClient({ code }: { code: string }) {
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -39,11 +52,9 @@ export default function RoomClient({ code }: { code: string }) {
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Read localStorage on mount ──────────────────────────────────────────
   useEffect(() => {
     const stored = localStorage.getItem(`ppoker-${code}-session`);
     const storedAdmin = localStorage.getItem(`ppoker-${code}-admin`);
-
     if (stored) {
       try {
         setSession(JSON.parse(stored) as Session);
@@ -56,7 +67,6 @@ export default function RoomClient({ code }: { code: string }) {
     }
   }, [code]);
 
-  // ── Fetch room state ────────────────────────────────────────────────────
   const fetchRoom = useCallback(async () => {
     try {
       const res = await fetch(`/api/rooms/${code}`);
@@ -67,14 +77,12 @@ export default function RoomClient({ code }: { code: string }) {
       const data: RoomData = await res.json();
       setRoomData(data);
 
-      // Reset card selection when a new round starts
       if (lastRoundRef.current !== null && lastRoundRef.current !== data.room.roundNumber) {
         setSelectedCard(null);
         setShowConsensus(false);
       }
       lastRoundRef.current = data.room.roundNumber;
 
-      // Detect consensus on the moment of reveal
       const justBecameRevealed = lastStatusRef.current === 'waiting' && data.room.status === 'revealed';
       lastStatusRef.current = data.room.status;
       if (justBecameRevealed) {
@@ -91,7 +99,6 @@ export default function RoomClient({ code }: { code: string }) {
     }
   }, [code]);
 
-  // ── Polling ─────────────────────────────────────────────────────────────
   useEffect(() => {
     fetchRoom();
     pollingRef.current = setInterval(fetchRoom, POLL_INTERVAL_MS);
@@ -100,10 +107,8 @@ export default function RoomClient({ code }: { code: string }) {
     };
   }, [fetchRoom]);
 
-  // ── Ping to stay "online" ────────────────────────────────────────────────
   useEffect(() => {
     if (!session) return;
-
     const ping = () => {
       fetch(`/api/rooms/${code}/ping`, {
         method: 'POST',
@@ -111,7 +116,6 @@ export default function RoomClient({ code }: { code: string }) {
         body: JSON.stringify({ participantToken: session.token }),
       }).catch(() => {});
     };
-
     ping();
     pingRef.current = setInterval(ping, PING_INTERVAL_MS);
     return () => {
@@ -119,7 +123,6 @@ export default function RoomClient({ code }: { code: string }) {
     };
   }, [session, code]);
 
-  // ── Reconnect on load if token exists ───────────────────────────────────
   useEffect(() => {
     if (!session) return;
     fetch(`/api/rooms/${code}/join`, {
@@ -135,9 +138,8 @@ export default function RoomClient({ code }: { code: string }) {
       })
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]); // Only on mount
+  }, [code]);
 
-  // ── Join handler ─────────────────────────────────────────────────────────
   const handleJoin = async (name: string, isVoter: boolean) => {
     const res = await fetch(`/api/rooms/${code}/join`, {
       method: 'POST',
@@ -146,7 +148,6 @@ export default function RoomClient({ code }: { code: string }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Error joining room');
-
     const newSession: Session = {
       token: data.participantToken,
       id: data.participantId,
@@ -158,13 +159,11 @@ export default function RoomClient({ code }: { code: string }) {
     fetchRoom();
   };
 
-  // ── Vote handler ──────────────────────────────────────────────────────────
   const handleVote = async (value: string) => {
     if (!session || isSubmittingVote) return;
     setIsSubmittingVote(true);
     setSelectedCard(value);
     setActionError('');
-
     try {
       const res = await fetch(`/api/rooms/${code}/vote`, {
         method: 'POST',
@@ -186,7 +185,6 @@ export default function RoomClient({ code }: { code: string }) {
     }
   };
 
-  // ── Admin: reveal ────────────────────────────────────────────────────────
   const handleReveal = async () => {
     if (!adminToken) return;
     setActionError('');
@@ -207,7 +205,6 @@ export default function RoomClient({ code }: { code: string }) {
     }
   };
 
-  // ── Admin: reset round ───────────────────────────────────────────────────
   const handleReset = async () => {
     if (!adminToken) return;
     setActionError('');
@@ -229,29 +226,27 @@ export default function RoomClient({ code }: { code: string }) {
     }
   };
 
-  // ── Copy link ────────────────────────────────────────────────────────────
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // ── Renders ──────────────────────────────────────────────────────────────
   if (initialLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <span className="w-8 h-8 border-2 border-slate-600 border-t-yellow-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-rd-dark flex items-center justify-center">
+        <span className="w-8 h-8 border-2 border-rd-border-2 border-t-rd-yellow rounded-full animate-spin" />
       </div>
     );
   }
 
   if (roomError) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-5xl mb-4">😕</div>
           <p className="text-red-400 text-lg mb-4">{roomError}</p>
-          <a href="/" className="text-yellow-400 hover:text-yellow-300 text-sm">
+          <a href="/" className="text-rd-yellow hover:text-rd-yellow-hover text-sm">
             ← Create a new room
           </a>
         </div>
@@ -261,7 +256,7 @@ export default function RoomClient({ code }: { code: string }) {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
         <JoinForm code={code} isAdmin={!!adminToken} onJoin={handleJoin} />
       </div>
     );
@@ -278,23 +273,23 @@ export default function RoomClient({ code }: { code: string }) {
   const roundNumber = roomData?.room.roundNumber ?? 1;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-rd-dark text-white">
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
-      <header className="bg-slate-800 border-b border-slate-700 px-4 py-4 sticky top-0 z-10">
+      <header className="bg-rd-surface border-b border-rd-border px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">🃏</span>
+            <JesterHat size={44} />
             <div>
               <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span className="text-slate-400 text-xs">Room:</span>
-                <span className="font-mono font-bold text-yellow-400 text-sm tracking-widest">
+                <span className="text-rd-muted text-xs">Room:</span>
+                <span className="font-mono font-bold text-rd-yellow text-sm tracking-widest">
                   {code}
                 </span>
                 {adminToken && (
-                  <span className="bg-yellow-900 text-yellow-300 text-xs px-2 py-0.5 rounded-full font-medium">
+                  <span className="bg-rd-yellow/15 text-rd-yellow text-xs px-2 py-0.5 rounded-full font-medium">
                     Admin
                   </span>
                 )}
@@ -306,7 +301,7 @@ export default function RoomClient({ code }: { code: string }) {
             {adminToken && <SessionStats roomCode={code} adminToken={adminToken} />}
             <button
               onClick={handleCopyLink}
-              className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
             >
               {copied ? '✓ Link copied!' : '🔗 Copy link'}
             </button>
@@ -321,22 +316,22 @@ export default function RoomClient({ code }: { code: string }) {
           className={[
             'rounded-xl px-4 py-3 flex items-center justify-between',
             isRevealed
-              ? 'bg-yellow-950 border border-yellow-800'
-              : 'bg-slate-800 border border-slate-700',
+              ? 'bg-rd-yellow-dim border border-rd-yellow-border'
+              : 'bg-rd-surface border border-rd-border',
           ].join(' ')}
         >
           <div className="flex items-center gap-2">
             <span
               className={[
                 'w-2 h-2 rounded-full',
-                isRevealed ? 'bg-yellow-400' : 'bg-yellow-500 animate-pulse',
+                isRevealed ? 'bg-rd-yellow' : 'bg-rd-yellow animate-pulse',
               ].join(' ')}
             />
             <span className="text-sm font-medium">
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-slate-400 text-sm">
+          <span className="text-rd-subtle text-sm">
             {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
@@ -372,7 +367,7 @@ export default function RoomClient({ code }: { code: string }) {
 
         {/* Observer notice */}
         {isWaiting && !isVoter && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 text-sm flex items-center gap-2">
+          <div className="bg-rd-surface border border-rd-border rounded-xl px-4 py-3 text-rd-subtle text-sm flex items-center gap-2">
             <span>👁</span>
             <span>You are in facilitator mode — observing the vote without participating.</span>
           </div>
@@ -387,15 +382,15 @@ export default function RoomClient({ code }: { code: string }) {
 
         {/* Admin controls */}
         {adminToken && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
-            <p className="text-slate-500 text-xs mb-3 font-medium uppercase tracking-wider">
+          <div className="bg-rd-surface border border-rd-border rounded-xl p-4">
+            <p className="text-rd-muted text-xs mb-3 font-medium uppercase tracking-wider">
               Admin controls
             </p>
             <div className="flex gap-3 flex-wrap">
               {isWaiting && (
                 <button
                   onClick={handleReveal}
-                  className="bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-slate-900 font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
                   <span className="text-lg">🃏</span> Reveal
                 </button>
@@ -403,7 +398,7 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed && (
                 <button
                   onClick={handleReset}
-                  className="bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-slate-900 font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
                   🔄 New round
                 </button>
