@@ -49,19 +49,17 @@ export async function POST(
 
     await sql`UPDATE participants SET last_seen = NOW() WHERE id = ${participantId}`;
 
-    // Auto-reveal: all online VOTERS (last 2 min) have voted
-    const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
-    const onlineVoters = await sql`
+    // Auto-reveal: ALL registered voters have voted
+    const allVoters = await sql`
       SELECT
         (v.id IS NOT NULL) AS has_voted
       FROM participants p
       LEFT JOIN votes v ON v.participant_id = p.id AND v.round_number = ${room.round_number}
       WHERE p.room_id = ${room.id}
-        AND p.last_seen >= ${twoMinAgo}::timestamptz
         AND p.is_voter = TRUE
     `;
 
-    const allVoted = onlineVoters.length > 0 && onlineVoters.every(r => r.has_voted);
+    const allVoted = allVoters.length > 0 && allVoters.every(r => r.has_voted);
 
     if (allVoted) {
       await sql`
