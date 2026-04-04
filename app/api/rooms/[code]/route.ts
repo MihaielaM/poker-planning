@@ -62,7 +62,7 @@ export async function GET(
     const recentCutoff = new Date(Date.now() - 4000).toISOString();
     let recentReactions: { participant_name: string; emoji: string; created_at: string }[] = [];
     try {
-      recentReactions = await sql`
+      const rows = await sql`
         SELECT participant_name, emoji, created_at
         FROM reactions
         WHERE room_id = ${room.id}
@@ -70,6 +70,7 @@ export async function GET(
         ORDER BY created_at DESC
         LIMIT 20
       `;
+      recentReactions = rows as { participant_name: string; emoji: string; created_at: string }[];
     } catch {
       // reactions table may not exist yet — return empty
     }
