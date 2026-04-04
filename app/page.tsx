@@ -29,7 +29,7 @@ export default function HomePage() {
       <div className="text-center max-w-md w-full">
         <div className="mb-10">
           <div className="flex justify-center mb-5">
-            <JesterHat size={64} />
+            <JesterHat size={96} />
           </div>
           <h1 className="text-4xl font-bold text-white mb-3">Planning Poker</h1>
           <p className="text-rd-subtle text-lg leading-relaxed">
@@ -77,15 +77,13 @@ export default function HomePage() {
   );
 }
 
-function JesterHat({ size = 44 }: { size?: number }) {
-  const h = Math.round(size * 0.9);
+function JesterHat({ size = 80 }: { size?: number }) {
   return (
-    <svg width={size} height={h} viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 35 L6 15 L14 22 L22 2 L30 22 L38 15 L43 35 Z" fill="#FFD000" />
-      <rect x="0" y="33" width="44" height="7" rx="3.5" fill="#FFD000" />
-      <circle cx="6" cy="13" r="4" fill="#121212" />
-      <circle cx="22" cy="1.5" r="4" fill="#121212" />
-      <circle cx="38" cy="13" r="4" fill="#121212" />
-    </svg>
+    <div
+      className="rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg"
+      style={{ width: size, height: size, padding: size * 0.08 }}
+    >
+      <img src="/joker-hat.jpg" alt="Planning Poker" className="w-full h-full object-contain" />
+    </div>
   );
 }
