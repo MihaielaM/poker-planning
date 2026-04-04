@@ -240,19 +240,19 @@ export default function RoomClient({ code }: { code: string }) {
   // ── Renders ──────────────────────────────────────────────────────────────
   if (initialLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <span className="w-8 h-8 border-2 border-slate-600 border-t-indigo-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <span className="w-8 h-8 border-2 border-zinc-700 border-t-yellow-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   if (roomError) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-5xl mb-4">😕</div>
-          <p className="text-red-400 text-lg mb-4">{roomError}</p>
-          <a href="/" className="text-indigo-400 hover:text-indigo-300 text-sm">
+          <p className="text-red-400 text-lg font-bold mb-4">{roomError}</p>
+          <a href="/" className="text-yellow-400 hover:text-yellow-300 text-sm font-black uppercase tracking-widest">
             ← Create a new room
           </a>
         </div>
@@ -262,7 +262,7 @@ export default function RoomClient({ code }: { code: string }) {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
         <JoinForm code={code} isAdmin={!!adminToken} onJoin={handleJoin} />
       </div>
     );
@@ -279,66 +279,68 @@ export default function RoomClient({ code }: { code: string }) {
   const roundNumber = roomData?.room.roundNumber ?? 1;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-zinc-950 text-white">
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
+
       {/* ── Header ── */}
-      <header className="bg-slate-800 border-b border-slate-700 px-4 py-4 sticky top-0 z-10">
+      <header className="bg-zinc-900 border-b-2 border-yellow-400 px-4 py-3 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🃏</span>
+            <div className="h-8 w-0.5 bg-yellow-400" />
             <div>
-              <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
-              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span className="text-slate-400 text-xs">Room:</span>
-                <span className="font-mono font-bold text-indigo-400 text-sm tracking-widest">
-                  {code}
-                </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl font-black uppercase tracking-tight text-white leading-none">
+                  Planning Poker
+                </h1>
                 {adminToken && (
-                  <span className="bg-indigo-900 text-indigo-300 text-xs px-2 py-0.5 rounded-full font-medium">
+                  <span className="bg-yellow-400 text-zinc-950 text-xs font-black uppercase tracking-widest px-2 py-0.5">
                     Admin
                   </span>
                 )}
+              </div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-zinc-600 text-xs font-bold uppercase tracking-widest">Room</span>
+                <span className="font-black text-yellow-400 text-sm tracking-widest">{code}</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {adminToken && (
-              <SessionStats roomCode={code} adminToken={adminToken} />
-            )}
+            {adminToken && <SessionStats roomCode={code} adminToken={adminToken} />}
             <button
               onClick={handleCopyLink}
-              className="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-yellow-400 text-zinc-400 hover:text-yellow-400 text-xs font-black uppercase tracking-widest px-3 py-2 transition-colors flex items-center gap-2"
             >
-              {copied ? '✓ Link copied!' : '🔗 Copy link'}
+              {copied ? '✓ Copied!' : '🔗 Copy link'}
             </button>
           </div>
         </div>
       </header>
 
       {/* ── Main content ── */}
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-5">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
         {/* Status bar */}
         <div
           className={[
-            'rounded-xl px-4 py-3 flex items-center justify-between',
+            'px-4 py-3 flex items-center justify-between border-l-4',
             isRevealed
-              ? 'bg-emerald-950 border border-emerald-800'
-              : 'bg-indigo-950 border border-indigo-800',
+              ? 'bg-zinc-900 border-yellow-400'
+              : 'bg-zinc-900 border-zinc-600',
           ].join(' ')}
         >
           <div className="flex items-center gap-2">
             <span
               className={[
-                'w-2 h-2 rounded-full',
-                isRevealed ? 'bg-emerald-400' : 'bg-indigo-400 animate-pulse',
+                'w-2 h-2',
+                isRevealed ? 'bg-yellow-400' : 'bg-zinc-500 animate-pulse',
               ].join(' ')}
             />
-            <span className="text-sm font-medium">
+            <span className="text-xs font-black uppercase tracking-widest">
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-slate-400 text-sm">
+          <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">
             {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
@@ -352,7 +354,6 @@ export default function RoomClient({ code }: { code: string }) {
             roundNumber={roundNumber}
           />
         )}
-
 
         {/* Voting cards — only for voters */}
         {isWaiting && isVoter && (
@@ -373,32 +374,32 @@ export default function RoomClient({ code }: { code: string }) {
           />
         )}
 
-        {/* Observer notice for non-voter admin */}
+        {/* Observer notice */}
         {isWaiting && !isVoter && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 text-sm flex items-center gap-2">
+          <div className="bg-zinc-900 border border-zinc-800 border-l-4 border-l-zinc-600 px-4 py-3 text-zinc-500 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
             <span>👁</span>
-            <span>You are in facilitator mode — observing the vote without participating.</span>
+            <span>Facilitator mode — observing only</span>
           </div>
         )}
 
         {/* Action error */}
         {actionError && (
-          <div className="bg-red-950 border border-red-800 text-red-300 text-sm px-4 py-3 rounded-xl">
+          <div className="border border-red-800 bg-red-950/40 text-red-400 text-xs font-bold uppercase tracking-widest px-4 py-3">
             ⚠ {actionError}
           </div>
         )}
 
         {/* Admin controls */}
         {adminToken && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
-            <p className="text-slate-500 text-xs mb-3 font-medium uppercase tracking-wider">
-              Admin controls
-            </p>
-            <div className="flex gap-3 flex-wrap">
+          <div className="bg-zinc-900 border border-zinc-800">
+            <div className="border-b border-zinc-800 px-5 py-3">
+              <p className="text-xs font-black uppercase tracking-widest text-zinc-600">Admin controls</p>
+            </div>
+            <div className="p-4 flex gap-3 flex-wrap">
               {isWaiting && (
                 <button
                   onClick={handleReveal}
-                  className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 text-zinc-950 font-black uppercase tracking-widest px-5 py-2.5 transition-colors text-sm"
                 >
                   🃏 Reveal
                 </button>
@@ -406,7 +407,7 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed && (
                 <button
                   onClick={handleReset}
-                  className="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-zinc-700 hover:bg-zinc-600 border border-zinc-600 hover:border-yellow-400 text-white font-black uppercase tracking-widest px-5 py-2.5 transition-colors text-sm"
                 >
                   🔄 New round
                 </button>

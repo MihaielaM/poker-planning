@@ -25,25 +25,35 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="text-center max-w-md w-full">
+    <main className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+
+        {/* Hero */}
         <div className="mb-10">
-          <div className="text-7xl mb-5">🃏</div>
-          <h1 className="text-4xl font-bold text-white mb-3">Planning Poker</h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-5xl">🃏</span>
+            <div className="h-12 w-1 bg-yellow-400" />
+            <div>
+              <h1 className="text-5xl font-black uppercase tracking-tight text-white leading-none">
+                Planning<br />Poker
+              </h1>
+            </div>
+          </div>
+          <p className="text-zinc-400 text-lg leading-relaxed border-l-2 border-zinc-700 pl-4">
             Agile estimation for remote SCRUM teams.<br />
             Create a room and share the link with your team.
           </p>
         </div>
 
+        {/* CTA */}
         <button
           onClick={createRoom}
           disabled={loading}
-          className="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-semibold px-8 py-4 rounded-xl text-lg transition-colors shadow-lg"
+          className="w-full bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 disabled:bg-zinc-700 disabled:text-zinc-500 disabled:cursor-not-allowed text-zinc-950 font-black uppercase tracking-widest px-8 py-4 text-lg transition-colors"
         >
           {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <span className="flex items-center justify-center gap-3">
+              <span className="w-4 h-4 border-2 border-zinc-600 border-t-zinc-950 rounded-full animate-spin" />
               Creating room...
             </span>
           ) : (
@@ -52,20 +62,21 @@ export default function HomePage() {
         </button>
 
         {error && (
-          <div className="mt-4 bg-red-900/40 border border-red-700 text-red-300 text-sm px-4 py-3 rounded-xl">
+          <div className="mt-3 border border-red-700 bg-red-950/40 text-red-400 text-sm px-4 py-3">
             {error}
           </div>
         )}
 
-        <div className="mt-10 grid grid-cols-1 gap-3 text-left">
+        {/* Features */}
+        <div className="mt-10 space-y-3">
           {[
-            { icon: '🔒', text: 'Private voting — cards are revealed simultaneously' },
+            { icon: '🔒', text: 'Private voting — cards revealed simultaneously' },
             { icon: '🔢', text: 'Fibonacci sequence: 1, 2, 3, 5, 8, 13, 21' },
-            { icon: '📊', text: 'Automatic average + recommended Fibonacci' },
-            { icon: '⚡', text: 'Auto-reveal when all active participants have voted' },
+            { icon: '⚡', text: 'Auto-reveal when all active participants vote' },
+            { icon: '🔥', text: 'Highlights extreme votes for team debate' },
           ].map(({ icon, text }) => (
-            <div key={text} className="flex items-start gap-3 text-slate-400 text-sm">
-              <span className="text-base mt-0.5">{icon}</span>
+            <div key={text} className="flex items-start gap-3 text-zinc-500 text-sm">
+              <span className="mt-0.5">{icon}</span>
               <span>{text}</span>
             </div>
           ))}

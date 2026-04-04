@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const COLORS = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#3b82f6', '#f97316', '#a855f7'];
+const CONFETTI_COLORS = ['#facc15', '#ffffff', '#a1a1aa', '#fde68a', '#fbbf24'];
 
 const MESSAGES = [
   "Perfect consensus! The team is one mind 🧠",
@@ -35,7 +35,7 @@ function makeParticles(count = 60): Particle[] {
     x: Math.random() * 100,
     delay: Math.random() * 1.2,
     duration: 2.5 + Math.random() * 1.5,
-    color: COLORS[i % COLORS.length],
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
     size: 6 + Math.random() * 8,
     rotate: Math.random() * 360,
   }));
@@ -64,7 +64,7 @@ export default function ConsensusAlert({ roundNumber }: { roundNumber: number })
             width: p.size,
             height: p.size,
             backgroundColor: p.color,
-            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+            borderRadius: Math.random() > 0.5 ? '50%' : '0px',
             transform: `rotate(${p.rotate}deg)`,
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
@@ -74,9 +74,9 @@ export default function ConsensusAlert({ roundNumber }: { roundNumber: number })
 
       {/* Banner */}
       <div className="pointer-events-auto absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-sm px-4">
-        <div className="bg-emerald-900 border border-emerald-500 rounded-2xl px-5 py-4 shadow-2xl text-center">
+        <div className="bg-zinc-900 border-2 border-yellow-400 px-5 py-4 shadow-2xl shadow-yellow-400/10 text-center">
           <div className="text-4xl mb-2">🎉</div>
-          <p className="text-emerald-300 font-bold text-base leading-snug">
+          <p className="text-yellow-400 font-black uppercase tracking-wide text-sm leading-snug">
             {seededMessage(roundNumber)}
           </p>
         </div>
