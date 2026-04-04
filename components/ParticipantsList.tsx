@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import { Participant } from '@/lib/types';
 import { SLOW_VOTER_MESSAGES, EXTREME_CARD_MESSAGES, seededPick } from '@/lib/messages';
 
@@ -14,6 +17,20 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
   const totalVoters = voters.length;
   const majorityVoted = totalVoters > 0 && votedCount / totalVoters > 0.5;
 
+  // Track reveal transition to trigger flip animation only on the moment of reveal
+  const [justRevealed, setJustRevealed] = useState(false);
+  const prevRevealedRef = useRef(isRevealed);
+
+  useEffect(() => {
+    if (isRevealed && !prevRevealedRef.current) {
+      setJustRevealed(true);
+    }
+    if (!isRevealed) {
+      setJustRevealed(false);
+    }
+    prevRevealedRef.current = isRevealed;
+  }, [isRevealed]);
+
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
@@ -26,12 +43,14 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {participants.map(p => (
+        {participants.map((p, index) => (
           <ParticipantCard
             key={p.id}
             participant={p}
+            index={index}
             isCurrentUser={p.id === currentUserId}
             isRevealed={isRevealed}
+            justRevealed={justRevealed}
             showSlowMessage={!isRevealed && majorityVoted && p.isVoter && !p.hasVoted}
             roundNumber={roundNumber}
           />
@@ -43,14 +62,18 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
 
 function ParticipantCard({
   participant: p,
+  index,
   isCurrentUser,
   isRevealed,
+  justRevealed,
   showSlowMessage,
   roundNumber,
 }: {
   participant: Participant;
+  index: number;
   isCurrentUser: boolean;
   isRevealed: boolean;
+  justRevealed: boolean;
   showSlowMessage: boolean;
   roundNumber: number;
 }) {
@@ -62,6 +85,12 @@ function ParticipantCard({
     isRevealed && p.isHighlight && p.hasVoted
       ? seededPick(EXTREME_CARD_MESSAGES, p.id)
       : null;
+
+  // Stagger delay: each card flips 80ms after the previous
+  const flipDelay = justRevealed ? index * 80 : 0;
+
+  // Highlight-pulse starts after flip animation completes
+  const highlightDelay = justRevealed ? `${flipDelay + 600}ms` : '0ms';
 
   return (
     <div
@@ -75,27 +104,40 @@ function ParticipantCard({
     >
       {/* Card visual */}
       {!p.isVoter ? (
-        /* Non-voter (facilitator) — eye icon instead of card */
+        /* Facilitator — eye icon */
         <div className="w-12 h-16 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center text-slate-500 text-xl">
           👁
         </div>
-      ) : isRevealed && p.hasVoted ? (
-        /* Revealed: show the actual vote value */
-        <div
-          className={[
-            'w-12 h-16 rounded-lg flex items-center justify-center font-bold text-lg border-2 transition-all',
-            p.isHighlight
-              ? 'bg-amber-400 border-amber-300 text-slate-900 card-highlight'
-              : 'bg-white border-slate-300 text-slate-900',
-          ].join(' ')}
-        >
-          {p.vote ?? '?'}
-        </div>
       ) : p.hasVoted ? (
-        /* Voting in progress: face-down card (has voted) */
-        <div className="w-12 h-16 rounded-lg border-2 border-indigo-500 card-back" />
+        /* Voted — flip card (back → front on reveal) */
+        <div className="w-12 h-16 card-3d-scene">
+          <div
+            className={[
+              'card-3d-inner',
+              isRevealed ? 'is-flipped' : '',
+              isRevealed && !justRevealed ? 'no-transition' : '',
+            ].join(' ')}
+            style={{ transitionDelay: `${flipDelay}ms` }}
+          >
+            {/* Back face */}
+            <div className="card-3d-face card-back border-2 border-indigo-500" />
+
+            {/* Front face */}
+            <div
+              className={[
+                'card-3d-face card-3d-face-front flex items-center justify-center font-bold text-lg border-2',
+                p.isHighlight
+                  ? 'bg-amber-400 border-amber-300 text-slate-900 card-highlight'
+                  : 'bg-white border-slate-300 text-slate-900',
+              ].join(' ')}
+              style={p.isHighlight ? { animationDelay: highlightDelay } : undefined}
+            >
+              {p.vote ?? '?'}
+            </div>
+          </div>
+        </div>
       ) : (
-        /* Voting in progress: empty slot (not voted yet) */
+        /* Not voted */
         <div
           className={[
             'w-12 h-16 rounded-lg border-2 border-dashed flex items-center justify-center',

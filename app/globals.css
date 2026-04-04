@@ -31,3 +31,31 @@ body {
 .card-highlight {
   animation: highlight-pulse 2s ease-in-out infinite;
 }
+
+/* 3D flip card */
+.card-3d-scene {
+  perspective: 700px;
+}
+.card-3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+.card-3d-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+.card-3d-inner.no-transition {
+  transition: none;
+}
+.card-3d-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-3d-face-front {
+  transform: rotateY(180deg);
+}
