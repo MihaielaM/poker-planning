@@ -282,12 +282,24 @@ export default function RoomClient({ code }: { code: string }) {
               <JesterHat size={88} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
+              {adminToken ? (
+                <a href="/" className="block hover:opacity-80 transition-opacity">
+                  <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
+                </a>
+              ) : (
+                <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
+              )}
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                 <span className="text-rd-muted text-xs">Room:</span>
-                <span className="font-mono font-bold text-rd-yellow text-sm tracking-widest">
-                  {code}
-                </span>
+                {adminToken ? (
+                  <a href="/" className="font-mono font-bold text-rd-yellow text-sm tracking-widest hover:opacity-80 transition-opacity">
+                    {code}
+                  </a>
+                ) : (
+                  <span className="font-mono font-bold text-rd-yellow text-sm tracking-widest">
+                    {code}
+                  </span>
+                )}
                 {adminToken && (
                   <span className="bg-rd-yellow/15 text-rd-yellow text-xs px-2 py-0.5 rounded-full font-medium">
                     Admin
