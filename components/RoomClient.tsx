@@ -392,7 +392,7 @@ export default function RoomClient({ code }: { code: string }) {
                   onClick={handleReveal}
                   className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
-                  <span className="text-lg">🃏</span> Reveal
+                  <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> Reveal
                 </button>
               )}
               {isRevealed && (
@@ -400,7 +400,7 @@ export default function RoomClient({ code }: { code: string }) {
                   onClick={handleReset}
                   className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
                 >
-                  🔄 New round
+                  <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> New round
                 </button>
               )}
             </div>
