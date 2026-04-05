@@ -360,7 +360,7 @@ export default function RoomClient({ code }: { code: string }) {
         {session && (
           <ReactionBar
             reactions={roomData?.reactions ?? []}
-            participantName={session.name}
+            participantToken={session.token}
             roomCode={code}
           />
         )}

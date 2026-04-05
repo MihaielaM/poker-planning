@@ -12,13 +12,13 @@ export async function POST(
     const sql = getDb();
     const upperCode = code.toUpperCase();
     const body = await request.json();
-    const { emoji, participantName } = body as { emoji?: string; participantName?: string };
+    const { emoji, participantToken } = body as { emoji?: string; participantToken?: string };
 
     if (!emoji || !ALLOWED_EMOJIS.includes(emoji)) {
       return NextResponse.json({ error: 'Invalid emoji' }, { status: 400 });
     }
-    if (!participantName) {
-      return NextResponse.json({ error: 'participantName is required' }, { status: 400 });
+    if (!participantToken) {
+      return NextResponse.json({ error: 'participantToken is required' }, { status: 400 });
     }
 
     const rooms = await sql`SELECT id FROM rooms WHERE code = ${upperCode}`;
@@ -26,9 +26,18 @@ export async function POST(
       return NextResponse.json({ error: 'Room not found' }, { status: 404 });
     }
 
+    // Validate token and fetch the authoritative name from DB
+    const participants = await sql`
+      SELECT name FROM participants
+      WHERE room_id = ${rooms[0].id} AND participant_token = ${participantToken}
+    `;
+    if (participants.length === 0) {
+      return NextResponse.json({ error: 'Participant not found' }, { status: 403 });
+    }
+
     await sql`
       INSERT INTO reactions (room_id, participant_name, emoji)
-      VALUES (${rooms[0].id}, ${participantName}, ${emoji})
+      VALUES (${rooms[0].id}, ${participants[0].name}, ${emoji})
     `;
 
     return NextResponse.json({ success: true });

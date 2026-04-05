@@ -15,11 +15,11 @@ type FloatingReaction = {
 
 type Props = {
   reactions: Reaction[];
-  participantName: string;
+  participantToken: string;
   roomCode: string;
 };
 
-export default function ReactionBar({ reactions, participantName, roomCode }: Props) {
+export default function ReactionBar({ reactions, participantToken, roomCode }: Props) {
   const [floating, setFloating] = useState<FloatingReaction[]>([]);
   const [cooldowns, setCooldowns] = useState<Record<string, boolean>>({});
   const seenIds = useRef<Set<string>>(new Set());
@@ -51,7 +51,7 @@ export default function ReactionBar({ reactions, participantName, roomCode }: Pr
       await fetch(`/api/rooms/${roomCode}/reactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emoji, participantName }),
+        body: JSON.stringify({ emoji, participantToken }),
       });
     } catch {
       // Silent fail
