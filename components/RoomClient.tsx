@@ -8,6 +8,7 @@ import ParticipantsList from './ParticipantsList';
 import ReactionBar from './ReactionBar';
 import SessionStats from './SessionStats';
 import ConsensusAlert from './ConsensusAlert';
+import WelcomeOverlay from './WelcomeOverlay';
 
 type Session = {
   token: string;
@@ -45,6 +46,8 @@ export default function RoomClient({ code }: { code: string }) {
   const [isSubmittingVote, setIsSubmittingVote] = useState(false);
 
   const [showConsensus, setShowConsensus] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const welcomeShownRef = useRef(false);
   const lastRoundRef = useRef<number | null>(null);
   const lastStatusRef = useRef<string | null>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -137,6 +140,13 @@ export default function RoomClient({ code }: { code: string }) {
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
+
+  useEffect(() => {
+    if (session && !adminToken && !welcomeShownRef.current) {
+      welcomeShownRef.current = true;
+      setShowWelcome(true);
+    }
+  }, [session, adminToken]);
 
   const handleJoin = async (name: string, isVoter: boolean) => {
     const res = await fetch(`/api/rooms/${code}/join`, {
@@ -272,6 +282,7 @@ export default function RoomClient({ code }: { code: string }) {
 
   return (
     <div className="min-h-screen bg-rd-dark text-white">
+      {showWelcome && <WelcomeOverlay name={session.name} />}
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
