@@ -41,7 +41,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
               className={[
                 'relative w-16 h-[88px] rounded-xl font-bold text-3xl select-none transition-all duration-150',
                 isSelected
-                  ? 'border-2 border-rd-yellow text-rd-yellow scale-110 -translate-y-2'
+                  ? 'border-2 border-rd-yellow text-rd-dark scale-110 -translate-y-2'
                   : isRevealed
                     ? 'bg-rd-surface-2 border border-rd-border text-rd-muted hover:border-rd-border-2 hover:-translate-y-1 cursor-pointer'
                     : 'border border-[#3d3000] text-rd-yellow hover:border-rd-yellow/60 hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 cursor-pointer',
