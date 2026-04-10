@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import JesterHat from './JesterHat';
 
 const MESSAGES = [
   // Estimare & story points
@@ -134,7 +135,9 @@ export default function WelcomeOverlay({ name }: { name: string }) {
         </button>
 
         {/* Icon */}
-        <div className="text-4xl mb-3">🃏</div>
+        <div className="flex justify-center mb-3">
+          <JesterHat size={64} />
+        </div>
 
         {/* Greeting */}
         <p className="text-rd-yellow font-semibold text-lg mb-2">
