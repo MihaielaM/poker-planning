@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 type PodiumEntry = {
   name: string;
@@ -35,6 +36,8 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const load = async () => {
     setLoading(true);
@@ -62,7 +65,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
         🏆 Session stats
       </button>
 
-      {open && stats && (
+      {mounted && open && stats && createPortal(
         <div
           className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center p-4 pt-20 overflow-y-auto"
           onClick={() => setOpen(false)}
@@ -138,7 +141,8 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
