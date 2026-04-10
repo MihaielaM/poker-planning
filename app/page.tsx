@@ -104,8 +104,8 @@ export default function HomePage() {
             <div key={num} className="flex items-start gap-4 px-4 py-3.5 border-b border-rd-border last:border-b-0 bg-rd-surface/60">
               <span className="text-rd-yellow text-sm font-bold tracking-wider mt-0.5 flex-shrink-0">{num}</span>
               <div className="text-left">
-                <p className="text-white text-sm font-semibold leading-tight">{title}</p>
-                <p className="text-rd-subtle text-xs mt-0.5">{desc}</p>
+                <p className="text-white text-[18px] font-semibold leading-tight">{title}</p>
+                <p className="text-rd-subtle text-[16px] mt-0.5">{desc}</p>
               </div>
             </div>
           ))}
