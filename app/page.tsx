@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import JesterHat from '@/components/JesterHat';
 
-const PREVIEW_CARDS = ['1', '2', '5', '8', '13', '21'];
+const PREVIEW_CARDS = ['1', '2', '3', '5', '8', '13', '21'];
 
 export default function HomePage() {
   const router = useRouter();
