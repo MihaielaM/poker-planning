@@ -18,9 +18,11 @@ function allow(key: string, max: number, windowMs: number): boolean {
 }
 
 function getIp(request: NextRequest): string {
+  // Use x-real-ip (set by Vercel/trusted proxy) to prevent spoofing via x-forwarded-for.
+  // Fall back to the last hop in x-forwarded-for rather than the first (which can be faked).
   return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     request.headers.get('x-real-ip') ??
+    request.headers.get('x-forwarded-for')?.split(',').pop()?.trim() ??
     'unknown'
   );
 }
@@ -50,9 +52,19 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // 60 requests per minute per IP for all other room API endpoints
+  if (/^\/api\/rooms\/[^/]+(\/|$)/.test(pathname) && pathname !== '/api/rooms') {
+    if (!allow(`${ip}:room`, 60, 60_000)) {
+      return NextResponse.json(
+        { error: 'Too many requests.' },
+        { status: 429 }
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/rooms', '/api/rooms/:code/join'],
+  matcher: ['/api/rooms', '/api/rooms/:code*', '/api/setup'],
 };

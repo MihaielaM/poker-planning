@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeckMind — Estimate together.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────────────────────────
+   FOUNDATION
+───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+:root {
+  --bg:           #0f0f0f;
+  --bg-1:         #141414;
+  --bg-2:         #1a1a1a;
+  --bg-3:         #222;
+  --border:       #262626;
+  --border-2:     #323232;
+  --text:         #fff;
+  --text-dim:     #777;
+  --text-muted:   #3d3d3d;
+  --accent:       #FFD000;
+  --accent-hover: #FFE033;
+  --card-face:    #F5F4F0;
+  --card-text:    #111;
+  --r: 6px;
+  --r-card: 10px;
+  --font-d: 'Barlow Condensed', sans-serif;
+  --font-b: 'Barlow', sans-serif;
+}
+
+body {
+  font-family: var(--font-b);
+  font-weight: 400;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN SYSTEM
+───────────────────────────────────────────────────────── */
+.screen {
+  display: none;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+}
+.screen.active { display: flex; }
+
+/* ─────────────────────────────────────────────────────────
+   LOGO MARK (reused across screens)
+───────────────────────────────────────────────────────── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+.logo svg { display: block; flex-shrink: 0; }
+.logo-name {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* ─────────────────────────────────────────────────────────
+   HOME SCREEN
+───────────────────────────────────────────────────────── */
+#screen-home {
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Grid bg */
+#screen-home::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+}
+/* Vignette over grid */
+#screen-home::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, var(--bg) 80%);
+  pointer-events: none;
+}
+
+.home-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
+  animation: rise 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Branding */
+.home-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 52px;
+}
+
+.home-wordmark {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 52px;
+  letter-spacing: 0.025em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.home-tagline {
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+/* Form */
+.home-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 13px 15px;
+  border-radius: var(--r);
+  outline: none;
+  transition: border-color 0.18s;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.field-input::placeholder {
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-weight: 300;
+}
+.field-input:focus { border-color: var(--accent); }
+
+.home-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 2px 0;
+}
+.home-or::before, .home-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.btn {
+  width: 100%;
+  border: none;
+  padding: 14px 20px;
+  border-radius: var(--r);
+  font-family: var(--font-b);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.16s, transform 0.16s, border-color 0.16s;
+  outline: none;
+}
+
+.btn-yellow {
+  background: var(--accent);
+  color: #0f0f0f;
+}
+.btn-yellow:hover  { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-yellow:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-2);
+}
+.btn-outline:hover { border-color: var(--text-dim); color: var(--text); transform: translateY(-1px); }
+
+.home-note {
+  margin-top: 28px;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SESSION HEADER (shared)
+───────────────────────────────────────────────────────── */
+.app-header {
+  height: 54px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 20px;
+}
+
+.room-pill {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  background: rgba(255, 208, 0, 0.05);
+  border: 1px solid rgba(255, 208, 0, 0.14);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.participants-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.av {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  cursor: default;
+  user-select: none;
+}
+.av:hover { transform: translateY(-2px); z-index: 1; }
+
+.av-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+
+/* ─────────────────────────────────────────────────────────
+   SESSION SCREEN
+───────────────────────────────────────────────────────── */
+.session-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Story block */
+.story-block {
+  text-align: center;
+  margin-bottom: 48px;
+  animation: rise 0.4s ease both;
+}
+
+.story-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.story-text {
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  outline: none;
+  cursor: text;
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 3px;
+  transition: border-color 0.18s;
+  max-width: 680px;
+  min-width: 80px;
+  caret-color: var(--accent);
+  line-height: 1.2;
+}
+.story-text:hover { border-color: var(--border-2); }
+.story-text:focus { border-color: var(--accent); }
+.story-text:empty::before {
+  content: 'Click to add story title...';
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.vote-tally {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.vote-tally b { color: var(--text); font-weight: 600; }
+
+/* Card deck */
+.deck {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.vc {
+  flex-shrink: 0;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vc-face {
+  width: 74px;
+  height: 106px;
+  border-radius: var(--r-card);
+  background: var(--card-face);
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--card-text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4);
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0, 0.2, 1),
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+  user-select: none;
+  position: relative;
+}
+
+/* Corner pip */
+.vc-face::before {
+  content: attr(data-val);
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #aaa;
+  line-height: 1;
+}
+
+.vc:hover .vc-face {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,208,0,0.22);
+}
+
+.vc.sel .vc-face {
+  transform: translateY(-10px) scale(1.07);
+  border-color: var(--accent);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,208,0,0.45),
+    0 6px 20px rgba(255,208,0,0.12);
+}
+
+/* Stagger in */
+.vc { animation: cardRise 0.45s ease both; }
+.vc:nth-child(1) { animation-delay: 0.04s; }
+.vc:nth-child(2) { animation-delay: 0.08s; }
+.vc:nth-child(3) { animation-delay: 0.12s; }
+.vc:nth-child(4) { animation-delay: 0.16s; }
+.vc:nth-child(5) { animation-delay: 0.20s; }
+.vc:nth-child(6) { animation-delay: 0.24s; }
+.vc:nth-child(7) { animation-delay: 0.28s; }
+.vc:nth-child(8) { animation-delay: 0.32s; }
+.vc:nth-child(9) { animation-delay: 0.36s; }
+
+@keyframes cardRise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+.session-foot {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reveal-trigger {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.reveal-trigger.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.btn-reveal {
+  background: var(--accent);
+  color: #0f0f0f;
+  border: none;
+  font-family: var(--font-b);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 15px 52px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background 0.16s, transform 0.16s;
+}
+.btn-reveal:hover  { background: var(--accent-hover); transform: translateY(-2px); }
+.btn-reveal:active { transform: translateY(0); }
+
+/* ─────────────────────────────────────────────────────────
+   REVEAL SCREEN
+───────────────────────────────────────────────────────── */
+.reveal-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.reveal-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 1.6s ease infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.reveal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 28px 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* Flippable cards row */
+.result-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 52px;
+}
+
+/* 3D flip card */
+.rc { perspective: 900px; flex-shrink: 0; }
+
+.rc-scene {
+  width: 78px;
+  height: 110px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.62s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rc-scene.flipped { transform: rotateY(180deg); }
+
+.rc-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-card);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Back face */
+.rc-back {
+  background: var(--bg-2);
+  border: 1.5px solid var(--border-2);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent, transparent 7px,
+      rgba(255,208,0,0.055) 7px, rgba(255,208,0,0.055) 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 7px,
+      rgba(255,208,0,0.055) 7px, rgba(255,208,0,0.055) 8px
+    );
+}
+
+.rc-back-av {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.rc-back-name {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  position: absolute;
+  bottom: 9px;
+}
+
+/* Front face */
+.rc-front {
+  background: var(--card-face);
+  border: 1.5px solid transparent;
+  transform: rotateY(180deg);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+}
+
+.rc-val {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 34px;
+  color: var(--card-text);
+  line-height: 1;
+}
+
+.rc-front .rc-name {
+  position: absolute;
+  bottom: 9px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+/* Highlight majority card */
+.rc.major .rc-front {
+  border-color: var(--accent);
+  box-shadow:
+    0 4px 18px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,208,0,0.35),
+    0 8px 28px rgba(255,208,0,0.10);
+}
+
+/* Stats area */
+.stats-area {
+  width: 100%;
+  max-width: 520px;
+}
+
+.stats-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.stats-numbers {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+}
+
+.stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+}
+.stat-col:last-child { border-right: none; }
+
+.stat-val {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--text);
+}
+.stat-val.hi { color: var(--accent); }
+
+.stat-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Distribution */
+.dist { display: flex; flex-direction: column; gap: 8px; }
+
+.dist-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.dist-key {
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  width: 22px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.dist-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dist-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--border-2);
+  transform-origin: left;
+  animation: grow 0.55s cubic-bezier(0.4,0,0.2,1) both;
+}
+.dist-fill.top { background: var(--accent); }
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.dist-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 80px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Reveal footer */
+.reveal-foot {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  padding: 0 28px;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-2);
+  color: var(--text-dim);
+  font-family: var(--font-b);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: border-color 0.16s, color 0.16s, transform 0.16s;
+}
+.btn-ghost:hover { border-color: var(--text-dim); color: var(--text); transform: translateY(-1px); }
+
+.consensus-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid rgba(255,208,0,0.15);
+  background: rgba(255,208,0,0.05);
+  padding: 7px 14px;
+  border-radius: var(--r);
+  letter-spacing: 0.04em;
+  animation: fadeSlide 0.4s ease both 1.4s;
+  opacity: 0;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-inner">
+
+    <div class="home-brand">
+      <!-- Logo mark: two overlapping card shapes -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+        <path d="M29 25h7M29 39h7" stroke="#FFD000" stroke-width="1.2" stroke-opacity="0.35" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="home-wordmark">DeckMind</div>
+        <div class="home-tagline">Estimate together.</div>
+      </div>
+    </div>
+
+    <div class="home-form">
+      <div>
+        <label class="field-label" for="room-input">Room code</label>
+        <input
+          id="room-input"
+          class="field-input"
+          type="text"
+          placeholder="e.g. XY98JR"
+          maxlength="8"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      <button class="btn btn-yellow" onclick="App.join()">Join room →</button>
+      <div class="home-or">or</div>
+      <button class="btn btn-outline" onclick="App.create()">Create new room</button>
+    </div>
+
+    <div class="home-note">No account required — share a link to invite your team.</div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SESSION
+══════════════════════════════════════ -->
+<div id="screen-session" class="screen">
+
+  <header class="app-header">
+    <div class="logo" onclick="App.home()">
+      <svg width="24" height="24" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+      </svg>
+      <span class="logo-name">DeckMind</span>
+    </div>
+
+    <div id="s-room-code" class="room-pill">XY98JR</div>
+
+    <div class="header-right">
+      <div id="s-participants" class="participants-row"></div>
+    </div>
+  </header>
+
+  <div class="session-body">
+    <div class="story-block">
+      <div class="story-eyebrow">Now estimating</div>
+      <div
+        id="story-title"
+        class="story-text"
+        contenteditable="true"
+        spellcheck="false"
+      >User can reset password via email</div>
+      <div class="vote-tally">
+        <b id="voted-n">2</b> of <b id="voted-t">4</b> voted
+      </div>
+    </div>
+
+    <div id="deck" class="deck"></div>
+  </div>
+
+  <div class="session-foot">
+    <div id="reveal-trigger" class="reveal-trigger">
+      <button class="btn-reveal" onclick="App.reveal()">Reveal cards</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     REVEAL
+══════════════════════════════════════ -->
+<div id="screen-reveal" class="screen">
+
+  <header class="app-header">
+    <div class="logo" onclick="App.home()">
+      <svg width="24" height="24" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+      </svg>
+      <span class="logo-name">DeckMind</span>
+    </div>
+
+    <div class="reveal-badge">Votes revealed</div>
+
+    <div id="r-room-code" class="room-pill">XY98JR</div>
+  </header>
+
+  <div class="reveal-body">
+    <div id="result-row" class="result-row"></div>
+
+    <div class="stats-area">
+      <div class="stats-rule"></div>
+      <div id="stats-numbers" class="stats-numbers"></div>
+      <div id="dist" class="dist"></div>
+    </div>
+  </div>
+
+  <div class="reveal-foot">
+    <div id="consensus-tag" class="consensus-tag" style="display:none;">
+      ✦ Perfect consensus — the team is aligned
+    </div>
+    <button class="btn-ghost" onclick="App.nextRound()">New round →</button>
+  </div>
+
+</div>
+
+
+<script>
+/* ─── Data ─────────────────────────────────────────────── */
+const DECK  = ['1','2','3','5','8','13','21','?','∞'];
+const FIBS  = [1,2,3,5,8,13,21];
+const COLORS = ['#E8584A','#3B9EDE','#48BB78','#ED8936','#38B2AC','#E26BC0','#9B6EE0'];
+
+/* ─── App ──────────────────────────────────────────────── */
+const App = {
+  roomCode: 'XY98JR',
+  selected: null,
+
+  people: [
+    { id:1, name:'Alex',  ini:'AX', ci:0, voted:true,  vote:'5'  },
+    { id:2, name:'Maria', ini:'MA', ci:1, voted:true,  vote:'8'  },
+    { id:3, name:'You',   ini:'YO', ci:2, voted:false, vote:null, me:true },
+    { id:4, name:'Dan',   ini:'DN', ci:3, voted:false, vote:null },
+  ],
+
+  /* ── Screen transitions ── */
+  show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+  },
+
+  home() {
+    this.selected = null;
+    this.show('home');
+  },
+
+  join() {
+    const val = (document.getElementById('room-input').value.trim() || 'XY98JR').toUpperCase().slice(0,8);
+    this.roomCode = val;
+    this.resetPeople();
+    this._initSession();
+    this.show('session');
+  },
+
+  create() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    this.roomCode = Array.from({length:6}, () => chars[Math.random()*chars.length|0]).join('');
+    this.people = [
+      { id:1, name:'You', ini:'YO', ci:2, voted:false, vote:null, me:true }
+    ];
+    this.selected = null;
+    this._initSession();
+    this.show('session');
+  },
+
+  resetPeople() {
+    this.people = [
+      { id:1, name:'Alex',  ini:'AX', ci:0, voted:true,  vote:'5'  },
+      { id:2, name:'Maria', ini:'MA', ci:1, voted:true,  vote:'8'  },
+      { id:3, name:'You',   ini:'YO', ci:2, voted:false, vote:null, me:true },
+      { id:4, name:'Dan',   ini:'DN', ci:3, voted:false, vote:null },
+    ];
+    this.selected = null;
+  },
+
+  /* ── Session ── */
+  _initSession() {
+    document.getElementById('s-room-code').textContent = this.roomCode;
+    this._renderAvatars();
+    this._renderDeck();
+    this._updateTally();
+  },
+
+  _renderAvatars() {
+    document.getElementById('s-participants').innerHTML = this.people.map(p => `
+      <div class="av" style="background:${COLORS[p.ci]}" title="${p.name}">
+        ${p.ini}
+        <span class="av-dot" style="background:${p.voted ? '#FFD000' : '#333'}"></span>
+      </div>`).join('');
+  },
+
+  _renderDeck() {
+    const deck = document.getElementById('deck');
+    deck.innerHTML = DECK.map(v => `
+      <div class="vc${this.selected===v?' sel':''}" onclick="App.pick('${v}')">
+        <div class="vc-face" data-val="${v}">${v}</div>
+      </div>`).join('');
+  },
+
+  pick(v) {
+    this.selected = v;
+    const me = this.people.find(p => p.me);
+    if (me) { me.voted = true; me.vote = v; }
+    this._renderDeck();
+    this._renderAvatars();
+    this._updateTally();
+  },
+
+  _updateTally() {
+    const voted = this.people.filter(p => p.voted).length;
+    const total = this.people.length;
+    document.getElementById('voted-n').textContent = voted;
+    document.getElementById('voted-t').textContent = total;
+    const btn = document.getElementById('reveal-trigger');
+    btn.classList.toggle('show', voted === total && total > 0);
+  },
+
+  /* ── Reveal ── */
+  reveal() {
+    this._initReveal();
+    this.show('reveal');
+  },
+
+  _initReveal() {
+    document.getElementById('r-room-code').textContent = this.roomCode;
+
+    /* Result cards */
+    const row = document.getElementById('result-row');
+    const votes = this.people.filter(p => p.voted).map(p => p.vote);
+    const counts = {};
+    votes.forEach(v => { counts[v] = (counts[v]||0)+1; });
+    const topCount = Math.max(...Object.values(counts));
+
+    row.innerHTML = this.people.map(p => `
+      <div class="rc${counts[p.vote]===topCount && p.voted?' major':''}" id="rc-${p.id}">
+        <div class="rc-scene" id="rcs-${p.id}">
+          <div class="rc-face rc-back">
+            <div class="rc-back-av" style="background:${COLORS[p.ci]}">${p.ini}</div>
+            <div class="rc-back-name">${p.name}</div>
+          </div>
+          <div class="rc-face rc-front">
+            <div class="rc-val">${p.vote ?? '—'}</div>
+            <div class="rc-name">${p.name}</div>
+          </div>
+        </div>
+      </div>`).join('');
+
+    /* Staggered flip */
+    this.people.forEach((p, i) => {
+      setTimeout(() => {
+        const s = document.getElementById('rcs-' + p.id);
+        if (s) s.classList.add('flipped');
+      }, 280 + i * 130);
+    });
+
+    /* Stats */
+    const numeric = this.people
+      .filter(p => p.voted && p.vote !== '?' && p.vote !== '∞')
+      .map(p => parseInt(p.vote));
+
+    const avg = numeric.length
+      ? (numeric.reduce((a,b)=>a+b,0) / numeric.length)
+      : 0;
+
+    const suggested = numeric.length
+      ? FIBS.reduce((prev,curr) => Math.abs(curr-avg)<Math.abs(prev-avg)?curr:prev)
+      : '—';
+
+    const totalVoted = this.people.filter(p => p.voted).length;
+
+    document.getElementById('stats-numbers').innerHTML = `
+      <div class="stat-col">
+        <div class="stat-val">${avg ? avg.toFixed(1) : '—'}</div>
+        <div class="stat-lbl">Average</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val hi">${suggested}</div>
+        <div class="stat-lbl">Suggested</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val">${totalVoted}</div>
+        <div class="stat-lbl">Votes cast</div>
+      </div>`;
+
+    /* Distribution */
+    const dist = document.getElementById('dist');
+    const sorted = Object.entries(counts).sort((a,b) => {
+      const na = parseInt(a[0]) || 999;
+      const nb = parseInt(b[0]) || 999;
+      return na - nb;
+    });
+
+    dist.innerHTML = sorted.map(([val, cnt], idx) => {
+      const pct = (cnt / topCount * 100).toFixed(0);
+      const names = this.people.filter(p => p.voted && p.vote===val).map(p=>p.name).join(', ');
+      return `
+        <div class="dist-row">
+          <div class="dist-key">${val}</div>
+          <div class="dist-track">
+            <div class="dist-fill${cnt===topCount?' top':''}"
+                 style="width:${pct}%;animation-delay:${0.6+idx*0.08}s"></div>
+          </div>
+          <div class="dist-meta">${cnt} vote${cnt>1?'s':''} · ${names}</div>
+        </div>`;
+    }).join('');
+
+    /* Consensus */
+    const allSame = new Set(votes).size === 1 && totalVoted > 1;
+    const tag = document.getElementById('consensus-tag');
+    tag.style.display = allSame ? 'block' : 'none';
+    if (allSame) tag.style.animation = 'none';
+    requestAnimationFrame(() => {
+      if (allSame) tag.style.animation = 'fadeSlide 0.4s ease both 1.4s';
+    });
+  },
+
+  nextRound() {
+    this.people.forEach(p => { p.voted = false; p.vote = null; });
+    this.selected = null;
+    this._initSession();
+    this.show('session');
+  },
+};
+
+/* ── Event listeners ── */
+document.getElementById('room-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') App.join();
+});
+document.getElementById('room-input').addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase();
+});
+</script>
+
+</body>
+</html>

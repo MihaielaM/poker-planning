@@ -1,7 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const secret = request.headers.get('x-setup-secret');
+  if (!process.env.SETUP_SECRET || secret !== process.env.SETUP_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const sql = getDb();
 
@@ -55,6 +60,6 @@ export async function POST() {
     return NextResponse.json({ success: true, message: 'Database tables created successfully' });
   } catch (error) {
     console.error('Setup error:', error);
-    return NextResponse.json({ error: 'Setup failed', details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Setup failed' }, { status: 500 });
   }
 }
