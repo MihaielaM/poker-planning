@@ -9,6 +9,7 @@ import ReactionBar from './ReactionBar';
 import SessionStats from './SessionStats';
 import ConsensusAlert from './ConsensusAlert';
 import WelcomeOverlay from './WelcomeOverlay';
+import RoomExpired from './RoomExpired';
 
 type Session = {
   token: string;
@@ -249,17 +250,7 @@ export default function RoomClient({ code }: { code: string }) {
   }
 
   if (roomError) {
-    return (
-      <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="text-5xl mb-4">😕</div>
-          <p className="text-red-400 text-lg mb-4">{roomError}</p>
-          <a href="/" className="text-rd-yellow hover:text-rd-yellow-hover text-sm">
-            ← Create a new room
-          </a>
-        </div>
-      </div>
-    );
+    return <RoomExpired />;
   }
 
   if (!session) {
