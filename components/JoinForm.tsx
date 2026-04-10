@@ -1,17 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
-function DeckMindLogo({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="8" width="26" height="34" rx="4" fill="#1a1a1a" stroke="#FFD000" strokeWidth="1.5"/>
-      <rect x="14" y="2" width="26" height="34" rx="4" fill="#FFD000"/>
-      <rect x="17" y="7" width="4" height="4" rx="1" fill="#0f0f0f"/>
-      <rect x="25" y="25" width="4" height="4" rx="1" fill="#0f0f0f"/>
-    </svg>
-  );
-}
+import JesterHat from './JesterHat';
 
 type Props = {
   code: string;
@@ -43,7 +33,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <DeckMindLogo size={48} />
+          <JesterHat size={64} />
         </div>
         <h1 className="font-display text-3xl font-bold tracking-wider text-white mb-1 uppercase">
           Planning Poker

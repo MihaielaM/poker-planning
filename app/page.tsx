@@ -2,17 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-function DeckMindLogo({ size = 44 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="8" width="26" height="34" rx="4" fill="#1a1a1a" stroke="#FFD000" strokeWidth="1.5"/>
-      <rect x="14" y="2" width="26" height="34" rx="4" fill="#FFD000"/>
-      <rect x="17" y="7" width="4" height="4" rx="1" fill="#0f0f0f"/>
-      <rect x="25" y="25" width="4" height="4" rx="1" fill="#0f0f0f"/>
-    </svg>
-  );
-}
+import JesterHat from '@/components/JesterHat';
 
 const PREVIEW_CARDS = ['1', '2', '5', '8', '13', '21'];
 
@@ -48,8 +38,11 @@ export default function HomePage() {
       <div className="flex flex-col items-center text-center max-w-md w-full gap-10 relative z-10">
 
         {/* Logo + branding */}
-        <div className="flex flex-col items-center gap-4">
-          <DeckMindLogo size={52} />
+        <div className="flex flex-col items-center gap-5">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-rd-yellow opacity-10 blur-2xl scale-150" />
+            <JesterHat size={88} />
+          </div>
           <div>
             <h1 className="font-display text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
               Planning Poker
@@ -65,18 +58,14 @@ export default function HomePage() {
           {PREVIEW_CARDS.map((val, i) => (
             <div
               key={val}
-              className="card-face rounded-lg flex items-end justify-start p-1.5 select-none"
+              className="card-face rounded-lg flex flex-col items-center justify-center select-none"
               style={{
                 width: 42,
                 height: 58,
-                transform: `translateY(${i % 2 === 0 ? '0px' : '-5px'})`,
-                transition: 'transform 0.2s',
+                transform: `translateY(${i % 2 === 0 ? '0px' : '-6px'})`,
               }}
             >
-              <span className="font-display text-xs font-bold text-rd-muted leading-none">{val}</span>
-              <span className="font-display text-2xl font-bold text-rd-dark absolute inset-0 flex items-center justify-center">
-                {val}
-              </span>
+              <span className="font-display font-bold text-xl text-rd-dark leading-none">{val}</span>
             </div>
           ))}
         </div>

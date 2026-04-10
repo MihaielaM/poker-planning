@@ -11,16 +11,7 @@ import ConsensusAlert from './ConsensusAlert';
 import WelcomeOverlay from './WelcomeOverlay';
 import LateVoteToast from './LateVoteToast';
 import RoomExpired from './RoomExpired';
-function DeckMindLogo() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="8" width="26" height="34" rx="4" fill="#1a1a1a" stroke="#FFD000" strokeWidth="1.5"/>
-      <rect x="14" y="2" width="26" height="34" rx="4" fill="#FFD000"/>
-      <rect x="17" y="7" width="4" height="4" rx="1" fill="#0f0f0f"/>
-      <rect x="25" y="25" width="4" height="4" rx="1" fill="#0f0f0f"/>
-    </svg>
-  );
-}
+import JesterHat from './JesterHat';
 
 type Session = {
   token: string;
@@ -295,7 +286,7 @@ export default function RoomClient({ code }: { code: string }) {
       <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <DeckMindLogo />
+            <JesterHat size={44} />
             <div>
               {adminToken ? (
                 <a href="/" className="block hover:opacity-80 transition-opacity">
