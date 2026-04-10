@@ -28,7 +28,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
             <button
               key={card}
               onClick={() => {
-                if (isRevealed) { onRevealedClick?.(); return; }
+                if (isRevealed) { if (card !== selectedCard) onRevealedClick?.(); return; }
                 if (!disabled) onVote(card);
               }}
               disabled={disabled && !isRevealed}
