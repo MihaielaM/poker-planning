@@ -26,13 +26,11 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
-      <div className="text-center max-w-md w-full">
-        <div className="mb-10">
-          <div className="flex justify-center mb-5">
-            <JesterHat size={96} />
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-3">Planning Poker</h1>
-          <p className="text-rd-subtle text-lg leading-relaxed">
+      <div className="flex flex-col items-center text-center max-w-md w-full gap-6">
+        <div className="flex flex-col items-center gap-4">
+          <JesterHat size={96} />
+          <h1 className="text-4xl font-bold text-white">Planning Poker</h1>
+          <p className="text-rd-subtle text-base leading-relaxed">
             Agile estimation for remote SCRUM teams.<br />
             Create a room and share the link with your team.
           </p>
@@ -59,11 +57,10 @@ export default function HomePage() {
           </div>
         )}
 
-        <div className="mt-10 grid grid-cols-1 gap-3 text-left">
+        <div className="grid grid-cols-1 gap-3 text-left w-full">
           {[
             { icon: '🔒', text: 'Private voting — cards are revealed simultaneously' },
             { icon: '🔢', text: 'Fibonacci sequence: 1, 2, 3, 5, 8, 13, 21' },
-            { icon: '📊', text: 'Automatic average + recommended Fibonacci' },
             { icon: '⚡', text: 'Auto-reveal when all active participants have voted' },
           ].map(({ icon, text }) => (
             <div key={text} className="flex items-start gap-3 text-rd-subtle text-sm">
