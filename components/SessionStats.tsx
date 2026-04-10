@@ -64,11 +64,11 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
 
       {open && stats && (
         <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center p-4 pt-20 overflow-y-auto"
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-rd-surface border border-rd-border rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+            className="bg-rd-surface border border-rd-border rounded-2xl p-6 w-full max-w-lg"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
