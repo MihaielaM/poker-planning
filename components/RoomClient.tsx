@@ -74,6 +74,7 @@ export default function RoomClient({ code }: { code: string }) {
       const res = await fetch(`/api/rooms/${code}`);
       if (!res.ok) {
         if (res.status === 404) setRoomError('Room not found.');
+        setInitialLoading(false);
         return;
       }
       const data: RoomData = await res.json();
