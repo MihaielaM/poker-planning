@@ -38,7 +38,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
         </div>
         <h1
           className="text-2xl font-bold text-white mb-1 tracking-tight"
-          style={{ fontFamily: 'var(--font-syne)' }}
+          
         >
           Planning Poker
         </h1>
@@ -51,7 +51,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
       <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
         <h2
           className="text-base font-semibold text-white mb-4 tracking-tight"
-          style={{ fontFamily: 'var(--font-syne)' }}
+          
         >
           Join room
         </h2>
@@ -105,7 +105,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            style={{ fontFamily: 'var(--font-syne)' }}
+            
             className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20"
           >
             {loading ? (

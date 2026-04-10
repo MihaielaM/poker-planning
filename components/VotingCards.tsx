@@ -16,7 +16,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
     <div className="bg-rd-surface border border-rd-border rounded-2xl p-5">
       <p
         className="text-rd-muted text-xs mb-5 font-medium uppercase tracking-widest"
-        style={{ fontFamily: 'var(--font-syne)' }}
+        
       >
         {isRevealed
           ? 'Votes revealed — round closed'
@@ -35,7 +35,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
                 if (!disabled) onVote(card);
               }}
               disabled={disabled && !isRevealed}
-              style={{ fontFamily: 'var(--font-syne)' }}
+              
               className={[
                 'w-14 h-[76px] rounded-xl font-bold text-xl border-2 transition-all duration-200 select-none relative',
                 isSelected

@@ -43,7 +43,7 @@ export default function HomePage() {
           <div>
             <h1
               className="text-4xl font-bold tracking-tight text-white leading-none mb-2"
-              style={{ fontFamily: 'var(--font-syne)' }}
+              
             >
               Planning Poker
             </h1>
@@ -60,7 +60,7 @@ export default function HomePage() {
             onClick={createRoom}
             disabled={loading}
             className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-rd-yellow/20 hover:shadow-xl hover:-translate-y-0.5"
-            style={{ fontFamily: 'var(--font-syne)' }}
+            
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">

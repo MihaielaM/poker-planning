@@ -294,7 +294,7 @@ export default function RoomClient({ code }: { code: string }) {
                 <a href="/" className="block hover:opacity-80 transition-opacity">
                   <h1
                     className="text-xl font-bold text-white leading-tight tracking-tight"
-                    style={{ fontFamily: 'var(--font-syne)' }}
+                    
                   >
                     Planning Poker
                   </h1>
@@ -302,7 +302,7 @@ export default function RoomClient({ code }: { code: string }) {
               ) : (
                 <h1
                   className="text-xl font-bold text-white leading-tight tracking-tight"
-                  style={{ fontFamily: 'var(--font-syne)' }}
+                  
                 >
                   Planning Poker
                 </h1>
@@ -359,7 +359,7 @@ export default function RoomClient({ code }: { code: string }) {
             />
             <span
               className={`text-sm font-semibold tracking-tight ${isRevealed ? 'text-rd-cyan' : 'text-white'}`}
-              style={{ fontFamily: 'var(--font-syne)' }}
+              
             >
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
