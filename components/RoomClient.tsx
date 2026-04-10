@@ -286,8 +286,8 @@ export default function RoomClient({ code }: { code: string }) {
       <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10 overflow-visible">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <div className="translate-y-4 relative z-20">
-              <JesterHat size={88} />
+            <div className="relative flex-shrink-0">
+              <JesterHat size={48} />
             </div>
             <div>
               {adminToken ? (
