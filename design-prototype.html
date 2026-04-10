@@ -3,1408 +3,1146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PointBlank — Sprint Estimation</title>
+<title>DeckMind — Estimate together.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 
-/* ── RESET ─────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   FOUNDATION
+───────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 
-/* ── TOKENS ─────────────────────────────────────────────── */
 :root {
-  --ink:        #0D0D0D;
-  --paper:      #F5F2EB;
-  --paper-2:    #EDE9DF;
-  --paper-3:    #E3DECC;
-  --rule:       #C8C2AE;
-  --rule-2:     #B0A990;
-  --muted:      #8A8475;
-  --ghost:      #CBC4B2;
-  --accent:     #FF3800;        /* vermillion — THE only color */
-  --accent-dim: #FF380015;
-  --white:      #FEFCF8;
-  --card-bg:    #FEFCF8;
-  --font-d:     'Bebas Neue', sans-serif;      /* display headings */
-  --font-b:     'Cabinet Grotesk', sans-serif; /* UI text */
-  --font-m:     'DM Mono', monospace;          /* numbers, codes */
-  --ease:       cubic-bezier(0.25, 0, 0, 1);
+  --bg:           #0f0f0f;
+  --bg-1:         #141414;
+  --bg-2:         #1a1a1a;
+  --bg-3:         #222;
+  --border:       #262626;
+  --border-2:     #323232;
+  --text:         #fff;
+  --text-dim:     #777;
+  --text-muted:   #3d3d3d;
+  --accent:       #FFD000;
+  --accent-hover: #FFE033;
+  --card-face:    #F5F4F0;
+  --card-text:    #111;
+  --r: 6px;
+  --r-card: 10px;
+  --font-d: 'Barlow Condensed', sans-serif;
+  --font-b: 'Barlow', sans-serif;
 }
 
 body {
   font-family: var(--font-b);
   font-weight: 400;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── SCREENS ────────────────────────────────────────────── */
-.screen { display: none; height: 100vh; width: 100vw; position: fixed; inset: 0; flex-direction: column; }
+/* ─────────────────────────────────────────────────────────
+   SCREEN SYSTEM
+───────────────────────────────────────────────────────── */
+.screen {
+  display: none;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+}
 .screen.active { display: flex; }
 
-/* ══════════════════════════════════════════════════════════
+/* ─────────────────────────────────────────────────────────
+   LOGO MARK (reused across screens)
+───────────────────────────────────────────────────────── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+.logo svg { display: block; flex-shrink: 0; }
+.logo-name {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* ─────────────────────────────────────────────────────────
    HOME SCREEN
-══════════════════════════════════════════════════════════ */
+───────────────────────────────────────────────────────── */
 #screen-home {
-  background: var(--paper);
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 
-/* Ruled paper lines */
+/* Grid bg */
 #screen-home::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 39px,
-    var(--rule) 39px,
-    var(--rule) 40px
-  );
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 52px 52px;
   pointer-events: none;
-  opacity: 0.5;
 }
-
-/* Red margin line */
+/* Vignette over grid */
 #screen-home::after {
   content: '';
   position: absolute;
-  top: 0; bottom: 0;
-  left: 72px;
-  width: 2px;
-  background: var(--accent);
-  opacity: 0.25;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, var(--bg) 80%);
   pointer-events: none;
 }
 
-.home-layout {
+.home-inner {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
-}
-
-.home-left {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 48px 56px;
-  border-right: 1px solid var(--rule);
+  align-items: center;
+  width: 320px;
+  animation: rise 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.home-right {
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Branding */
+.home-brand {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 48px 56px;
-  gap: 0;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 52px;
 }
 
-/* Logo */
-.home-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  background: var(--ink);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.logo-mark svg { display: block; }
-.logo-text {
+.home-wordmark {
   font-family: var(--font-d);
-  font-size: 22px;
-  letter-spacing: 0.1em;
-  color: var(--ink);
+  font-weight: 800;
+  font-size: 52px;
+  letter-spacing: 0.025em;
   line-height: 1;
+  color: var(--text);
 }
 
-/* Giant heading */
-.home-heading {
-  font-family: var(--font-d);
-  font-size: clamp(72px, 9vw, 120px);
-  line-height: 0.9;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 24px;
-}
-.home-heading .accent-word { color: var(--accent); }
-
-.home-sub {
+.home-tagline {
   font-size: 14px;
-  color: var(--muted);
-  line-height: 1.6;
-  max-width: 280px;
-  margin-bottom: 40px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
 }
 
-/* Deck preview cards */
-.home-deck {
-  display: flex;
-  gap: -8px;
-  margin-bottom: 48px;
-}
-.home-deck-card {
-  width: 44px;
-  height: 60px;
-  background: var(--card-bg);
-  border: 1.5px solid var(--rule);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-d);
-  font-size: 22px;
-  color: var(--ink);
-  margin-left: -10px;
-  box-shadow: 2px 2px 0 var(--rule);
-  transition: transform 0.2s var(--ease);
-  cursor: default;
-  position: relative;
-}
-.home-deck-card:first-child { margin-left: 0; }
-.home-deck-card:hover { transform: translateY(-8px); z-index: 10; }
-.home-deck-card.hi {
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 2px 2px 0 var(--accent);
-}
-
-/* CTA area */
-.home-cta {
+/* Form */
+.home-form {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 340px;
-}
-
-.btn-primary {
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
-  border-radius: 6px;
-  font-family: var(--font-b);
-  font-weight: 700;
-  font-size: 15px;
-  padding: 16px 28px;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
-  letter-spacing: 0.01em;
-  text-align: center;
-}
-.btn-primary:hover { background: #1a1a1a; transform: translateY(-2px); }
-.btn-primary:active { transform: translateY(0); }
-.btn-primary.accent-btn {
-  background: var(--accent);
-  color: var(--white);
-}
-.btn-primary.accent-btn:hover { background: #e03000; }
-
-.btn-secondary {
-  background: transparent;
-  color: var(--ink);
-  border: 1.5px solid var(--rule-2);
-  border-radius: 6px;
-  font-family: var(--font-b);
-  font-weight: 500;
-  font-size: 15px;
-  padding: 14px 28px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-.btn-secondary:hover { border-color: var(--ink); background: var(--paper-2); }
-
-.join-row {
-  display: flex;
   gap: 8px;
 }
-.join-input {
-  flex: 1;
-  background: var(--white);
-  border: 1.5px solid var(--rule);
-  border-radius: 6px;
-  font-family: var(--font-m);
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--ink);
-  padding: 14px 16px;
+
+.field-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 13px 15px;
+  border-radius: var(--r);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.18s;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.join-input::placeholder { color: var(--ghost); letter-spacing: 0.06em; text-transform: none; font-family: var(--font-b); font-size: 14px; }
-.join-input:focus { border-color: var(--ink); }
-.join-btn {
-  background: var(--ink);
-  color: var(--white);
-  border: none;
-  border-radius: 6px;
-  font-family: var(--font-b);
-  font-weight: 700;
-  font-size: 14px;
-  padding: 0 20px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s;
+.field-input::placeholder {
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-weight: 300;
 }
-.join-btn:hover { background: #222; }
+.field-input:focus { border-color: var(--accent); }
 
-/* Divider */
-.cta-divider {
+.home-or {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--ghost);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  margin: 2px 0;
 }
-.cta-divider::before, .cta-divider::after {
+.home-or::before, .home-or::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--rule);
+  background: var(--border);
 }
 
-/* Home footer */
-.home-footer {
-  font-size: 12px;
-  color: var(--ghost);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
-
-/* Home right — features list */
-.features-label {
-  font-family: var(--font-m);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+.btn {
+  width: 100%;
+  border: none;
+  padding: 14px 20px;
+  border-radius: var(--r);
+  font-family: var(--font-b);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 28px;
-}
-.feature-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.feature-row:first-of-type { border-top: 1px solid var(--rule); }
-.feature-num {
-  font-family: var(--font-d);
-  font-size: 13px;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  margin-top: 1px;
-  flex-shrink: 0;
-}
-.feature-title {
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 1.3;
-  margin-bottom: 3px;
-}
-.feature-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.5;
+  cursor: pointer;
+  transition: background 0.16s, transform 0.16s, border-color 0.16s;
+  outline: none;
 }
 
-/* ══════════════════════════════════════════════════════════
-   SESSION SCREEN
-══════════════════════════════════════════════════════════ */
-#screen-session {
-  background: var(--paper);
-  position: relative;
-}
-
-/* Subtle top rule */
-#screen-session::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
+.btn-yellow {
   background: var(--accent);
+  color: #0f0f0f;
+}
+.btn-yellow:hover  { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-yellow:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-2);
+}
+.btn-outline:hover { border-color: var(--text-dim); color: var(--text); transform: translateY(-1px); }
+
+.home-note {
+  margin-top: 28px;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-align: center;
 }
 
-.session-header {
+/* ─────────────────────────────────────────────────────────
+   SESSION HEADER (shared)
+───────────────────────────────────────────────────────── */
+.app-header {
+  height: 54px;
+  padding: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 40px;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  gap: 20px;
 }
 
-.session-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.session-logo-mark {
-  width: 28px;
-  height: 28px;
-  background: var(--ink);
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.session-logo-mark svg { display: block; }
-.session-logo-text {
-  font-family: var(--font-d);
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
-.session-room-code {
-  font-family: var(--font-m);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  text-transform: uppercase;
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
+.room-pill {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  background: rgba(255, 208, 0, 0.05);
+  border: 1px solid rgba(255, 208, 0, 0.14);
+  padding: 4px 10px;
   border-radius: 4px;
-  padding: 5px 12px;
 }
 
-.session-header-right {
+.header-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.btn-reveal {
-  background: var(--accent);
-  color: var(--white);
-  border: none;
-  border-radius: 5px;
-  font-family: var(--font-b);
-  font-weight: 700;
-  font-size: 13px;
-  padding: 9px 20px;
-  cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: background 0.15s, transform 0.15s, opacity 0.2s;
-}
-.btn-reveal:hover { background: #e03000; transform: translateY(-1px); }
-.btn-reveal:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--rule);
-  border-radius: 5px;
-  font-family: var(--font-b);
-  font-weight: 500;
-  font-size: 13px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-}
-.btn-ghost:hover { color: var(--ink); border-color: var(--rule-2); }
-
-.session-body {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  overflow: hidden;
-}
-
-/* Sidebar */
-.session-sidebar {
-  border-right: 1px solid var(--rule);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.sidebar-section {
-  padding: 24px;
-  border-bottom: 1px solid var(--rule);
-}
-
-.sidebar-label {
-  font-family: var(--font-m);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-
-/* Story title editable */
-.story-title-area {
-  position: relative;
-}
-.story-title {
-  font-family: var(--font-b);
-  font-weight: 700;
-  font-size: 17px;
-  line-height: 1.4;
-  color: var(--ink);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid var(--rule);
-  width: 100%;
-  outline: none;
-  padding: 4px 0 8px;
-  transition: border-color 0.15s;
-  resize: none;
-  overflow: hidden;
-  font-family: var(--font-b);
-}
-.story-title:focus { border-color: var(--ink); }
-.story-title::placeholder { color: var(--ghost); font-weight: 400; }
-
-.story-round {
-  font-family: var(--font-m);
-  font-size: 11px;
-  color: var(--ghost);
-  margin-top: 8px;
-  letter-spacing: 0.05em;
-}
-
-/* Participants */
-.participants-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-}
-
-.participant-row {
+.participants-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  transition: background 0.12s;
+  gap: 6px;
 }
-.participant-row:hover { background: var(--paper-2); }
 
-.participant-avatar {
-  width: 32px;
-  height: 32px;
+.av {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-b);
+  font-size: 10px;
   font-weight: 700;
-  font-size: 12px;
-  color: var(--white);
-  flex-shrink: 0;
   letter-spacing: 0.03em;
-}
-
-.participant-name {
-  font-weight: 500;
-  font-size: 14px;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.vote-indicator {
-  width: 22px;
-  height: 30px;
-  border-radius: 4px;
-  border: 1.5px solid var(--rule);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-d);
-  font-size: 13px;
-  color: var(--muted);
-  background: var(--paper);
-  transition: all 0.15s;
+  color: #fff;
+  position: relative;
   flex-shrink: 0;
+  transition: transform 0.2s;
+  cursor: default;
+  user-select: none;
 }
-.vote-indicator.voted {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: transparent;
-}
-.vote-indicator.voted::after {
-  content: '✓';
-  color: var(--paper);
-  font-family: var(--font-b);
-  font-size: 11px;
+.av:hover { transform: translateY(-2px); z-index: 1; }
+
+.av-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
 }
 
-/* Main voting area */
-.session-main {
+/* ─────────────────────────────────────────────────────────
+   SESSION SCREEN
+───────────────────────────────────────────────────────── */
+.session-body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-  gap: 48px;
+  padding: 32px 28px 0;
+  gap: 0;
   overflow: hidden;
 }
 
-.vote-status {
-  font-family: var(--font-m);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
+/* Story block */
+.story-block {
+  text-align: center;
+  margin-bottom: 48px;
+  animation: rise 0.4s ease both;
 }
 
-.vote-status span {
-  color: var(--ink);
-  font-weight: 500;
+.story-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
 }
+
+.story-text {
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  outline: none;
+  cursor: text;
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 3px;
+  transition: border-color 0.18s;
+  max-width: 680px;
+  min-width: 80px;
+  caret-color: var(--accent);
+  line-height: 1.2;
+}
+.story-text:hover { border-color: var(--border-2); }
+.story-text:focus { border-color: var(--accent); }
+.story-text:empty::before {
+  content: 'Click to add story title...';
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.vote-tally {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.vote-tally b { color: var(--text); font-weight: 600; }
 
 /* Card deck */
 .deck {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  align-items: flex-end;
   justify-content: center;
-  max-width: 640px;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
-.card {
-  width: 72px;
-  height: 98px;
-  background: var(--card-bg);
-  border: 1.5px solid var(--rule);
-  border-radius: 8px;
+.vc {
+  flex-shrink: 0;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vc-face {
+  width: 74px;
+  height: 106px;
+  border-radius: var(--r-card);
+  background: var(--card-face);
+  border: 2px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-d);
-  font-size: 32px;
-  color: var(--ink);
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.18s var(--ease), border-color 0.18s, box-shadow 0.18s;
-  box-shadow: 0 2px 0 var(--rule), 0 4px 12px rgba(0,0,0,0.06);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--card-text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4);
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0, 0.2, 1),
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
   user-select: none;
-  animation: card-in 0.4s var(--ease) both;
+  position: relative;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  border-color: var(--ink);
-  box-shadow: 0 6px 0 var(--rule-2), 0 12px 24px rgba(0,0,0,0.1);
-}
-
-.card.selected {
-  transform: translateY(-8px) scale(1.04);
-  border-color: var(--accent);
-  box-shadow: 0 6px 0 rgba(255,56,0,0.25), 0 12px 28px rgba(255,56,0,0.18);
-  color: var(--accent);
-}
-
-.card:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-  transform: none;
-}
-
-.card-corner {
+/* Corner pip */
+.vc-face::before {
+  content: attr(data-val);
   position: absolute;
-  top: 6px;
+  top: 7px;
   left: 8px;
-  font-family: var(--font-d);
-  font-size: 11px;
-  color: var(--ghost);
+  font-size: 9px;
+  font-weight: 700;
+  color: #aaa;
   line-height: 1;
 }
-.card.selected .card-corner { color: rgba(255,56,0,0.4); }
 
-/* Stagger */
-.card:nth-child(1)  { animation-delay: 0.00s; }
-.card:nth-child(2)  { animation-delay: 0.04s; }
-.card:nth-child(3)  { animation-delay: 0.08s; }
-.card:nth-child(4)  { animation-delay: 0.12s; }
-.card:nth-child(5)  { animation-delay: 0.16s; }
-.card:nth-child(6)  { animation-delay: 0.20s; }
-.card:nth-child(7)  { animation-delay: 0.24s; }
-.card:nth-child(8)  { animation-delay: 0.28s; }
-.card:nth-child(9)  { animation-delay: 0.32s; }
+.vc:hover .vc-face {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,208,0,0.22);
+}
 
-@keyframes card-in {
-  from { opacity: 0; transform: translateY(20px); }
+.vc.sel .vc-face {
+  transform: translateY(-10px) scale(1.07);
+  border-color: var(--accent);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,208,0,0.45),
+    0 6px 20px rgba(255,208,0,0.12);
+}
+
+/* Stagger in */
+.vc { animation: cardRise 0.45s ease both; }
+.vc:nth-child(1) { animation-delay: 0.04s; }
+.vc:nth-child(2) { animation-delay: 0.08s; }
+.vc:nth-child(3) { animation-delay: 0.12s; }
+.vc:nth-child(4) { animation-delay: 0.16s; }
+.vc:nth-child(5) { animation-delay: 0.20s; }
+.vc:nth-child(6) { animation-delay: 0.24s; }
+.vc:nth-child(7) { animation-delay: 0.28s; }
+.vc:nth-child(8) { animation-delay: 0.32s; }
+.vc:nth-child(9) { animation-delay: 0.36s; }
+
+@keyframes cardRise {
+  from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.voted-label {
-  font-size: 13px;
-  color: var(--muted);
-  letter-spacing: 0.02em;
-  margin-top: -24px;
-}
-.voted-label strong { color: var(--ink); }
-
-/* ══════════════════════════════════════════════════════════
-   REVEAL SCREEN
-══════════════════════════════════════════════════════════ */
-#screen-reveal {
-  background: var(--paper);
-  position: relative;
-}
-#screen-reveal::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--accent);
-}
-
-.reveal-header {
+/* Footer */
+.session-foot {
+  height: 76px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  border-bottom: 1px solid var(--rule);
+  justify-content: center;
   flex-shrink: 0;
+}
+
+.reveal-trigger {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.reveal-trigger.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.btn-reveal {
+  background: var(--accent);
+  color: #0f0f0f;
+  border: none;
+  font-family: var(--font-b);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 15px 52px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background 0.16s, transform 0.16s;
+}
+.btn-reveal:hover  { background: var(--accent-hover); transform: translateY(-2px); }
+.btn-reveal:active { transform: translateY(0); }
+
+/* ─────────────────────────────────────────────────────────
+   REVEAL SCREEN
+───────────────────────────────────────────────────────── */
+.reveal-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.reveal-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 1.6s ease infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 .reveal-body {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  overflow: hidden;
-}
-
-.reveal-main {
-  display: flex;
-  flex-direction: column;
-  padding: 40px;
-  gap: 32px;
-  overflow-y: auto;
-}
-
-.reveal-title-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.reveal-eyebrow {
-  font-family: var(--font-m);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.reveal-story-title {
-  font-weight: 700;
-  font-size: 22px;
-  color: var(--ink);
-}
-
-/* Results grid */
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 16px;
-}
-
-.result-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 28px 28px 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* Flippable cards row */
+.result-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   gap: 12px;
-  perspective: 600px;
+  margin-bottom: 52px;
 }
 
-.result-card-flip {
-  width: 80px;
-  height: 108px;
-  transform-style: preserve-3d;
-  animation: flip-in 0.6s var(--ease) both;
+/* 3D flip card */
+.rc { perspective: 900px; flex-shrink: 0; }
+
+.rc-scene {
+  width: 78px;
+  height: 110px;
   position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.62s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.rc-scene.flipped { transform: rotateY(180deg); }
 
-.result-card-front,
-.result-card-back {
+.rc-face {
   position: absolute;
   inset: 0;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Back face */
+.rc-back {
+  background: var(--bg-2);
+  border: 1.5px solid var(--border-2);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent, transparent 7px,
+      rgba(255,208,0,0.055) 7px, rgba(255,208,0,0.055) 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 7px,
+      rgba(255,208,0,0.055) 7px, rgba(255,208,0,0.055) 8px
+    );
+}
+
+.rc-back-av {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
 }
-
-.result-card-front {
-  background: var(--ink);
-  transform: rotateY(180deg);
-}
-.result-card-front::after {
-  content: '';
-  width: 60%;
-  height: 60%;
-  border: 2px solid rgba(255,255,255,0.08);
-  border-radius: 4px;
-}
-
-.result-card-back {
-  background: var(--card-bg);
-  border: 1.5px solid var(--rule);
-  flex-direction: column;
-  gap: 0;
-  box-shadow: 0 2px 0 var(--rule), 0 4px 16px rgba(0,0,0,0.08);
-}
-
-.result-value {
-  font-family: var(--font-d);
-  font-size: 42px;
-  color: var(--ink);
-  line-height: 1;
-}
-.result-card-back.outlier .result-value { color: var(--accent); }
-.result-card-back.consensus .result-value { color: var(--ink); }
-.result-card-back.outlier { border-color: var(--accent); box-shadow: 0 2px 0 rgba(255,56,0,0.2), 0 4px 16px rgba(255,56,0,0.12); }
-
-.result-name {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
-}
-
-@keyframes flip-in {
-  from { transform: rotateY(180deg); }
-  to   { transform: rotateY(0deg); }
-}
-
-/* Stagger result cards */
-.result-card:nth-child(1) .result-card-flip { animation-delay: 0.1s; }
-.result-card:nth-child(2) .result-card-flip { animation-delay: 0.22s; }
-.result-card:nth-child(3) .result-card-flip { animation-delay: 0.34s; }
-.result-card:nth-child(4) .result-card-flip { animation-delay: 0.46s; }
-.result-card:nth-child(5) .result-card-flip { animation-delay: 0.58s; }
-.result-card:nth-child(6) .result-card-flip { animation-delay: 0.70s; }
-
-/* Stats sidebar */
-.reveal-sidebar {
-  border-left: 1px solid var(--rule);
-  display: flex;
-  flex-direction: column;
-  padding: 32px;
-  gap: 32px;
-  overflow-y: auto;
-}
-
-.stat-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stat-eyebrow {
-  font-family: var(--font-m);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+.rc-back-name {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-muted);
+  position: absolute;
+  bottom: 9px;
 }
 
-.stat-value {
+/* Front face */
+.rc-front {
+  background: var(--card-face);
+  border: 1.5px solid transparent;
+  transform: rotateY(180deg);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+}
+
+.rc-val {
   font-family: var(--font-d);
-  font-size: 64px;
+  font-weight: 800;
+  font-size: 34px;
+  color: var(--card-text);
   line-height: 1;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
-.stat-value.accent-val { color: var(--accent); }
-
-.stat-sub {
-  font-size: 13px;
-  color: var(--muted);
 }
 
-/* Distribution bars */
-.dist-bars {
+.rc-front .rc-name {
+  position: absolute;
+  bottom: 9px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+/* Highlight majority card */
+.rc.major .rc-front {
+  border-color: var(--accent);
+  box-shadow:
+    0 4px 18px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,208,0,0.35),
+    0 8px 28px rgba(255,208,0,0.10);
+}
+
+/* Stats area */
+.stats-area {
+  width: 100%;
+  max-width: 520px;
+}
+
+.stats-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.stats-numbers {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+}
+
+.stat-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
 }
+.stat-col:last-child { border-right: none; }
+
+.stat-val {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--text);
+}
+.stat-val.hi { color: var(--accent); }
+
+.stat-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Distribution */
+.dist { display: flex; flex-direction: column; gap: 8px; }
 
 .dist-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
-.dist-label {
+.dist-key {
   font-family: var(--font-d);
-  font-size: 16px;
-  color: var(--ink);
-  width: 28px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  width: 22px;
   text-align: right;
   flex-shrink: 0;
 }
 
-.dist-bar-bg {
+.dist-track {
   flex: 1;
-  height: 8px;
-  background: var(--paper-3);
-  border-radius: 4px;
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 3px;
   overflow: hidden;
 }
 
-.dist-bar-fill {
+.dist-fill {
   height: 100%;
-  background: var(--ink);
-  border-radius: 4px;
-  transition: width 0.6s var(--ease);
+  border-radius: 3px;
+  background: var(--border-2);
+  transform-origin: left;
+  animation: grow 0.55s cubic-bezier(0.4,0,0.2,1) both;
 }
-.dist-bar-fill.accent { background: var(--accent); }
+.dist-fill.top { background: var(--accent); }
 
-.dist-count {
-  font-family: var(--font-m);
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.dist-meta {
   font-size: 11px;
-  color: var(--ghost);
-  width: 16px;
+  color: var(--text-muted);
+  width: 80px;
   flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Divider */
-.sidebar-divider {
-  height: 1px;
-  background: var(--rule);
-}
-
-/* Consensus badge */
-.consensus-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  color: var(--white);
-  border-radius: 5px;
-  padding: 10px 16px;
-  font-weight: 700;
-  font-size: 13px;
-  animation: badge-pop 0.4s 0.9s var(--ease) both;
-}
-
-@keyframes badge-pop {
-  from { opacity: 0; transform: scale(0.8); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* Next round button */
-.btn-next-round {
+/* Reveal footer */
+.reveal-foot {
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
-  border-radius: 6px;
-  font-family: var(--font-b);
-  font-weight: 700;
-  font-size: 14px;
-  padding: 14px 20px;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
-  width: 100%;
-  margin-top: auto;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  padding: 0 28px;
 }
-.btn-next-round:hover { background: #1a1a1a; transform: translateY(-2px); }
 
-/* ── Scrollbar ─────────────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-2);
+  color: var(--text-dim);
+  font-family: var(--font-b);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: border-color 0.16s, color 0.16s, transform 0.16s;
+}
+.btn-ghost:hover { border-color: var(--text-dim); color: var(--text); transform: translateY(-1px); }
 
-/* ── Animation: page enter ─────────────────────────────── */
-@keyframes rise {
-  from { opacity: 0; transform: translateY(12px); }
+.consensus-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid rgba(255,208,0,0.15);
+  background: rgba(255,208,0,0.05);
+  padding: 7px 14px;
+  border-radius: var(--r);
+  letter-spacing: 0.04em;
+  animation: fadeSlide 0.4s ease both 1.4s;
+  opacity: 0;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.screen.active > * { animation: rise 0.4s var(--ease) both; }
 
 </style>
 </head>
+
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     HOME SCREEN
-══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
 <div id="screen-home" class="screen active">
-  <div class="home-layout">
+  <div class="home-inner">
 
-    <!-- LEFT -->
-    <div class="home-left">
-      <div class="home-logo">
-        <div class="logo-mark">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="2" y="2" width="10" height="14" rx="2" fill="#F5F2EB"/>
-            <rect x="8" y="4" width="10" height="14" rx="2" fill="none" stroke="#F5F2EB" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <span class="logo-text">POINTBLANK</span>
-      </div>
-
+    <div class="home-brand">
+      <!-- Logo mark: two overlapping card shapes -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+        <path d="M29 25h7M29 39h7" stroke="#FFD000" stroke-width="1.2" stroke-opacity="0.35" stroke-linecap="round"/>
+      </svg>
       <div>
-        <div class="home-deck">
-          <div class="home-deck-card">1</div>
-          <div class="home-deck-card">2</div>
-          <div class="home-deck-card hi">5</div>
-          <div class="home-deck-card">8</div>
-          <div class="home-deck-card">13</div>
-          <div class="home-deck-card">21</div>
-        </div>
-
-        <h1 class="home-heading">
-          SPRINT<br>
-          <span class="accent-word">ESTI<br>MATE.</span>
-        </h1>
-        <p class="home-sub">Real-time story point estimation for distributed teams. Create a room, share the link, vote together.</p>
-
-        <div class="home-cta">
-          <button class="btn-primary accent-btn" onclick="App.create()">+ Create room</button>
-          <div class="cta-divider">or</div>
-          <div class="join-row">
-            <input class="join-input" id="join-code" placeholder="Enter room code" maxlength="6">
-            <button class="join-btn" onclick="App.join()">Join →</button>
-          </div>
-        </div>
-      </div>
-
-      <p class="home-footer">Fibonacci scale · Private votes · Auto-reveal</p>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="home-right">
-      <p class="features-label">How it works</p>
-
-      <div class="feature-row">
-        <span class="feature-num">01</span>
-        <div>
-          <p class="feature-title">Private voting</p>
-          <p class="feature-desc">Everyone locks in their estimate before anyone sees the results. No anchoring bias.</p>
-        </div>
-      </div>
-
-      <div class="feature-row">
-        <span class="feature-num">02</span>
-        <div>
-          <p class="feature-title">Simultaneous reveal</p>
-          <p class="feature-desc">All votes flip at once when the facilitator hits Reveal — or automatically when all have voted.</p>
-        </div>
-      </div>
-
-      <div class="feature-row">
-        <span class="feature-num">03</span>
-        <div>
-          <p class="feature-title">Fibonacci sequence</p>
-          <p class="feature-desc">Cards: 1, 2, 3, 5, 8, 13, 21, ? and ☕. The natural scale for relative complexity.</p>
-        </div>
-      </div>
-
-      <div class="feature-row">
-        <span class="feature-num">04</span>
-        <div>
-          <p class="feature-title">Instant consensus detection</p>
-          <p class="feature-desc">If everyone agrees, the app celebrates. If not, the outliers are highlighted for discussion.</p>
-        </div>
+        <div class="home-wordmark">DeckMind</div>
+        <div class="home-tagline">Estimate together.</div>
       </div>
     </div>
+
+    <div class="home-form">
+      <div>
+        <label class="field-label" for="room-input">Room code</label>
+        <input
+          id="room-input"
+          class="field-input"
+          type="text"
+          placeholder="e.g. XY98JR"
+          maxlength="8"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      <button class="btn btn-yellow" onclick="App.join()">Join room →</button>
+      <div class="home-or">or</div>
+      <button class="btn btn-outline" onclick="App.create()">Create new room</button>
+    </div>
+
+    <div class="home-note">No account required — share a link to invite your team.</div>
 
   </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════════════
-     SESSION SCREEN
-══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     SESSION
+══════════════════════════════════════ -->
 <div id="screen-session" class="screen">
-  <header class="session-header">
-    <div class="session-logo">
-      <div class="session-logo-mark">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-          <rect x="2" y="2" width="10" height="14" rx="2" fill="#F5F2EB"/>
-          <rect x="8" y="4" width="10" height="14" rx="2" fill="none" stroke="#F5F2EB" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <span class="session-logo-text">POINTBLANK</span>
+
+  <header class="app-header">
+    <div class="logo" onclick="App.home()">
+      <svg width="24" height="24" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+      </svg>
+      <span class="logo-name">DeckMind</span>
     </div>
 
-    <span class="session-room-code" id="session-code-display">ROOM: MK4F</span>
+    <div id="s-room-code" class="room-pill">XY98JR</div>
 
-    <div class="session-header-right">
-      <button class="btn-ghost" onclick="App.home()">← Leave</button>
-      <button class="btn-reveal" id="reveal-btn" onclick="App.reveal()">Reveal cards</button>
+    <div class="header-right">
+      <div id="s-participants" class="participants-row"></div>
     </div>
   </header>
 
   <div class="session-body">
-
-    <!-- Sidebar -->
-    <aside class="session-sidebar">
-      <div class="sidebar-section">
-        <p class="sidebar-label">Story</p>
-        <textarea class="story-title" id="story-title" rows="2" placeholder="Enter story title…">As a user, I want to filter products by category</textarea>
-        <p class="story-round" id="round-label">Round 1</p>
+    <div class="story-block">
+      <div class="story-eyebrow">Now estimating</div>
+      <div
+        id="story-title"
+        class="story-text"
+        contenteditable="true"
+        spellcheck="false"
+      >User can reset password via email</div>
+      <div class="vote-tally">
+        <b id="voted-n">2</b> of <b id="voted-t">4</b> voted
       </div>
+    </div>
 
-      <div class="participants-list" id="participants-list">
-        <!-- filled by JS -->
-      </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="session-main">
-      <p class="vote-status" id="vote-status">
-        <span id="voted-count">0</span> of <span id="total-count">4</span> voted
-      </p>
-
-      <div class="deck" id="card-deck">
-        <!-- filled by JS -->
-      </div>
-
-      <p class="voted-label" id="my-vote-label" style="display:none">
-        Your vote: <strong id="my-vote-value"></strong>
-      </p>
-    </main>
-
+    <div id="deck" class="deck"></div>
   </div>
+
+  <div class="session-foot">
+    <div id="reveal-trigger" class="reveal-trigger">
+      <button class="btn-reveal" onclick="App.reveal()">Reveal cards</button>
+    </div>
+  </div>
+
 </div>
 
 
-<!-- ══════════════════════════════════════════════════════════
-     REVEAL SCREEN
-══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     REVEAL
+══════════════════════════════════════ -->
 <div id="screen-reveal" class="screen">
-  <header class="reveal-header">
-    <div class="session-logo">
-      <div class="session-logo-mark">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-          <rect x="2" y="2" width="10" height="14" rx="2" fill="#F5F2EB"/>
-          <rect x="8" y="4" width="10" height="14" rx="2" fill="none" stroke="#F5F2EB" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <span class="session-logo-text">POINTBLANK</span>
+
+  <header class="app-header">
+    <div class="logo" onclick="App.home()">
+      <svg width="24" height="24" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="4"  width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" fill="#141414" stroke="#2a2a2a" stroke-width="2"/>
+        <rect x="16" y="12" width="32" height="42" rx="4" stroke="#FFD000" stroke-width="2.2" stroke-opacity="0.38"/>
+        <path d="M30 32.5l2.5-2.5 2.5 2.5-2.5 2.5-2.5-2.5z" fill="#FFD000"/>
+      </svg>
+      <span class="logo-name">DeckMind</span>
     </div>
 
-    <span class="session-room-code" id="reveal-code-display">ROOM: MK4F</span>
+    <div class="reveal-badge">Votes revealed</div>
 
-    <button class="btn-ghost" onclick="App.home()">← Leave</button>
+    <div id="r-room-code" class="room-pill">XY98JR</div>
   </header>
 
   <div class="reveal-body">
+    <div id="result-row" class="result-row"></div>
 
-    <!-- Results -->
-    <div class="reveal-main">
-      <div class="reveal-title-row">
-        <p class="reveal-eyebrow">Round <span id="reveal-round-num">1</span> results</p>
-        <h2 class="reveal-story-title" id="reveal-story-title">As a user, I want to filter products by category</h2>
-      </div>
-
-      <div class="results-grid" id="results-grid">
-        <!-- filled by JS -->
-      </div>
+    <div class="stats-area">
+      <div class="stats-rule"></div>
+      <div id="stats-numbers" class="stats-numbers"></div>
+      <div id="dist" class="dist"></div>
     </div>
-
-    <!-- Stats sidebar -->
-    <aside class="reveal-sidebar">
-      <div class="stat-block">
-        <p class="stat-eyebrow">Average</p>
-        <p class="stat-value" id="avg-value">—</p>
-        <p class="stat-sub" id="avg-sub"></p>
-      </div>
-
-      <div class="sidebar-divider"></div>
-
-      <div class="stat-block">
-        <p class="stat-eyebrow">Suggested estimate</p>
-        <p class="stat-value accent-val" id="suggested-value">—</p>
-        <p class="stat-sub">Nearest Fibonacci</p>
-      </div>
-
-      <div class="sidebar-divider"></div>
-
-      <div class="stat-block">
-        <p class="stat-eyebrow">Distribution</p>
-        <div class="dist-bars" id="dist-bars"></div>
-      </div>
-
-      <div id="consensus-block" style="display:none">
-        <div class="sidebar-divider"></div>
-        <div class="consensus-badge">✦ Perfect consensus</div>
-      </div>
-
-      <button class="btn-next-round" onclick="App.nextRound()">Next round →</button>
-    </aside>
-
   </div>
+
+  <div class="reveal-foot">
+    <div id="consensus-tag" class="consensus-tag" style="display:none;">
+      ✦ Perfect consensus — the team is aligned
+    </div>
+    <button class="btn-ghost" onclick="App.nextRound()">New round →</button>
+  </div>
+
 </div>
 
 
-<!-- ══════════════════════════════════════════════════════════
-     SCRIPT
-══════════════════════════════════════════════════════════ -->
 <script>
-const DECK = ['1','2','3','5','8','13','21','?','☕'];
-const FIB   = [1,2,3,5,8,13,21];
-const AVATAR_COLORS = ['#D4381A','#2563EB','#059669','#7C3AED','#B45309','#0891B2'];
+/* ─── Data ─────────────────────────────────────────────── */
+const DECK  = ['1','2','3','5','8','13','21','?','∞'];
+const FIBS  = [1,2,3,5,8,13,21];
+const COLORS = ['#E8584A','#3B9EDE','#48BB78','#ED8936','#38B2AC','#E26BC0','#9B6EE0'];
 
-const PARTICIPANTS = [
-  { name: 'Mihai R.', vote: null },
-  { name: 'Ana P.',   vote: null },
-  { name: 'Cristi M.',vote: null },
-  { name: 'Laura T.', vote: null },
-];
-
-let state = {
-  screen: 'home',
-  myVote: null,
-  round: 1,
-  story: 'As a user, I want to filter products by category',
-  participants: PARTICIPANTS.map(p => ({ ...p })),
-};
-
-function initials(name) {
-  return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-}
-
-function nearestFib(n) {
-  if (!isFinite(n)) return null;
-  return FIB.reduce((a,b) => Math.abs(b-n) < Math.abs(a-n) ? b : a);
-}
-
-// ── Screen switching ──────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  state.screen = id;
-}
-
-// ── HOME ──────────────────────────────────────────────────
+/* ─── App ──────────────────────────────────────────────── */
 const App = {
+  roomCode: 'XY98JR',
+  selected: null,
 
-  home() { show('home'); },
+  people: [
+    { id:1, name:'Alex',  ini:'AX', ci:0, voted:true,  vote:'5'  },
+    { id:2, name:'Maria', ini:'MA', ci:1, voted:true,  vote:'8'  },
+    { id:3, name:'You',   ini:'YO', ci:2, voted:false, vote:null, me:true },
+    { id:4, name:'Dan',   ini:'DN', ci:3, voted:false, vote:null },
+  ],
 
-  create() {
-    state.round = 1;
-    state.myVote = null;
-    state.participants = PARTICIPANTS.map(p => ({ ...p, vote: null }));
-    state.story = 'As a user, I want to filter products by category';
-    App._buildSession();
-    show('session');
+  /* ── Screen transitions ── */
+  show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+  },
+
+  home() {
+    this.selected = null;
+    this.show('home');
   },
 
   join() {
-    const code = document.getElementById('join-code').value.trim().toUpperCase();
-    if (!code) return;
-    App.create();
+    const val = (document.getElementById('room-input').value.trim() || 'XY98JR').toUpperCase().slice(0,8);
+    this.roomCode = val;
+    this.resetPeople();
+    this._initSession();
+    this.show('session');
   },
 
-  // ── SESSION ────────────────────────────────────────────
-
-  _buildSession() {
-    document.getElementById('story-title').value = state.story;
-    document.getElementById('round-label').textContent = 'Round ' + state.round;
-    document.getElementById('session-code-display').textContent = 'ROOM: MK4F';
-    document.getElementById('reveal-code-display').textContent = 'ROOM: MK4F';
-
-    // Participants
-    const list = document.getElementById('participants-list');
-    list.innerHTML = '';
-    state.participants.forEach((p, i) => {
-      const row = document.createElement('div');
-      row.className = 'participant-row';
-      row.id = 'prow-' + i;
-      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-      row.innerHTML = `
-        <div class="participant-avatar" style="background:${color}">${initials(p.name)}</div>
-        <span class="participant-name">${p.name}</span>
-        <div class="vote-indicator" id="vi-${i}"></div>
-      `;
-      list.appendChild(row);
-    });
-
-    // Cards
-    const deck = document.getElementById('card-deck');
-    deck.innerHTML = '';
-    DECK.forEach(val => {
-      const btn = document.createElement('button');
-      btn.className = 'card';
-      btn.innerHTML = `<span class="card-corner">${val}</span>${val}`;
-      btn.onclick = () => App.pick(val, btn);
-      deck.appendChild(btn);
-    });
-
-    document.getElementById('my-vote-label').style.display = 'none';
-    document.getElementById('reveal-btn').disabled = true;
-    App._updateVoteStatus();
-
-    // Simulate other voters after delay
-    App._simulateVotes();
+  create() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    this.roomCode = Array.from({length:6}, () => chars[Math.random()*chars.length|0]).join('');
+    this.people = [
+      { id:1, name:'You', ini:'YO', ci:2, voted:false, vote:null, me:true }
+    ];
+    this.selected = null;
+    this._initSession();
+    this.show('session');
   },
 
-  _simulateVotes() {
-    const others = [1,2,3]; // indices of other participants
-    others.forEach((idx, i) => {
-      setTimeout(() => {
-        const randomCard = DECK[Math.floor(Math.random() * 7)];
-        state.participants[idx].vote = randomCard;
-        document.getElementById('vi-' + idx).classList.add('voted');
-        App._updateVoteStatus();
-      }, 1200 + i * 900);
-    });
+  resetPeople() {
+    this.people = [
+      { id:1, name:'Alex',  ini:'AX', ci:0, voted:true,  vote:'5'  },
+      { id:2, name:'Maria', ini:'MA', ci:1, voted:true,  vote:'8'  },
+      { id:3, name:'You',   ini:'YO', ci:2, voted:false, vote:null, me:true },
+      { id:4, name:'Dan',   ini:'DN', ci:3, voted:false, vote:null },
+    ];
+    this.selected = null;
   },
 
-  pick(val, btn) {
-    if (state.myVote === val) return;
-    state.myVote = val;
-    state.participants[0].vote = val;
-
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-    btn.classList.add('selected');
-
-    document.getElementById('vi-0').classList.add('voted');
-    document.getElementById('my-vote-label').style.display = 'block';
-    document.getElementById('my-vote-value').textContent = val;
-
-    App._updateVoteStatus();
+  /* ── Session ── */
+  _initSession() {
+    document.getElementById('s-room-code').textContent = this.roomCode;
+    this._renderAvatars();
+    this._renderDeck();
+    this._updateTally();
   },
 
-  _updateVoteStatus() {
-    const voted = state.participants.filter(p => p.vote).length;
-    const total = state.participants.length;
-    document.getElementById('voted-count').textContent = voted;
-    document.getElementById('total-count').textContent = total;
-    document.getElementById('reveal-btn').disabled = voted < total;
+  _renderAvatars() {
+    document.getElementById('s-participants').innerHTML = this.people.map(p => `
+      <div class="av" style="background:${COLORS[p.ci]}" title="${p.name}">
+        ${p.ini}
+        <span class="av-dot" style="background:${p.voted ? '#FFD000' : '#333'}"></span>
+      </div>`).join('');
   },
 
-  // ── REVEAL ────────────────────────────────────────────
+  _renderDeck() {
+    const deck = document.getElementById('deck');
+    deck.innerHTML = DECK.map(v => `
+      <div class="vc${this.selected===v?' sel':''}" onclick="App.pick('${v}')">
+        <div class="vc-face" data-val="${v}">${v}</div>
+      </div>`).join('');
+  },
 
+  pick(v) {
+    this.selected = v;
+    const me = this.people.find(p => p.me);
+    if (me) { me.voted = true; me.vote = v; }
+    this._renderDeck();
+    this._renderAvatars();
+    this._updateTally();
+  },
+
+  _updateTally() {
+    const voted = this.people.filter(p => p.voted).length;
+    const total = this.people.length;
+    document.getElementById('voted-n').textContent = voted;
+    document.getElementById('voted-t').textContent = total;
+    const btn = document.getElementById('reveal-trigger');
+    btn.classList.toggle('show', voted === total && total > 0);
+  },
+
+  /* ── Reveal ── */
   reveal() {
-    const story = document.getElementById('story-title').value || state.story;
-    state.story = story;
+    this._initReveal();
+    this.show('reveal');
+  },
 
-    document.getElementById('reveal-round-num').textContent = state.round;
-    document.getElementById('reveal-story-title').textContent = story;
+  _initReveal() {
+    document.getElementById('r-room-code').textContent = this.roomCode;
 
-    // Build results grid
-    const numericVotes = state.participants
-      .map(p => parseFloat(p.vote))
-      .filter(v => !isNaN(v));
-
-    const avg = numericVotes.length
-      ? numericVotes.reduce((a,b) => a+b, 0) / numericVotes.length
-      : null;
-    const suggested = avg !== null ? nearestFib(avg) : null;
-    const consensus  = numericVotes.length === state.participants.length &&
-                       new Set(numericVotes).size === 1;
-
-    // Count per value
+    /* Result cards */
+    const row = document.getElementById('result-row');
+    const votes = this.people.filter(p => p.voted).map(p => p.vote);
     const counts = {};
-    state.participants.forEach(p => {
-      counts[p.vote] = (counts[p.vote] || 0) + 1;
-    });
+    votes.forEach(v => { counts[v] = (counts[v]||0)+1; });
+    const topCount = Math.max(...Object.values(counts));
 
-    const maxCount = Math.max(...Object.values(counts));
-
-    // Outlier detection (deviation from avg > 3)
-    const grid = document.getElementById('results-grid');
-    grid.innerHTML = '';
-    state.participants.forEach((p, i) => {
-      const numVal = parseFloat(p.vote);
-      const isOutlier = !isNaN(numVal) && avg !== null && Math.abs(numVal - avg) > 3;
-      const div = document.createElement('div');
-      div.className = 'result-card';
-      div.innerHTML = `
-        <div class="result-card-flip">
-          <div class="result-card-front"></div>
-          <div class="result-card-back ${isOutlier ? 'outlier' : ''}">
-            <span class="result-value">${p.vote || '?'}</span>
+    row.innerHTML = this.people.map(p => `
+      <div class="rc${counts[p.vote]===topCount && p.voted?' major':''}" id="rc-${p.id}">
+        <div class="rc-scene" id="rcs-${p.id}">
+          <div class="rc-face rc-back">
+            <div class="rc-back-av" style="background:${COLORS[p.ci]}">${p.ini}</div>
+            <div class="rc-back-name">${p.name}</div>
+          </div>
+          <div class="rc-face rc-front">
+            <div class="rc-val">${p.vote ?? '—'}</div>
+            <div class="rc-name">${p.name}</div>
           </div>
         </div>
-        <span class="result-name">${p.name}</span>
-      `;
-      grid.appendChild(div);
+      </div>`).join('');
+
+    /* Staggered flip */
+    this.people.forEach((p, i) => {
+      setTimeout(() => {
+        const s = document.getElementById('rcs-' + p.id);
+        if (s) s.classList.add('flipped');
+      }, 280 + i * 130);
     });
 
-    // Stats
-    document.getElementById('avg-value').textContent = avg !== null ? avg.toFixed(1) : '—';
-    document.getElementById('avg-sub').textContent = `Across ${numericVotes.length} numeric vote${numericVotes.length !== 1 ? 's' : ''}`;
-    document.getElementById('suggested-value').textContent = suggested !== null ? suggested : '—';
+    /* Stats */
+    const numeric = this.people
+      .filter(p => p.voted && p.vote !== '?' && p.vote !== '∞')
+      .map(p => parseInt(p.vote));
 
-    // Distribution
-    const bars = document.getElementById('dist-bars');
-    bars.innerHTML = '';
-    const sortedKeys = Object.keys(counts).sort((a,b) => {
-      const na = parseFloat(a), nb = parseFloat(b);
-      if (!isNaN(na) && !isNaN(nb)) return na - nb;
-      return String(a).localeCompare(String(b));
+    const avg = numeric.length
+      ? (numeric.reduce((a,b)=>a+b,0) / numeric.length)
+      : 0;
+
+    const suggested = numeric.length
+      ? FIBS.reduce((prev,curr) => Math.abs(curr-avg)<Math.abs(prev-avg)?curr:prev)
+      : '—';
+
+    const totalVoted = this.people.filter(p => p.voted).length;
+
+    document.getElementById('stats-numbers').innerHTML = `
+      <div class="stat-col">
+        <div class="stat-val">${avg ? avg.toFixed(1) : '—'}</div>
+        <div class="stat-lbl">Average</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val hi">${suggested}</div>
+        <div class="stat-lbl">Suggested</div>
+      </div>
+      <div class="stat-col">
+        <div class="stat-val">${totalVoted}</div>
+        <div class="stat-lbl">Votes cast</div>
+      </div>`;
+
+    /* Distribution */
+    const dist = document.getElementById('dist');
+    const sorted = Object.entries(counts).sort((a,b) => {
+      const na = parseInt(a[0]) || 999;
+      const nb = parseInt(b[0]) || 999;
+      return na - nb;
     });
-    sortedKeys.forEach(val => {
-      const cnt = counts[val];
-      const pct = (cnt / maxCount) * 100;
-      const isMode = cnt === maxCount;
-      const row = document.createElement('div');
-      row.className = 'dist-row';
-      row.innerHTML = `
-        <span class="dist-label">${val}</span>
-        <div class="dist-bar-bg">
-          <div class="dist-bar-fill ${isMode ? 'accent' : ''}" style="width:${pct}%"></div>
-        </div>
-        <span class="dist-count">×${cnt}</span>
-      `;
-      bars.appendChild(row);
+
+    dist.innerHTML = sorted.map(([val, cnt], idx) => {
+      const pct = (cnt / topCount * 100).toFixed(0);
+      const names = this.people.filter(p => p.voted && p.vote===val).map(p=>p.name).join(', ');
+      return `
+        <div class="dist-row">
+          <div class="dist-key">${val}</div>
+          <div class="dist-track">
+            <div class="dist-fill${cnt===topCount?' top':''}"
+                 style="width:${pct}%;animation-delay:${0.6+idx*0.08}s"></div>
+          </div>
+          <div class="dist-meta">${cnt} vote${cnt>1?'s':''} · ${names}</div>
+        </div>`;
+    }).join('');
+
+    /* Consensus */
+    const allSame = new Set(votes).size === 1 && totalVoted > 1;
+    const tag = document.getElementById('consensus-tag');
+    tag.style.display = allSame ? 'block' : 'none';
+    if (allSame) tag.style.animation = 'none';
+    requestAnimationFrame(() => {
+      if (allSame) tag.style.animation = 'fadeSlide 0.4s ease both 1.4s';
     });
-
-    // Consensus
-    document.getElementById('consensus-block').style.display = consensus ? 'block' : 'none';
-
-    show('reveal');
   },
 
   nextRound() {
-    state.round++;
-    state.myVote = null;
-    state.participants = state.participants.map(p => ({ ...p, vote: null }));
-    state.story = '';
-    App._buildSession();
-    document.getElementById('story-title').value = '';
-    document.getElementById('story-title').focus();
-    show('session');
+    this.people.forEach(p => { p.voted = false; p.vote = null; });
+    this.selected = null;
+    this._initSession();
+    this.show('session');
   },
-
 };
+
+/* ── Event listeners ── */
+document.getElementById('room-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') App.join();
+});
+document.getElementById('room-input').addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase();
+});
 </script>
+
 </body>
 </html>
