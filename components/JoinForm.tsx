@@ -32,10 +32,16 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
   return (
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center mb-4 relative">
+          <div className="absolute inset-0 rounded-full bg-rd-yellow opacity-10 blur-2xl scale-150" />
           <JesterHat size={72} />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-1">Planning Poker</h1>
+        <h1
+          className="text-2xl font-bold text-white mb-1 tracking-tight"
+          style={{ fontFamily: 'var(--font-syne)' }}
+        >
+          Planning Poker
+        </h1>
         <p className="text-rd-subtle text-sm">
           Room{' '}
           <span className="font-mono font-bold text-rd-yellow tracking-widest">{code}</span>
@@ -43,10 +49,15 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
       </div>
 
       <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Join room</h2>
+        <h2
+          className="text-base font-semibold text-white mb-4 tracking-tight"
+          style={{ fontFamily: 'var(--font-syne)' }}
+        >
+          Join room
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm text-rd-subtle mb-1.5">
+            <label htmlFor="name" className="block text-xs text-rd-subtle mb-1.5 uppercase tracking-wider">
               Your name <span className="text-red-400">*</span>
             </label>
             <input
@@ -57,13 +68,12 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
               placeholder="e.g. Alex"
               maxLength={50}
               autoFocus
-              className="w-full bg-rd-surface-2 border border-rd-border-2 text-white placeholder-rd-muted rounded-lg px-4 py-3 focus:outline-none focus:border-rd-yellow focus:ring-1 focus:ring-rd-yellow transition"
+              className="w-full bg-rd-surface-2 border border-rd-border-2 text-white placeholder-rd-muted rounded-xl px-4 py-3 focus:outline-none focus:border-rd-yellow/60 focus:ring-1 focus:ring-rd-yellow/30 transition-all text-sm"
             />
           </div>
 
-          {/* Voter toggle — only shown to admin */}
           {isAdmin && (
-            <div className="flex items-center justify-between gap-3 bg-rd-surface-2 border border-rd-border-2 rounded-lg px-4 py-3 select-none">
+            <div className="flex items-center justify-between gap-3 bg-rd-surface-2 border border-rd-border-2 rounded-xl px-4 py-3 select-none">
               <div>
                 <p className="text-sm font-medium text-white">Participate in voting?</p>
                 <p className="text-xs text-rd-muted mt-0.5">
@@ -76,13 +86,13 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
                 aria-checked={isVoter}
                 onClick={() => setIsVoter(v => !v)}
                 className={[
-                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden focus:outline-none focus:ring-2 focus:ring-rd-yellow',
+                  'relative w-11 h-6 rounded-full transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-rd-yellow/40',
                   isVoter ? 'bg-rd-yellow' : 'bg-rd-border-2',
                 ].join(' ')}
               >
                 <span
                   className={[
-                    'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                    'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200',
                     isVoter ? 'translate-x-5' : 'translate-x-0',
                   ].join(' ')}
                 />
@@ -90,12 +100,13 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
             </div>
           )}
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-lg transition-colors"
+            style={{ fontFamily: 'var(--font-syne)' }}
+            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -111,4 +122,3 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
     </div>
   );
 }
-

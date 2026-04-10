@@ -283,7 +283,7 @@ export default function RoomClient({ code }: { code: string }) {
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
-      <header className="bg-rd-surface border-b border-rd-border px-4 py-2 sticky top-0 z-10 overflow-visible">
+      <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10 overflow-visible">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="translate-y-4 relative z-20">
@@ -292,10 +292,20 @@ export default function RoomClient({ code }: { code: string }) {
             <div>
               {adminToken ? (
                 <a href="/" className="block hover:opacity-80 transition-opacity">
-                  <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
+                  <h1
+                    className="text-xl font-bold text-white leading-tight tracking-tight"
+                    style={{ fontFamily: 'var(--font-syne)' }}
+                  >
+                    Planning Poker
+                  </h1>
                 </a>
               ) : (
-                <h1 className="text-xl font-bold text-white leading-tight">Planning Poker</h1>
+                <h1
+                  className="text-xl font-bold text-white leading-tight tracking-tight"
+                  style={{ fontFamily: 'var(--font-syne)' }}
+                >
+                  Planning Poker
+                </h1>
               )}
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                 <span className="text-rd-muted text-xs">Room:</span>
@@ -309,7 +319,7 @@ export default function RoomClient({ code }: { code: string }) {
                   </span>
                 )}
                 {adminToken && (
-                  <span className="bg-rd-yellow/15 text-rd-yellow text-xs px-2 py-0.5 rounded-full font-medium">
+                  <span className="bg-rd-purple/15 text-rd-purple text-xs px-2 py-0.5 rounded-full font-medium border border-rd-purple-border">
                     Admin
                   </span>
                 )}
@@ -321,37 +331,40 @@ export default function RoomClient({ code }: { code: string }) {
             {adminToken && <SessionStats roomCode={code} adminToken={adminToken} />}
             <button
               onClick={handleCopyLink}
-              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-sm px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
             >
-              {copied ? '✓ Link copied!' : '🔗 Copy link'}
+              {copied ? '✓ Copied!' : '🔗 Copy link'}
             </button>
           </div>
         </div>
       </header>
 
       {/* ── Main content ── */}
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-5">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
         {/* Status bar */}
         <div
           className={[
-            'rounded-xl px-4 py-3 flex items-center justify-between',
+            'rounded-2xl px-4 py-3 flex items-center justify-between',
             isRevealed
-              ? 'bg-rd-yellow-dim border border-rd-yellow-border'
+              ? 'bg-rd-cyan-dim border border-rd-cyan-border'
               : 'bg-rd-surface border border-rd-border',
           ].join(' ')}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span
               className={[
-                'w-2 h-2 rounded-full',
-                isRevealed ? 'bg-rd-yellow' : 'bg-rd-yellow animate-pulse',
+                'w-2 h-2 rounded-full flex-shrink-0',
+                isRevealed ? 'bg-rd-cyan' : 'bg-rd-yellow animate-pulse',
               ].join(' ')}
             />
-            <span className="text-sm font-medium">
+            <span
+              className={`text-sm font-semibold tracking-tight ${isRevealed ? 'text-rd-cyan' : 'text-white'}`}
+              style={{ fontFamily: 'var(--font-syne)' }}
+            >
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-rd-subtle text-sm">
+          <span className="text-rd-subtle text-xs font-mono">
             {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
