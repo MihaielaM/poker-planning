@@ -10,6 +10,7 @@ import SessionStats from './SessionStats';
 import ConsensusAlert from './ConsensusAlert';
 import WelcomeOverlay from './WelcomeOverlay';
 import RoomExpired from './RoomExpired';
+import JesterHat from './JesterHat';
 
 type Session = {
   token: string;
@@ -21,16 +22,6 @@ type Session = {
 const POLL_INTERVAL_MS = 2000;
 const PING_INTERVAL_MS = 30000;
 
-function JesterHat({ size = 80 }: { size?: number }) {
-  return (
-    <img
-      src="/joker-hat.png"
-      alt="Planning Poker"
-      style={{ width: size, height: size }}
-      className="object-contain flex-shrink-0 drop-shadow-lg relative z-20"
-    />
-  );
-}
 
 export default function RoomClient({ code }: { code: string }) {
   const [roomData, setRoomData] = useState<RoomData | null>(null);

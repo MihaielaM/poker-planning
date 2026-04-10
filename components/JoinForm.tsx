@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import JesterHat from './JesterHat';
 
 type Props = {
   code: string;
@@ -111,13 +112,3 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
   );
 }
 
-function JesterHat({ size = 72 }: { size?: number }) {
-  return (
-    <img
-      src="/joker-hat.png"
-      alt="Planning Poker"
-      style={{ width: size, height: size }}
-      className="object-contain drop-shadow-lg"
-    />
-  );
-}

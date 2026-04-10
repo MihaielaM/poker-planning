@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import JesterHat from '@/components/JesterHat';
 
 export default function HomePage() {
   const router = useRouter();
@@ -74,13 +75,3 @@ export default function HomePage() {
   );
 }
 
-function JesterHat({ size = 96 }: { size?: number }) {
-  return (
-    <img
-      src="/joker-hat.png"
-      alt="Planning Poker"
-      style={{ width: size, height: size }}
-      className="object-contain drop-shadow-xl"
-    />
-  );
-}

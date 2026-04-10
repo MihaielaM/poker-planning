@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import JesterHat from './JesterHat';
 
 const MESSAGES = [
   // Prea târziu
@@ -140,7 +141,9 @@ export default function RoomExpired() {
   return (
     <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
       <div className="text-center max-w-md w-full">
-        <div className="text-6xl mb-6">🃏</div>
+        <div className="flex justify-center mb-6">
+          <JesterHat size={96} />
+        </div>
         <h2 className="text-rd-yellow font-bold text-xl mb-4">Room not found</h2>
         <p className="text-rd-subtle text-base leading-relaxed">{message}</p>
       </div>
