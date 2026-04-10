@@ -44,7 +44,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
                   ? 'border-2 border-rd-yellow text-rd-yellow scale-110 -translate-y-2'
                   : isRevealed
                     ? 'bg-rd-surface-2 border border-rd-border text-rd-muted hover:border-rd-border-2 hover:-translate-y-1 cursor-pointer'
-                    : 'border border-[#3d3000] text-rd-yellow/50 hover:text-rd-yellow hover:border-rd-yellow/40 hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 cursor-pointer',
+                    : 'border border-[#3d3000] text-rd-yellow hover:border-rd-yellow/60 hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 cursor-pointer',
                 disabled && !isSelected && !isRevealed ? 'opacity-30 cursor-not-allowed' : '',
               ].join(' ')}
             >
