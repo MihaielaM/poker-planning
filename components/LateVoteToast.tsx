@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import JesterHat from './JesterHat';
 
 const MESSAGES = [
   // Prea târziu, prietene
@@ -156,14 +157,17 @@ export default function LateVoteToast({ onDone }: Props) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center pb-10 px-4 pointer-events-none transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center px-4 pointer-events-none transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}
+      style={{ backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(2px)' }}
     >
-      <div className="pointer-events-auto bg-rd-surface border border-rd-border-2 rounded-2xl px-5 py-4 max-w-sm w-full shadow-2xl flex items-start gap-3">
-        <span className="text-2xl flex-shrink-0">🃏</span>
-        <p className="text-white text-sm leading-relaxed flex-1">{message}</p>
+      <div className="relative pointer-events-auto bg-rd-surface border border-rd-border-2 rounded-2xl px-6 py-5 max-w-sm w-full shadow-2xl text-center">
+        <div className="flex justify-center mb-3">
+          <JesterHat size={48} />
+        </div>
+        <p className="text-white text-sm leading-relaxed">{message}</p>
         <button
           onClick={() => { setFading(true); setTimeout(onDone, FADE_MS); }}
-          className="text-rd-muted hover:text-white text-lg leading-none flex-shrink-0 transition-colors mt-0.5"
+          className="absolute top-3 right-4 text-rd-muted hover:text-white text-xl leading-none transition-colors"
           aria-label="Close"
         >
           ×
