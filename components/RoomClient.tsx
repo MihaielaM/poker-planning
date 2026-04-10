@@ -284,7 +284,7 @@ export default function RoomClient({ code }: { code: string }) {
 
       {/* ── Header ── */}
       <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10">
-        <div className="w-full px-1 flex items-center justify-between flex-wrap gap-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <JesterHat size={44} />
             <div>
@@ -332,7 +332,7 @@ export default function RoomClient({ code }: { code: string }) {
       </header>
 
       {/* ── Main content ── */}
-      <main className="w-full px-3 py-4 space-y-4">
+      <main className="max-w-7xl mx-auto px-4 py-6 space-y-4">
         {/* Status bar */}
         <div
           className={[
