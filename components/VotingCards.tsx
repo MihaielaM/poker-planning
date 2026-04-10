@@ -32,26 +32,20 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
                 if (!disabled) onVote(card);
               }}
               disabled={disabled && !isRevealed}
-              style={isSelected ? { boxShadow: '3px 3px 0 rgba(255,208,0,0.5)' } : { boxShadow: '3px 3px 0 #262626' }}
+              style={isSelected
+                ? { background: 'linear-gradient(135deg, #FFE033 0%, #FFD000 50%, #CCAA00 100%)', boxShadow: '0 0 18px rgba(255,208,0,0.55), 0 0 6px rgba(255,208,0,0.35), 3px 3px 0 rgba(255,208,0,0.3)' }
+                : { boxShadow: '3px 3px 0 #262626' }
+              }
               className={[
                 'relative w-16 h-[88px] rounded-xl font-bold text-3xl select-none transition-all duration-150',
                 isSelected
-                  ? 'bg-rd-card-face border-2 border-rd-yellow text-rd-dark scale-110 -translate-y-2'
+                  ? 'border-2 border-rd-yellow text-rd-dark scale-110 -translate-y-2'
                   : isRevealed
                     ? 'bg-rd-surface-2 border border-rd-border text-rd-muted hover:border-rd-border-2 hover:-translate-y-1 cursor-pointer'
-                    : 'bg-rd-card-face border border-[#e0ddd5] text-rd-dark hover:border-rd-yellow hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 active:shadow-none cursor-pointer',
+                    : 'bg-rd-yellow border border-rd-yellow-active text-rd-dark hover:bg-rd-yellow-hover hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 cursor-pointer',
                 disabled && !isSelected && !isRevealed ? 'opacity-30 cursor-not-allowed' : '',
               ].join(' ')}
             >
-              {/* Corner pip */}
-              {!isRevealed && (
-                <span className={[
-                  'absolute top-1.5 left-2 text-[10px] font-bold leading-none',
-                  isSelected ? 'text-rd-dark/40' : 'text-rd-muted/60',
-                ].join(' ')}>
-                  {card}
-                </span>
-              )}
               {card}
             </button>
           );
