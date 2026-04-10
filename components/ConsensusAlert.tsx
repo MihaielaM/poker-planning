@@ -71,7 +71,7 @@ export default function ConsensusAlert({ roundNumber }: { roundNumber: number })
         />
       ))}
 
-      <div className="pointer-events-auto absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-sm px-4">
+      <div className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm px-4">
         <div className="bg-rd-surface border border-rd-yellow rounded-2xl px-5 py-4 shadow-2xl shadow-rd-yellow/10 text-center">
           <div className="text-4xl mb-2">🎉</div>
           <p className="text-rd-yellow font-bold text-base leading-snug">

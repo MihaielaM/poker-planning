@@ -67,7 +67,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
 
       {mounted && open && stats && createPortal(
         <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center p-4 pt-20 overflow-y-auto"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-y-auto"
           onClick={() => setOpen(false)}
         >
           <div
