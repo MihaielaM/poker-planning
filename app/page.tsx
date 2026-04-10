@@ -48,7 +48,8 @@ export default function HomePage() {
               Planning Poker
             </h1>
             <p className="text-rd-subtle text-sm font-light">
-              Estimate together.
+              Agile estimation for remote SCRUM teams.<br />
+              Create a room and share the link.
             </p>
           </div>
         </div>
