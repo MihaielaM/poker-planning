@@ -139,9 +139,20 @@ export default function RoomClient({ code }: { code: string }) {
   useEffect(() => {
     if (session && !adminToken && !welcomeShownRef.current) {
       welcomeShownRef.current = true;
-      setShowWelcome(true);
+      const welcomeKey = `ppoker-${code}-welcome-${session.id}`;
+      if (!localStorage.getItem(welcomeKey)) {
+        localStorage.setItem(welcomeKey, '1');
+        setShowWelcome(true);
+      }
     }
-  }, [session, adminToken]);
+  }, [session, adminToken, code]);
+
+  // Restore selectedCard after refresh when votes are revealed
+  useEffect(() => {
+    if (!roomData || !session || selectedCard !== null) return;
+    const participant = roomData.participants.find(p => p.id === session.id);
+    if (participant?.vote) setSelectedCard(participant.vote);
+  }, [roomData, session]);
 
   const handleJoin = async (name: string, isVoter: boolean) => {
     const res = await fetch(`/api/rooms/${code}/join`, {
