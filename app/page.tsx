@@ -44,7 +44,7 @@ export default function HomePage() {
             <JesterHat size={88} />
           </div>
           <div>
-            <h1 className="font-display text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
+            <h1 className="text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
               Planning Poker
             </h1>
             <p className="text-rd-subtle text-sm font-light">
@@ -65,7 +65,7 @@ export default function HomePage() {
                 transform: `translateY(${i % 2 === 0 ? '0px' : '-6px'})`,
               }}
             >
-              <span className="font-display font-bold text-xl text-rd-dark leading-none">{val}</span>
+              <span className="font-bold text-xl text-rd-dark leading-none">{val}</span>
             </div>
           ))}
         </div>
@@ -75,7 +75,7 @@ export default function HomePage() {
           <button
             onClick={createRoom}
             disabled={loading}
-            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-rd-yellow/20 hover:shadow-xl hover:-translate-y-0.5 font-display tracking-widest uppercase"
+            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-rd-yellow/20 hover:shadow-xl hover:-translate-y-0.5 tracking-widest uppercase"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -102,7 +102,7 @@ export default function HomePage() {
             { num: '03', title: 'Auto-reveal', desc: 'Votes flip simultaneously when everyone is done.' },
           ].map(({ num, title, desc }) => (
             <div key={num} className="flex items-start gap-4 px-4 py-3.5 border-b border-rd-border last:border-b-0 bg-rd-surface/60">
-              <span className="font-display text-rd-yellow text-sm font-bold tracking-wider mt-0.5 flex-shrink-0">{num}</span>
+              <span className="text-rd-yellow text-sm font-bold tracking-wider mt-0.5 flex-shrink-0">{num}</span>
               <div className="text-left">
                 <p className="text-white text-sm font-semibold leading-tight">{title}</p>
                 <p className="text-rd-subtle text-xs mt-0.5">{desc}</p>

@@ -114,7 +114,7 @@ function ParticipantCard({
             {/* Front face */}
             <div
               className={[
-                'card-3d-face card-3d-face-front flex items-center justify-center font-display font-bold text-2xl border-2',
+                'card-3d-face card-3d-face-front flex items-center justify-center font-bold text-2xl border-2',
                 p.isHighlight
                   ? 'bg-rd-yellow border-rd-yellow text-rd-dark card-highlight'
                   : 'bg-rd-card-face border-[#e0ddd5] text-rd-dark',

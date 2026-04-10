@@ -49,11 +49,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Display font ── */
-.font-display {
-  font-family: var(--font-barlow-condensed), sans-serif;
-}
-
 /* ── Grid background (home) ── */
 .grid-bg {
   background-image:

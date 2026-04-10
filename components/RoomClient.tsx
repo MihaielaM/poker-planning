@@ -290,12 +290,12 @@ export default function RoomClient({ code }: { code: string }) {
             <div>
               {adminToken ? (
                 <a href="/" className="block hover:opacity-80 transition-opacity">
-                  <h1 className="font-display text-xl font-bold text-white leading-tight tracking-wider uppercase">
+                  <h1 className="text-xl font-bold text-white leading-tight tracking-wider uppercase">
                     Planning Poker
                   </h1>
                 </a>
               ) : (
-                <h1 className="font-display text-xl font-bold text-white leading-tight tracking-wider uppercase">
+                <h1 className="text-xl font-bold text-white leading-tight tracking-wider uppercase">
                   Planning Poker
                 </h1>
               )}

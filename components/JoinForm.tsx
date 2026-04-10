@@ -35,7 +35,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
         <div className="flex justify-center mb-4">
           <JesterHat size={64} />
         </div>
-        <h1 className="font-display text-3xl font-bold tracking-wider text-white mb-1 uppercase">
+        <h1 className="text-3xl font-bold tracking-wider text-white mb-1 uppercase">
           Planning Poker
         </h1>
         <p className="text-rd-subtle text-sm font-light">
@@ -98,7 +98,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-widest hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20 font-display uppercase"
+            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-widest hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20 uppercase"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">

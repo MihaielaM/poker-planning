@@ -34,7 +34,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
               disabled={disabled && !isRevealed}
               style={isSelected ? { boxShadow: '3px 3px 0 rgba(255,208,0,0.5)' } : { boxShadow: '3px 3px 0 #262626' }}
               className={[
-                'relative w-16 h-[88px] rounded-xl font-display font-bold text-3xl select-none transition-all duration-150',
+                'relative w-16 h-[88px] rounded-xl font-bold text-3xl select-none transition-all duration-150',
                 isSelected
                   ? 'bg-rd-card-face border-2 border-rd-yellow text-rd-dark scale-110 -translate-y-2'
                   : isRevealed
@@ -46,7 +46,7 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
               {/* Corner pip */}
               {!isRevealed && (
                 <span className={[
-                  'absolute top-1.5 left-2 font-display text-[10px] font-bold leading-none',
+                  'absolute top-1.5 left-2 text-[10px] font-bold leading-none',
                   isSelected ? 'text-rd-dark/40' : 'text-rd-muted/60',
                 ].join(' ')}>
                   {card}
