@@ -11,7 +11,16 @@ import ConsensusAlert from './ConsensusAlert';
 import WelcomeOverlay from './WelcomeOverlay';
 import LateVoteToast from './LateVoteToast';
 import RoomExpired from './RoomExpired';
-import JesterHat from './JesterHat';
+function DeckMindLogo() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="26" height="34" rx="4" fill="#1a1a1a" stroke="#FFD000" strokeWidth="1.5"/>
+      <rect x="14" y="2" width="26" height="34" rx="4" fill="#FFD000"/>
+      <rect x="17" y="7" width="4" height="4" rx="1" fill="#0f0f0f"/>
+      <rect x="25" y="25" width="4" height="4" rx="1" fill="#0f0f0f"/>
+    </svg>
+  );
+}
 
 type Session = {
   token: string;
@@ -286,24 +295,16 @@ export default function RoomClient({ code }: { code: string }) {
       <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <div className="relative flex-shrink-0">
-              <JesterHat size={48} />
-            </div>
+            <DeckMindLogo />
             <div>
               {adminToken ? (
                 <a href="/" className="block hover:opacity-80 transition-opacity">
-                  <h1
-                    className="text-xl font-bold text-white leading-tight tracking-tight"
-                    
-                  >
+                  <h1 className="font-display text-xl font-bold text-white leading-tight tracking-wider uppercase">
                     Planning Poker
                   </h1>
                 </a>
               ) : (
-                <h1
-                  className="text-xl font-bold text-white leading-tight tracking-tight"
-                  
-                >
+                <h1 className="font-display text-xl font-bold text-white leading-tight tracking-wider uppercase">
                   Planning Poker
                 </h1>
               )}
@@ -319,7 +320,7 @@ export default function RoomClient({ code }: { code: string }) {
                   </span>
                 )}
                 {adminToken && (
-                  <span className="bg-rd-purple/15 text-rd-purple text-xs px-2 py-0.5 rounded-full font-medium border border-rd-purple-border">
+                  <span className="bg-rd-yellow/10 text-rd-yellow text-xs px-2 py-0.5 rounded font-medium border border-rd-yellow/20">
                     Admin
                   </span>
                 )}

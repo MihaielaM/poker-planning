@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import JesterHat from './JesterHat';
+
+function DeckMindLogo({ size = 40 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="26" height="34" rx="4" fill="#1a1a1a" stroke="#FFD000" strokeWidth="1.5"/>
+      <rect x="14" y="2" width="26" height="34" rx="4" fill="#FFD000"/>
+      <rect x="17" y="7" width="4" height="4" rx="1" fill="#0f0f0f"/>
+      <rect x="25" y="25" width="4" height="4" rx="1" fill="#0f0f0f"/>
+    </svg>
+  );
+}
 
 type Props = {
   code: string;
@@ -32,27 +42,20 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
   return (
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
-        <div className="flex justify-center mb-4 relative">
-          <div className="absolute inset-0 rounded-full bg-rd-yellow opacity-10 blur-2xl scale-150" />
-          <JesterHat size={72} />
+        <div className="flex justify-center mb-4">
+          <DeckMindLogo size={48} />
         </div>
-        <h1
-          className="text-2xl font-bold text-white mb-1 tracking-tight"
-          
-        >
+        <h1 className="font-display text-3xl font-bold tracking-wider text-white mb-1 uppercase">
           Planning Poker
         </h1>
-        <p className="text-rd-subtle text-sm">
+        <p className="text-rd-subtle text-sm font-light">
           Room{' '}
           <span className="font-mono font-bold text-rd-yellow tracking-widest">{code}</span>
         </p>
       </div>
 
       <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
-        <h2
-          className="text-base font-semibold text-white mb-4 tracking-tight"
-          
-        >
+        <h2 className="text-sm font-semibold text-white mb-4 uppercase tracking-widest font-display">
           Join room
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,8 +108,7 @@ export default function JoinForm({ code, isAdmin, onJoin }: Props) {
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            
-            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20"
+            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold py-3 rounded-xl transition-all duration-200 text-sm tracking-widest hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rd-yellow/20 font-display uppercase"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
