@@ -9,6 +9,7 @@ import ReactionBar from './ReactionBar';
 import SessionStats from './SessionStats';
 import ConsensusAlert from './ConsensusAlert';
 import WelcomeOverlay from './WelcomeOverlay';
+import LateVoteToast from './LateVoteToast';
 import RoomExpired from './RoomExpired';
 import JesterHat from './JesterHat';
 
@@ -39,6 +40,7 @@ export default function RoomClient({ code }: { code: string }) {
 
   const [showConsensus, setShowConsensus] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showLateVote, setShowLateVote] = useState(false);
   const welcomeShownRef = useRef(false);
   const lastRoundRef = useRef<number | null>(null);
   const lastStatusRef = useRef<string | null>(null);
@@ -266,6 +268,7 @@ export default function RoomClient({ code }: { code: string }) {
   return (
     <div className="min-h-screen bg-rd-dark text-white">
       {showWelcome && <WelcomeOverlay name={session.name} />}
+      {showLateVote && <LateVoteToast onDone={() => setShowLateVote(false)} />}
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
@@ -352,13 +355,15 @@ export default function RoomClient({ code }: { code: string }) {
           />
         )}
 
-        {/* Voting cards — only for voters */}
-        {isWaiting && isVoter && (
+        {/* Voting cards — for voters during waiting and revealed */}
+        {isVoter && (isWaiting || isRevealed) && (
           <VotingCards
             onVote={handleVote}
+            onRevealedClick={() => setShowLateVote(true)}
             selectedCard={selectedCard}
             hasVoted={hasVoted}
             disabled={isSubmittingVote}
+            isRevealed={isRevealed ?? false}
           />
         )}
 
