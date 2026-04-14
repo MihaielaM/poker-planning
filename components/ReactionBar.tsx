@@ -69,36 +69,31 @@ export default function ReactionBar({ reactions, participantToken, roomCode }: P
             style={{ left: `${f.x}%` }}
           >
             <span className="text-3xl">{f.emoji}</span>
-            <span className="text-xs text-white/70 bg-black/50 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+            <span className="text-xs text-white/70 bg-black/40 px-1.5 py-0.5 rounded-full whitespace-nowrap">
               {f.name}
             </span>
           </div>
         ))}
       </div>
 
-      {/* Vertical glass panel */}
-      <div className="glass-panel rounded-2xl p-2 flex flex-col gap-1" style={{boxShadow: '0 0 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,193,7,0.06)'}}>
-        <p className="text-center text-[10px] font-medium uppercase tracking-widest py-1 mb-1" style={{color: 'rgba(255,193,7,0.4)'}}>React</p>
-        {EMOJIS.map(emoji => (
-          <button
-            key={emoji}
-            onClick={() => sendReaction(emoji)}
-            disabled={!!cooldowns[emoji]}
-            className="w-10 h-10 flex items-center justify-center text-xl rounded-xl transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed hover:scale-125 active:scale-95"
-            style={{
-              background: cooldowns[emoji] ? 'rgba(255,193,7,0.05)' : 'transparent',
-            }}
-            onMouseEnter={e => {
-              if (!cooldowns[emoji]) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,193,7,0.1)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-            }}
-            title={emoji}
-          >
-            {emoji}
-          </button>
-        ))}
+      {/* Reaction buttons */}
+      <div className="bg-rd-surface border border-rd-border rounded-xl px-4 py-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-rd-muted text-base font-medium uppercase tracking-wider">React</span>
+          <div className="flex gap-2 flex-wrap">
+            {EMOJIS.map(emoji => (
+              <button
+                key={emoji}
+                onClick={() => sendReaction(emoji)}
+                disabled={!!cooldowns[emoji]}
+                className="text-xl transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed hover:scale-125 active:scale-95"
+                title={emoji}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

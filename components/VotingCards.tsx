@@ -13,8 +13,8 @@ type Props = {
 
 export default function VotingCards({ onVote, onRevealedClick, selectedCard, hasVoted, disabled, isRevealed = false }: Props) {
   return (
-    <div className="glass-panel rounded-2xl px-5 py-4" style={{maxWidth: '100%'}}>
-      <p className="text-center text-base mb-4 font-medium uppercase tracking-widest" style={{color: 'rgba(255,193,7,0.5)'}}>
+    <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
+      <p className="text-rd-subtle text-base mb-6 font-medium uppercase tracking-widest">
         {isRevealed
           ? 'Votes revealed — round closed'
           : hasVoted
@@ -32,39 +32,21 @@ export default function VotingCards({ onVote, onRevealedClick, selectedCard, has
                 if (!disabled) onVote(card);
               }}
               disabled={disabled && !isRevealed}
-              className="relative w-16 h-[88px] rounded-xl font-bold text-3xl select-none transition-all duration-200"
-              style={isSelected ? {
-                background: 'linear-gradient(135deg, #FFD740 0%, #FFC107 50%, #FFA000 100%)',
-                border: '1.5px solid rgba(255,215,64,0.8)',
-                color: '#080808',
-                transform: 'translateY(-8px) scale(1.08)',
-                boxShadow: '0 0 28px rgba(255,193,7,0.6), 0 0 8px rgba(255,193,7,0.4), 0 12px 32px rgba(0,0,0,0.5)',
-              } : isRevealed ? {
-                background: 'rgba(14,11,6,0.6)',
-                border: '1px solid rgba(255,193,7,0.08)',
-                color: 'rgba(255,193,7,0.3)',
-                cursor: 'pointer',
-              } : {
-                background: 'rgba(14,11,6,0.75)',
-                border: '1px solid rgba(255,193,7,0.18)',
-                color: '#FFC107',
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                opacity: disabled ? 0.3 : 1,
-              }}
-              onMouseEnter={e => {
-                if (!isSelected && !isRevealed && !disabled) {
-                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-5px)';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,193,7,0.5)';
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 16px rgba(255,193,7,0.25), 0 8px 24px rgba(0,0,0,0.4)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!isSelected && !isRevealed) {
-                  (e.currentTarget as HTMLButtonElement).style.transform = '';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,193,7,0.18)';
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = '';
-                }
-              }}
+              style={isSelected
+                ? { background: 'linear-gradient(135deg, #FFE033 0%, #FFD000 50%, #CCAA00 100%)', boxShadow: '0 0 18px rgba(255,208,0,0.55), 0 0 6px rgba(255,208,0,0.35), 3px 3px 0 rgba(255,208,0,0.3)' }
+                : !isRevealed
+                  ? { background: 'linear-gradient(135deg, #2a2200 0%, #1a1500 100%)', boxShadow: '3px 3px 0 #1a1500' }
+                  : { boxShadow: '3px 3px 0 #262626' }
+              }
+              className={[
+                'relative w-16 h-[88px] rounded-xl font-bold text-3xl select-none transition-all duration-150',
+                isSelected
+                  ? 'border-2 border-rd-yellow text-rd-dark scale-110 -translate-y-2'
+                  : isRevealed
+                    ? 'bg-rd-surface-2 border border-rd-border text-rd-muted hover:border-rd-border-2 hover:-translate-y-1 cursor-pointer'
+                    : 'border border-[#3d3000] text-rd-yellow hover:border-rd-yellow/60 hover:-translate-y-1.5 hover:shadow-none active:translate-y-0 cursor-pointer',
+                disabled && !isSelected && !isRevealed ? 'opacity-30 cursor-not-allowed' : '',
+              ].join(' ')}
             >
               {card}
             </button>
