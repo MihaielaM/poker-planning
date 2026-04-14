@@ -41,7 +41,7 @@ export default function HomePage() {
         <div className="flex flex-col items-center gap-5">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-rd-yellow opacity-10 blur-2xl scale-150" />
-            <JesterHat size={88} />
+            <JesterHat size={95} />
           </div>
           <div>
             <h1 className="text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
