@@ -290,28 +290,28 @@ export default function RoomClient({ code }: { code: string }) {
             <div>
               {adminToken ? (
                 <a href="/" className="block hover:opacity-80 transition-opacity">
-                  <h1 className="text-xl font-bold text-white leading-tight tracking-wider uppercase">
+                  <h1 className="text-2xl font-bold text-white leading-tight tracking-wider uppercase">
                     Planning Poker
                   </h1>
                 </a>
               ) : (
-                <h1 className="text-xl font-bold text-white leading-tight tracking-wider uppercase">
+                <h1 className="text-2xl font-bold text-white leading-tight tracking-wider uppercase">
                   Planning Poker
                 </h1>
               )}
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span className="text-rd-muted text-xs">Room:</span>
+                <span className="text-rd-muted text-base">Room:</span>
                 {adminToken ? (
-                  <a href="/" className="font-mono font-bold text-rd-yellow text-sm tracking-widest hover:opacity-80 transition-opacity">
+                  <a href="/" className="font-mono font-bold text-rd-yellow text-base tracking-widest hover:opacity-80 transition-opacity">
                     {code}
                   </a>
                 ) : (
-                  <span className="font-mono font-bold text-rd-yellow text-sm tracking-widest">
+                  <span className="font-mono font-bold text-rd-yellow text-base tracking-widest">
                     {code}
                   </span>
                 )}
                 {adminToken && (
-                  <span className="bg-rd-yellow/10 text-rd-yellow text-xs px-2 py-0.5 rounded font-medium border border-rd-yellow/20">
+                  <span className="bg-rd-yellow/10 text-rd-yellow text-base px-2 py-0.5 rounded font-medium border border-rd-yellow/20">
                     Admin
                   </span>
                 )}
