@@ -27,7 +27,7 @@ const BADGES: { minPct: number; variants: { label: string; emoji: string; messag
     { label: 'Human Fibonacci',  emoji: '🧮', message: 'Your brain IS the formula.' },
     { label: 'Almost Psychic',   emoji: '🔭', message: 'Almost psychic. Almost.' },
     { label: 'Pattern Seeker',   emoji: '📐', message: 'Consistently close. Disturbingly so.' },
-    { label: 'Team Brain',       emoji: '🫂',  message: 'You and the team share one brain.' },
+    { label: 'Team Brain',       emoji: '👥', message: 'You and the team share one brain.' },
     { label: 'Reliable Voice',   emoji: '📣', message: 'Right more often than wrong. Impressively.' },
   ]},
   { minPct: 60, variants: [
@@ -38,8 +38,8 @@ const BADGES: { minPct: number; variants: { label: string; emoji: string; messag
   ]},
   { minPct: 40, variants: [
     { label: 'Lucky Guesser',    emoji: '🍀', message: 'Right enough to feel good about it.' },
-    { label: 'Coin Flipper',     emoji: '🪙', message: 'Coin flip energy, but make it Fibonacci.' },
-    { label: 'Dark Horse',       emoji: '🌑', message: 'Sometimes a shot in the dark hits.' },
+    { label: 'Coin Flipper',     emoji: '🎲', message: 'Coin flip energy, but make it Fibonacci.' },
+    { label: 'Dark Horse',       emoji: '🌙', message: 'Sometimes a shot in the dark hits.' },
     { label: 'Could Be Worse',   emoji: '🤷', message: 'Not the worst estimator in the room.' },
   ]},
   { minPct: 1, variants: [
