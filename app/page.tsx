@@ -47,7 +47,7 @@ export default function HomePage() {
             <h1 className="text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
               Planning Poker
             </h1>
-            <p className="text-rd-subtle text-sm font-light">
+            <p className="text-rd-subtle text-base font-light">
               Agile estimation for remote SCRUM teams.<br />
               Create a room and share the link.
             </p>
