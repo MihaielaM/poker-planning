@@ -351,8 +351,13 @@ export default function RoomClient({ code }: { code: string }) {
               ].join(' ')}
             />
             <span
-              className={`text-base font-semibold tracking-tight ${isRevealed ? 'text-rd-yellow' : 'text-white'}`}
-              
+              className="text-base font-semibold tracking-tight"
+              style={isRevealed ? {
+                background: 'linear-gradient(90deg, #FFE033 0%, #FFD000 50%, #CCAA00 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              } : { color: 'white' }}
             >
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
