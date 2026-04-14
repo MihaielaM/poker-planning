@@ -350,13 +350,13 @@ export default function RoomClient({ code }: { code: string }) {
               ].join(' ')}
             />
             <span
-              className={`text-sm font-semibold tracking-tight ${isRevealed ? 'text-rd-cyan' : 'text-white'}`}
+              className={`text-base font-semibold tracking-tight ${isRevealed ? 'text-rd-cyan' : 'text-white'}`}
               
             >
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-rd-subtle text-xs font-mono">
+          <span className="text-rd-subtle text-base font-mono">
             {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
@@ -410,14 +410,14 @@ export default function RoomClient({ code }: { code: string }) {
         {/* Admin controls */}
         {adminToken && (
           <div className="bg-rd-surface border border-rd-border rounded-xl p-4">
-            <p className="text-rd-muted text-xs mb-3 font-medium uppercase tracking-wider">
+            <p className="text-rd-muted text-base mb-3 font-medium uppercase tracking-wider">
               Admin controls
             </p>
             <div className="flex gap-3 flex-wrap">
               {isWaiting && (
                 <button
                   onClick={handleReveal}
-                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-base flex items-center gap-2"
                 >
                   <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> Reveal
                 </button>
@@ -425,7 +425,7 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed && (
                 <button
                   onClick={handleReset}
-                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm flex items-center gap-2"
+                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-base flex items-center gap-2"
                 >
                   <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> New round
                 </button>

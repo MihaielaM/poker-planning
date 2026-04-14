@@ -33,10 +33,10 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
   return (
     <div className="bg-rd-surface border border-rd-border rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-rd-subtle text-xs font-medium uppercase tracking-wider">
+        <p className="text-rd-subtle text-base font-medium uppercase tracking-wider">
           Participants
         </p>
-        <span className="text-rd-muted text-xs">
+        <span className="text-rd-muted text-base">
           {votedCount}/{totalVoters} voted
         </span>
       </div>
@@ -141,7 +141,7 @@ function ParticipantCard({
       {/* Name */}
       <p
         className={[
-          'text-xs font-medium text-center truncate w-full',
+          'text-base font-medium text-center truncate w-full',
           isCurrentUser ? 'text-white' : 'text-rd-text',
         ].join(' ')}
         title={p.name}
@@ -155,7 +155,7 @@ function ParticipantCard({
       {/* Status badge */}
       <span
         className={[
-          'text-xs px-2 py-0.5 rounded-full font-medium',
+          'text-sm px-2 py-0.5 rounded-full font-medium',
           !p.isVoter
             ? 'bg-rd-surface-2 text-rd-muted'
             : p.hasVoted

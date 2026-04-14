@@ -14,7 +14,7 @@ type Props = {
 export default function VotingCards({ onVote, onRevealedClick, selectedCard, hasVoted, disabled, isRevealed = false }: Props) {
   return (
     <div className="bg-rd-surface border border-rd-border rounded-2xl p-6">
-      <p className="text-rd-subtle text-xs mb-6 font-medium uppercase tracking-widest">
+      <p className="text-rd-subtle text-base mb-6 font-medium uppercase tracking-widest">
         {isRevealed
           ? 'Votes revealed — round closed'
           : hasVoted

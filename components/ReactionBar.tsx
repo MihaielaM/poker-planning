@@ -79,7 +79,7 @@ export default function ReactionBar({ reactions, participantToken, roomCode }: P
       {/* Reaction buttons */}
       <div className="bg-rd-surface border border-rd-border rounded-xl px-4 py-3">
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-rd-muted text-xs font-medium uppercase tracking-wider">React</span>
+          <span className="text-rd-muted text-base font-medium uppercase tracking-wider">React</span>
           <div className="flex gap-2 flex-wrap">
             {EMOJIS.map(emoji => (
               <button
