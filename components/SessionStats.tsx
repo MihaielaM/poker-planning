@@ -24,7 +24,7 @@ const BADGES: { minPct: number; variants: { label: string; emoji: string; messag
     { label: 'The Algorithm',    emoji: '💡', message: 'The team should just ask you and skip the vote.' },
   ]},
   { minPct: 80, variants: [
-    { label: 'Human Fibonacci',  emoji: '🧮', message: 'Your brain IS the formula.' },
+    { label: 'Human Fibonacci',  emoji: '📏', message: 'Your brain IS the formula.' },
     { label: 'Almost Psychic',   emoji: '🔭', message: 'Almost psychic. Almost.' },
     { label: 'Pattern Seeker',   emoji: '📐', message: 'Consistently close. Disturbingly so.' },
     { label: 'Team Brain',       emoji: '👥', message: 'You and the team share one brain.' },
