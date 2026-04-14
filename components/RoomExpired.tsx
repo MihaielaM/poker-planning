@@ -142,7 +142,7 @@ export default function RoomExpired() {
     <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
       <div className="text-center max-w-md w-full">
         <div className="flex justify-center mb-6">
-          <JesterHat size={96} />
+          <JesterHat size={120} />
         </div>
         <h2 className="text-rd-yellow font-bold text-2xl mb-4">Room not found</h2>
         <p className="text-rd-subtle text-lg leading-relaxed">{message}</p>
