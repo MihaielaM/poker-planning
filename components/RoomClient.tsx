@@ -323,7 +323,7 @@ export default function RoomClient({ code }: { code: string }) {
             {adminToken && <SessionStats roomCode={code} adminToken={adminToken} />}
             <button
               onClick={handleCopyLink}
-              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-sm px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-base px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
             >
               {copied ? '✓ Copied!' : '🔗 Copy link'}
             </button>
@@ -338,19 +338,20 @@ export default function RoomClient({ code }: { code: string }) {
           className={[
             'rounded-2xl px-4 py-3 flex items-center justify-between',
             isRevealed
-              ? 'bg-rd-cyan-dim border border-rd-cyan-border'
+              ? 'border border-rd-yellow-border'
               : 'bg-rd-surface border border-rd-border',
           ].join(' ')}
+          style={isRevealed ? { background: 'linear-gradient(135deg, #1a1200 0%, #2a1e00 100%)' } : undefined}
         >
           <div className="flex items-center gap-2.5">
             <span
               className={[
                 'w-2 h-2 rounded-full flex-shrink-0',
-                isRevealed ? 'bg-rd-cyan' : 'bg-rd-yellow animate-pulse',
+                isRevealed ? 'bg-rd-yellow' : 'bg-rd-yellow animate-pulse',
               ].join(' ')}
             />
             <span
-              className={`text-base font-semibold tracking-tight ${isRevealed ? 'text-rd-cyan' : 'text-white'}`}
+              className={`text-base font-semibold tracking-tight ${isRevealed ? 'text-rd-yellow' : 'text-white'}`}
               
             >
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}

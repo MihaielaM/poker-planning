@@ -96,7 +96,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
       <button
         onClick={load}
         disabled={loading}
-        className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-sm px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+        className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-base px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
       >
         🏆 Session stats
       </button>
