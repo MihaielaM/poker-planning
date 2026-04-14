@@ -14,17 +14,52 @@ type StatsData = {
   podium: PodiumEntry[];
 };
 
-const BADGES = [
-  { minPct: 100, label: 'The Oracle', emoji: '🔮', message: 'Never wrong. Suspiciously accurate.' },
-  { minPct: 80,  label: 'Human Fibonacci', emoji: '🧮', message: 'Your brain IS the formula.' },
-  { minPct: 60,  label: 'Team Player', emoji: '🤝', message: 'Thinks like the team. Scarily so.' },
-  { minPct: 40,  label: 'Lucky Guesser', emoji: '🍀', message: 'Right enough to feel good about it.' },
-  { minPct: 1,   label: 'Participant', emoji: '🎟️', message: 'Showed up. That counts.' },
+const BADGES: { minPct: number; label: string; emoji: string; messages: string[] }[] = [
+  { minPct: 100, label: 'The Oracle', emoji: '🔮', messages: [
+    'Never wrong. Suspiciously accurate.',
+    'Are you reading the backlog or the future?',
+    'Statistically impossible. Yet here we are.',
+    'The Fibonacci gods bow to you.',
+    'Every. Single. Round. How.',
+    'The team should just ask you and skip the vote.',
+  ]},
+  { minPct: 80, label: 'Human Fibonacci', emoji: '🧮', messages: [
+    'Your brain IS the formula.',
+    'Almost psychic. Almost.',
+    'Consistently close. Disturbingly so.',
+    'You and the team share one brain.',
+    'Right more often than wrong. Impressively.',
+  ]},
+  { minPct: 60, label: 'Team Player', emoji: '🤝', messages: [
+    'Thinks like the team. Scarily so.',
+    'More often right than not. Respectable.',
+    'In sync with the majority. Usually.',
+    'A reliable voice in the chaos.',
+  ]},
+  { minPct: 40, label: 'Lucky Guesser', emoji: '🍀', messages: [
+    'Right enough to feel good about it.',
+    'Coin flip energy, but make it Fibonacci.',
+    'Sometimes a shot in the dark hits.',
+    'Not the worst estimator in the room.',
+  ]},
+  { minPct: 1, label: 'Participant', emoji: '🎟️', messages: [
+    'Showed up. That counts.',
+    'Voted. Points for participation.',
+    'Present and accounted for.',
+    'At least you were there.',
+  ]},
 ];
 
-function getBadge(matches: number, totalRounds: number) {
+function seededIndex(name: string, len: number) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return h % len;
+}
+
+function getBadge(matches: number, totalRounds: number, name: string) {
   const pct = totalRounds > 0 ? (matches / totalRounds) * 100 : 0;
-  return BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
+  const badge = BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
+  return { ...badge, message: badge.messages[seededIndex(name, badge.messages.length)] };
 }
 
 type Props = {
@@ -103,7 +138,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
                   🏆 Best estimators this session
                 </p>
                 {stats.podium.map((entry, i) => {
-                  const badge = getBadge(entry.matches, entry.totalRounds);
+                  const badge = getBadge(entry.matches, entry.totalRounds, entry.name);
                   const pct = Math.round((entry.matches / entry.totalRounds) * 100);
                   return (
                     <div
