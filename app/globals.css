@@ -1,42 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Core backgrounds ── */
-  --color-rd-dark:          #0f0f0f;
-  --color-rd-surface:       #141414;
-  --color-rd-surface-2:     #1a1a1a;
-  --color-rd-border:        #262626;
-  --color-rd-border-2:      #323232;
+  /* ── Cyber-Luxury Backgrounds ── */
+  --color-rd-dark:          #080808;
+  --color-rd-surface:       #0e0c08;
+  --color-rd-surface-2:     #141008;
+  --color-rd-border:        #1e1a10;
+  --color-rd-border-2:      #2a2410;
 
   /* ── Text ── */
-  --color-rd-muted:         #3d3d3d;
-  --color-rd-subtle:        #666666;
-  --color-rd-text:          #b0b0b0;
+  --color-rd-muted:         #383020;
+  --color-rd-subtle:        #5a5040;
+  --color-rd-text:          #9a8e70;
 
-  /* ── Yellow (only accent) ── */
-  --color-rd-yellow:        #FFD000;
-  --color-rd-yellow-hover:  #FFE033;
-  --color-rd-yellow-active: #CCAA00;
-  --color-rd-yellow-dim:    #171200;
-  --color-rd-yellow-border: #3d3000;
-  --color-rd-yellow-light:  #FFF0A0;
+  /* ── Amber Gold (primary accent) ── */
+  --color-rd-yellow:        #FFC107;
+  --color-rd-yellow-hover:  #FFD740;
+  --color-rd-yellow-active: #FFA000;
+  --color-rd-yellow-dim:    #120d00;
+  --color-rd-yellow-border: #2e2000;
+  --color-rd-yellow-light:  #FFE082;
+
+  /* ── Neon Green (voted/success) ── */
+  --color-rd-green:         #00E676;
+  --color-rd-green-dim:     #001a0b;
+  --color-rd-green-border:  #003d1a;
 
   /* ── Card face ── */
   --color-rd-card-face:     #F5F4F0;
 
-  /* ── Secondary accents (minimal use) ── */
+  /* ── Secondary ── */
   --color-rd-purple:        #9280FF;
   --color-rd-purple-dim:    #16132a;
   --color-rd-purple-border: #2e2860;
-  --color-rd-cyan:          #3DD4F6;
-  --color-rd-cyan-dim:      #071820;
-  --color-rd-cyan-border:   #0d3d4d;
+  --color-rd-cyan:          #00E5FF;
+  --color-rd-cyan-dim:      #001a1f;
+  --color-rd-cyan-border:   #003d47;
   --color-rd-pink:          #F69FED;
   --color-rd-pink-dim:      #1f0d1e;
 }
 
 :root {
-  --background: #0f0f0f;
+  --background: #080808;
   --foreground: #ffffff;
 }
 
@@ -49,22 +54,105 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Animated cyber mesh background ── */
+.cyber-mesh {
+  background:
+    radial-gradient(ellipse 55% 45% at 18% 45%, rgba(255,193,7,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 55% at 82% 18%, rgba(255,150,0,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 38% 38% at 62% 82%, rgba(255,193,7,0.04) 0%, transparent 50%),
+    #080808;
+  animation: mesh-breathe 16s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-breathe {
+  0%   { opacity: 0.85; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
 /* ── Grid background (home) ── */
 .grid-bg {
   background-image:
-    linear-gradient(#262626 1px, transparent 1px),
-    linear-gradient(90deg, #262626 1px, transparent 1px);
+    linear-gradient(rgba(255,193,7,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,193,7,0.06) 1px, transparent 1px);
   background-size: 52px 52px;
 }
 .grid-vignette {
-  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 20%, #0f0f0f 80%);
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 20%, #080808 80%);
 }
 
-/* ── Physical card face ── */
-.card-face {
-  background: #F5F4F0;
-  border: 1.5px solid #e0ddd5;
-  box-shadow: 3px 3px 0 #262626;
+/* ── Glassmorphism ── */
+.glass {
+  background: rgba(12, 10, 6, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 193, 7, 0.1);
+}
+
+.glass-panel {
+  background: rgba(10, 8, 4, 0.85);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 193, 7, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255,193,7,0.06), 0 8px 40px rgba(0,0,0,0.7);
+}
+
+.glass-card {
+  background: rgba(14, 11, 6, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 193, 7, 0.1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,193,7,0.04);
+}
+
+.glass-card-voted {
+  border-color: rgba(0, 230, 118, 0.4) !important;
+  box-shadow: 0 0 20px rgba(0,230,118,0.12), 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,230,118,0.08) !important;
+}
+
+.glass-card-current {
+  border-color: rgba(255, 193, 7, 0.45) !important;
+  box-shadow: 0 0 24px rgba(255,193,7,0.14), 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,193,7,0.1) !important;
+}
+
+/* ── Gold pulse (voted cards) ── */
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,193,7,0), 0 4px 24px rgba(0,0,0,0.5); }
+  50%       { box-shadow: 0 0 18px 5px rgba(255,193,7,0.18), 0 4px 24px rgba(0,0,0,0.5); }
+}
+.pulse-gold { animation: gold-pulse 2.5s ease-in-out infinite; }
+
+/* ── Shimmer (winning/highlight card) ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer-overlay { position: relative; overflow: hidden; }
+.shimmer-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,193,7,0.2) 50%, transparent 100%);
+  background-size: 200% auto;
+  animation: shimmer 2.2s linear infinite;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ── Neon gold text glow ── */
+.neon-gold {
+  color: #FFC107;
+  text-shadow: 0 0 10px rgba(255,193,7,0.7), 0 0 24px rgba(255,193,7,0.3);
+}
+
+/* ── Metallic gold badge ── */
+.badge-metallic {
+  background: linear-gradient(135deg, #FFD740 0%, #FF8F00 45%, #FFC107 70%, #FFD740 100%);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  color: #080808;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(255,193,7,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 /* ── Card back diagonal stripe ── */
@@ -72,30 +160,26 @@ body {
   background:
     repeating-linear-gradient(
       45deg,
-      #b8900a 0px,
-      #b8900a 3px,
-      #8a6a06 3px,
-      #8a6a06 9px
+      #c08a0a 0px,
+      #c08a0a 3px,
+      #7a5606 3px,
+      #7a5606 9px
     );
 }
 
-/* ── Highlight pulse ── */
+/* ── Highlight pulse (participant flip card face) ── */
 @keyframes highlight-pulse {
-  0%, 100% { box-shadow: 3px 3px 0 rgba(255, 208, 0, 0.6); }
-  50%       { box-shadow: 3px 3px 0 rgba(255, 208, 0, 0.2), 0 0 16px rgba(255,208,0,0.3); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,193,7,0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,193,7,0); }
 }
-.card-highlight {
-  animation: highlight-pulse 2s ease-in-out infinite;
-}
+.card-highlight { animation: highlight-pulse 2s ease-in-out infinite; }
 
 /* ── Confetti ── */
 @keyframes confetti-fall {
   0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
-.confetti-fall {
-  animation: confetti-fall linear forwards;
-}
+.confetti-fall { animation: confetti-fall linear forwards; }
 
 /* ── Floating reaction ── */
 @keyframes reaction-float {
@@ -103,9 +187,7 @@ body {
   70%  { opacity: 1; }
   100% { transform: translateY(-220px) scale(1.2); opacity: 0; }
 }
-.reaction-float {
-  animation: reaction-float 2.8s ease-out forwards;
-}
+.reaction-float { animation: reaction-float 2.8s ease-out forwards; }
 
 /* ── 3D flip card ── */
 .card-3d-scene { perspective: 700px; }

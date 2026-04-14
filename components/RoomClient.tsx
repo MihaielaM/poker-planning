@@ -276,15 +276,20 @@ export default function RoomClient({ code }: { code: string }) {
   const totalCount = voters.length;
   const roundNumber = roomData?.room.roundNumber ?? 1;
 
+  const showDeck = isVoter && (isWaiting || isRevealed);
+
   return (
-    <div className="min-h-screen bg-rd-dark text-white">
+    <div className="min-h-screen bg-[#080808] text-white relative overflow-x-hidden">
+      {/* Animated cyber background */}
+      <div className="fixed inset-0 cyber-mesh pointer-events-none" style={{zIndex: 0}} />
+
       {showWelcome && <WelcomeOverlay name={session.name} />}
       {showLateVote && <LateVoteToast onDone={() => setShowLateVote(false)} />}
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
 
       {/* ── Header ── */}
-      <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+      <header className="glass sticky top-0 z-10 px-4 py-2" style={{borderBottom: '1px solid rgba(255,193,7,0.1)'}}>
+        <div className="w-full px-1 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <JesterHat size={95} />
             <div>
@@ -300,18 +305,16 @@ export default function RoomClient({ code }: { code: string }) {
                 </h1>
               )}
               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span className="text-rd-muted text-base">Room:</span>
+                <span className="text-base" style={{color: 'rgba(255,193,7,0.4)'}}>Room:</span>
                 {adminToken ? (
-                  <a href="/" className="font-mono font-bold text-rd-yellow text-base tracking-widest hover:opacity-80 transition-opacity">
+                  <a href="/" className="font-mono font-bold text-base tracking-widest hover:opacity-80 transition-opacity neon-gold">
                     {code}
                   </a>
                 ) : (
-                  <span className="font-mono font-bold text-rd-yellow text-base tracking-widest">
-                    {code}
-                  </span>
+                  <span className="font-mono font-bold text-base tracking-widest neon-gold">{code}</span>
                 )}
                 {adminToken && (
-                  <span className="bg-rd-yellow/10 text-rd-yellow text-base px-2 py-0.5 rounded font-medium border border-rd-yellow/20">
+                  <span className="badge-metallic text-xs px-2.5 py-0.5 rounded-full">
                     Admin
                   </span>
                 )}
@@ -323,7 +326,20 @@ export default function RoomClient({ code }: { code: string }) {
             {adminToken && <SessionStats roomCode={code} adminToken={adminToken} />}
             <button
               onClick={handleCopyLink}
-              className="bg-rd-surface-2 hover:bg-rd-border border border-rd-border-2 text-rd-subtle hover:text-white text-base px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+              className="text-base px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+              style={{
+                background: 'rgba(255,193,7,0.05)',
+                border: '1px solid rgba(255,193,7,0.15)',
+                color: 'rgba(255,193,7,0.6)',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,193,7,0.1)';
+                (e.currentTarget as HTMLButtonElement).style.color = '#FFC107';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,193,7,0.05)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,193,7,0.6)';
+              }}
             >
               {copied ? '✓ Copied!' : '🔗 Copy link'}
             </button>
@@ -332,28 +348,30 @@ export default function RoomClient({ code }: { code: string }) {
       </header>
 
       {/* ── Main content ── */}
-      <main className="max-w-7xl mx-auto px-4 py-6 space-y-4">
+      <main
+        className="relative z-10 px-3 py-4 space-y-4"
+        style={{
+          paddingBottom: showDeck ? '180px' : '24px',
+          paddingRight: session ? '80px' : '12px',
+        }}
+      >
         {/* Status bar */}
         <div
-          className={[
-            'rounded-2xl px-4 py-3 flex items-center justify-between',
-            isRevealed
-              ? 'border border-rd-yellow-border'
-              : 'bg-rd-surface border border-rd-border',
-          ].join(' ')}
-          style={isRevealed ? { background: 'linear-gradient(135deg, #1a1200 0%, #2a1e00 100%)' } : undefined}
+          className="rounded-2xl px-4 py-3 flex items-center justify-between"
+          style={isRevealed ? {
+            background: 'linear-gradient(135deg, rgba(255,193,7,0.08) 0%, rgba(255,150,0,0.05) 100%)',
+            border: '1px solid rgba(255,193,7,0.2)',
+          } : {
+            background: 'rgba(14,11,6,0.6)',
+            border: '1px solid rgba(255,193,7,0.08)',
+          }}
         >
           <div className="flex items-center gap-2.5">
-            <span
-              className={[
-                'w-2 h-2 rounded-full flex-shrink-0',
-                isRevealed ? 'bg-rd-yellow' : 'bg-rd-yellow animate-pulse',
-              ].join(' ')}
-            />
+            <span className="w-2 h-2 rounded-full flex-shrink-0 bg-rd-yellow animate-pulse" />
             <span
               className="text-base font-semibold tracking-tight"
               style={isRevealed ? {
-                background: 'linear-gradient(90deg, #FFE033 0%, #FFD000 50%, #CCAA00 100%)',
+                background: 'linear-gradient(90deg, #FFD740 0%, #FFC107 50%, #FFA000 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -362,7 +380,7 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-rd-subtle text-base font-mono">
+          <span className="text-base font-mono" style={{color: 'rgba(255,193,7,0.4)'}}>
             {votedCount}/{totalCount} voters · Round {roundNumber}
           </span>
         </div>
@@ -377,30 +395,9 @@ export default function RoomClient({ code }: { code: string }) {
           />
         )}
 
-        {/* Voting cards — for voters during waiting and revealed */}
-        {isVoter && (isWaiting || isRevealed) && (
-          <VotingCards
-            onVote={handleVote}
-            onRevealedClick={() => setShowLateVote(true)}
-            selectedCard={selectedCard}
-            hasVoted={hasVoted}
-            disabled={isSubmittingVote}
-            isRevealed={isRevealed ?? false}
-          />
-        )}
-
-        {/* Reaction bar */}
-        {session && (
-          <ReactionBar
-            reactions={roomData?.reactions ?? []}
-            participantToken={session.token}
-            roomCode={code}
-          />
-        )}
-
         {/* Observer notice */}
         {isWaiting && !isVoter && (
-          <div className="bg-rd-surface border border-rd-border rounded-xl px-4 py-3 text-rd-subtle text-sm flex items-center gap-2">
+          <div className="glass-card rounded-xl px-4 py-3 text-base flex items-center gap-2" style={{color: 'rgba(255,193,7,0.5)'}}>
             <span>👁</span>
             <span>You are in facilitator mode — observing the vote without participating.</span>
           </div>
@@ -408,22 +405,27 @@ export default function RoomClient({ code }: { code: string }) {
 
         {/* Action error */}
         {actionError && (
-          <div className="bg-red-950 border border-red-800 text-red-300 text-sm px-4 py-3 rounded-xl">
+          <div className="rounded-xl px-4 py-3 text-red-300 text-base" style={{background: 'rgba(127,0,0,0.3)', border: '1px solid rgba(239,68,68,0.3)'}}>
             ⚠ {actionError}
           </div>
         )}
 
         {/* Admin controls */}
         {adminToken && (
-          <div className="bg-rd-surface border border-rd-border rounded-xl p-4">
-            <p className="text-rd-muted text-base mb-3 font-medium uppercase tracking-wider">
+          <div className="glass-card rounded-xl p-4">
+            <p className="text-base mb-3 font-medium uppercase tracking-wider" style={{color: 'rgba(255,193,7,0.4)'}}>
               Admin controls
             </p>
             <div className="flex gap-3 flex-wrap">
               {isWaiting && (
                 <button
                   onClick={handleReveal}
-                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-base flex items-center gap-2"
+                  className="font-semibold px-5 py-2.5 rounded-lg transition-all text-base flex items-center gap-2 hover:-translate-y-0.5"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFD740 0%, #FFC107 50%, #FFA000 100%)',
+                    color: '#080808',
+                    boxShadow: '0 0 16px rgba(255,193,7,0.4)',
+                  }}
                 >
                   <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> Reveal
                 </button>
@@ -431,7 +433,12 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed && (
                 <button
                   onClick={handleReset}
-                  className="bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active text-rd-dark font-semibold px-5 py-2.5 rounded-lg transition-colors text-base flex items-center gap-2"
+                  className="font-semibold px-5 py-2.5 rounded-lg transition-all text-base flex items-center gap-2 hover:-translate-y-0.5"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFD740 0%, #FFC107 50%, #FFA000 100%)',
+                    color: '#080808',
+                    boxShadow: '0 0 16px rgba(255,193,7,0.4)',
+                  }}
                 >
                   <img src="/joker-hat.png" alt="" className="w-7 h-7 object-contain" /> New round
                 </button>
@@ -440,6 +447,33 @@ export default function RoomClient({ code }: { code: string }) {
           </div>
         )}
       </main>
+
+      {/* ── Fixed bottom: voting deck ── */}
+      {showDeck && (
+        <div className="fixed bottom-0 left-0 right-0 z-20 flex justify-center pb-4 px-4 pointer-events-none" style={{paddingRight: session ? '80px' : '16px'}}>
+          <div className="pointer-events-auto w-full max-w-4xl">
+            <VotingCards
+              onVote={handleVote}
+              onRevealedClick={() => setShowLateVote(true)}
+              selectedCard={selectedCard}
+              hasVoted={hasVoted}
+              disabled={isSubmittingVote}
+              isRevealed={isRevealed ?? false}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Fixed right: reaction bar ── */}
+      {session && (
+        <div className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
+          <ReactionBar
+            reactions={roomData?.reactions ?? []}
+            participantToken={session.token}
+            roomCode={code}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -29,44 +29,42 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-rd-dark flex items-center justify-center p-6 relative overflow-hidden">
-
-      {/* Grid background */}
+      <div className="absolute inset-0 cyber-mesh pointer-events-none" />
       <div className="absolute inset-0 grid-bg pointer-events-none" />
-      {/* Vignette over grid */}
       <div className="absolute inset-0 grid-vignette pointer-events-none" />
 
       <div className="flex flex-col items-center text-center max-w-md w-full gap-10 relative z-10">
 
-        {/* Logo + branding */}
+        {/* Logo */}
         <div className="flex flex-col items-center gap-5">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-rd-yellow opacity-10 blur-2xl scale-150" />
+            <div className="absolute inset-0 rounded-full blur-3xl scale-150 opacity-20" style={{background: 'radial-gradient(circle, #FFC107, transparent)'}} />
             <JesterHat size={120} />
           </div>
           <div>
-            <h1 className="text-5xl font-bold tracking-wider text-white leading-none mb-2 uppercase">
+            <h1 className="text-5xl font-bold tracking-tight text-white leading-none mb-3">
               Planning Poker
             </h1>
-            <p className="text-rd-subtle text-base font-light">
+            <p className="text-rd-text text-base leading-relaxed">
               Agile estimation for remote SCRUM teams.<br />
               Create a room and share the link.
             </p>
           </div>
         </div>
 
-        {/* Card preview row */}
+        {/* Card preview */}
         <div className="flex items-end justify-center gap-2">
           {PREVIEW_CARDS.map((val, i) => (
             <div
               key={val}
-              className="card-face rounded-lg flex flex-col items-center justify-center select-none"
+              className="glass-card rounded-xl flex items-center justify-center select-none transition-transform duration-200 hover:-translate-y-2"
               style={{
-                width: 42,
-                height: 58,
-                transform: `translateY(${i % 2 === 0 ? '0px' : '-6px'})`,
+                width: 44,
+                height: 62,
+                transform: `translateY(${i % 2 === 0 ? '0px' : '-7px'})`,
               }}
             >
-              <span className="font-bold text-xl text-rd-dark leading-none">{val}</span>
+              <span className="font-bold text-xl text-rd-yellow">{val}</span>
             </div>
           ))}
         </div>
@@ -76,37 +74,40 @@ export default function HomePage() {
           <button
             onClick={createRoom}
             disabled={loading}
-            className="w-full bg-rd-yellow hover:bg-rd-yellow-hover active:bg-rd-yellow-active disabled:bg-rd-surface-2 disabled:text-rd-muted disabled:cursor-not-allowed text-rd-dark font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 shadow-lg hover:shadow-rd-yellow/20 hover:shadow-xl hover:-translate-y-0.5 tracking-widest uppercase"
+            className="w-full disabled:opacity-40 disabled:cursor-not-allowed font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 hover:-translate-y-0.5 uppercase tracking-widest"
+            style={{
+              background: loading ? undefined : 'linear-gradient(135deg, #FFD740 0%, #FFC107 50%, #FFA000 100%)',
+              color: '#080808',
+              boxShadow: loading ? undefined : '0 0 24px rgba(255,193,7,0.35), 0 4px 16px rgba(0,0,0,0.4)',
+            }}
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <span className="w-4 h-4 border-2 border-rd-dark/30 border-t-rd-dark rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                 Creating room...
               </span>
-            ) : (
-              '+ Create room'
-            )}
+            ) : '+ Create room'}
           </button>
 
           {error && (
-            <div className="bg-red-950/60 border border-red-800/60 text-red-300 text-sm px-4 py-3 rounded-xl">
+            <div className="glass-card border-red-800/40 text-red-300 text-sm px-4 py-3 rounded-xl" style={{borderColor: 'rgba(239,68,68,0.3)'}}>
               {error}
             </div>
           )}
         </div>
 
-        {/* Features */}
-        <div className="w-full flex flex-col gap-0 border border-rd-border rounded-xl overflow-hidden">
+        {/* Feature list */}
+        <div className="w-full flex flex-col glass-panel rounded-xl overflow-hidden">
           {[
             { num: '01', title: 'Private voting', desc: 'Cards stay hidden until all votes are in.' },
             { num: '02', title: 'Fibonacci sequence', desc: '1, 2, 3, 5, 8, 13, 21, ?, ☕' },
             { num: '03', title: 'Auto-reveal', desc: 'Votes flip simultaneously when everyone is done.' },
           ].map(({ num, title, desc }) => (
-            <div key={num} className="flex items-start gap-4 px-4 py-3.5 border-b border-rd-border last:border-b-0 bg-rd-surface/60">
-              <span className="text-rd-yellow text-sm font-bold tracking-wider mt-0.5 flex-shrink-0">{num}</span>
+            <div key={num} className="flex items-start gap-4 px-5 py-4 border-b last:border-b-0" style={{borderColor: 'rgba(255,193,7,0.08)'}}>
+              <span className="text-sm font-bold tracking-wider mt-0.5 flex-shrink-0" style={{color: '#FFC107'}}>{num}</span>
               <div className="text-left">
                 <p className="text-white text-[18px] font-semibold leading-tight">{title}</p>
-                <p className="text-rd-subtle text-[16px] mt-0.5">{desc}</p>
+                <p className="text-rd-text text-[16px] mt-0.5">{desc}</p>
               </div>
             </div>
           ))}
