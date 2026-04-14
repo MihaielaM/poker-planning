@@ -52,9 +52,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 60 requests per minute per IP for all other room API endpoints
+  // 300 requests per minute per IP for all other room API endpoints
+  // (polling every 2s × multiple participants on same network = high volume)
   if (/^\/api\/rooms\/[^/]+(\/|$)/.test(pathname) && pathname !== '/api/rooms') {
-    if (!allow(`${ip}:room`, 60, 60_000)) {
+    if (!allow(`${ip}:room`, 300, 60_000)) {
       return NextResponse.json(
         { error: 'Too many requests.' },
         { status: 429 }
