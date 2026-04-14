@@ -14,39 +14,39 @@ type StatsData = {
   podium: PodiumEntry[];
 };
 
-const BADGES: { minPct: number; label: string; emoji: string; messages: string[] }[] = [
-  { minPct: 100, label: 'The Oracle', emoji: '🔮', messages: [
-    'Never wrong. Suspiciously accurate.',
-    'Are you reading the backlog or the future?',
-    'Statistically impossible. Yet here we are.',
-    'The Fibonacci gods bow to you.',
-    'Every. Single. Round. How.',
-    'The team should just ask you and skip the vote.',
+const BADGES: { minPct: number; variants: { label: string; emoji: string; message: string }[] }[] = [
+  { minPct: 100, variants: [
+    { label: 'The Oracle',       emoji: '🔮', message: 'Never wrong. Suspiciously accurate.' },
+    { label: 'Mind Reader',      emoji: '🧠', message: 'Are you reading the backlog or the future?' },
+    { label: 'Fibonacci Saint',  emoji: '✨', message: 'The Fibonacci gods bow to you.' },
+    { label: 'Time Traveler',    emoji: '⏳', message: 'Statistically impossible. Yet here we are.' },
+    { label: 'Zero Misses',      emoji: '🎯', message: 'Every. Single. Round. How.' },
+    { label: 'The Algorithm',    emoji: '💡', message: 'The team should just ask you and skip the vote.' },
   ]},
-  { minPct: 80, label: 'Human Fibonacci', emoji: '🧮', messages: [
-    'Your brain IS the formula.',
-    'Almost psychic. Almost.',
-    'Consistently close. Disturbingly so.',
-    'You and the team share one brain.',
-    'Right more often than wrong. Impressively.',
+  { minPct: 80, variants: [
+    { label: 'Human Fibonacci',  emoji: '🧮', message: 'Your brain IS the formula.' },
+    { label: 'Almost Psychic',   emoji: '🔭', message: 'Almost psychic. Almost.' },
+    { label: 'Pattern Seeker',   emoji: '📐', message: 'Consistently close. Disturbingly so.' },
+    { label: 'Team Brain',       emoji: '🫂',  message: 'You and the team share one brain.' },
+    { label: 'Reliable Voice',   emoji: '📣', message: 'Right more often than wrong. Impressively.' },
   ]},
-  { minPct: 60, label: 'Team Player', emoji: '🤝', messages: [
-    'Thinks like the team. Scarily so.',
-    'More often right than not. Respectable.',
-    'In sync with the majority. Usually.',
-    'A reliable voice in the chaos.',
+  { minPct: 60, variants: [
+    { label: 'Team Player',      emoji: '🤝', message: 'Thinks like the team. Scarily so.' },
+    { label: 'Solid Estimator',  emoji: '📊', message: 'More often right than not. Respectable.' },
+    { label: 'In Sync',          emoji: '🎵', message: 'In sync with the majority. Usually.' },
+    { label: 'Steady Hand',      emoji: '⚖️', message: 'A reliable voice in the chaos.' },
   ]},
-  { minPct: 40, label: 'Lucky Guesser', emoji: '🍀', messages: [
-    'Right enough to feel good about it.',
-    'Coin flip energy, but make it Fibonacci.',
-    'Sometimes a shot in the dark hits.',
-    'Not the worst estimator in the room.',
+  { minPct: 40, variants: [
+    { label: 'Lucky Guesser',    emoji: '🍀', message: 'Right enough to feel good about it.' },
+    { label: 'Coin Flipper',     emoji: '🪙', message: 'Coin flip energy, but make it Fibonacci.' },
+    { label: 'Dark Horse',       emoji: '🌑', message: 'Sometimes a shot in the dark hits.' },
+    { label: 'Could Be Worse',   emoji: '🤷', message: 'Not the worst estimator in the room.' },
   ]},
-  { minPct: 1, label: 'Participant', emoji: '🎟️', messages: [
-    'Showed up. That counts.',
-    'Voted. Points for participation.',
-    'Present and accounted for.',
-    'At least you were there.',
+  { minPct: 1, variants: [
+    { label: 'Participant',      emoji: '🎟️', message: 'Showed up. That counts.' },
+    { label: 'Present',          emoji: '🙋', message: 'Voted. Points for participation.' },
+    { label: 'Here I Am',        emoji: '👋', message: 'Present and accounted for.' },
+    { label: 'Just Vibing',      emoji: '😌', message: 'At least you were there.' },
   ]},
 ];
 
@@ -58,9 +58,9 @@ function seededIndex(name: string, len: number) {
 
 function getBadge(matches: number, totalRounds: number, name: string, podiumIndex: number) {
   const pct = totalRounds > 0 ? (matches / totalRounds) * 100 : 0;
-  const badge = BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
-  const idx = (seededIndex(name, badge.messages.length) + podiumIndex) % badge.messages.length;
-  return { ...badge, message: badge.messages[idx] };
+  const tier = BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
+  const idx = (seededIndex(name, tier.variants.length) + podiumIndex) % tier.variants.length;
+  return tier.variants[idx];
 }
 
 type Props = {
