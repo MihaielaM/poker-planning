@@ -56,10 +56,11 @@ function seededIndex(name: string, len: number) {
   return h % len;
 }
 
-function getBadge(matches: number, totalRounds: number, name: string) {
+function getBadge(matches: number, totalRounds: number, name: string, podiumIndex: number) {
   const pct = totalRounds > 0 ? (matches / totalRounds) * 100 : 0;
   const badge = BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
-  return { ...badge, message: badge.messages[seededIndex(name, badge.messages.length)] };
+  const idx = (seededIndex(name, badge.messages.length) + podiumIndex) % badge.messages.length;
+  return { ...badge, message: badge.messages[idx] };
 }
 
 type Props = {
@@ -138,7 +139,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
                   🏆 Best estimators this session
                 </p>
                 {stats.podium.map((entry, i) => {
-                  const badge = getBadge(entry.matches, entry.totalRounds, entry.name);
+                  const badge = getBadge(entry.matches, entry.totalRounds, entry.name, i);
                   const pct = Math.round((entry.matches / entry.totalRounds) * 100);
                   return (
                     <div
