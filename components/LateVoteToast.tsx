@@ -164,7 +164,7 @@ export default function LateVoteToast({ onDone }: Props) {
         <div className="flex justify-center mb-3">
           <JesterHat size={48} />
         </div>
-        <p className="text-white text-sm leading-relaxed">{message}</p>
+        <p className="text-white text-base leading-relaxed">{message}</p>
         <button
           onClick={() => { setFading(true); setTimeout(onDone, FADE_MS); }}
           className="absolute top-3 right-4 text-rd-muted hover:text-white text-xl leading-none transition-colors"
