@@ -112,8 +112,8 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
           >
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-lg font-bold text-white">Session Summary</h2>
-                <p className="text-rd-subtle text-sm">
+                <h2 className="text-xl font-bold text-white">Session Summary</h2>
+                <p className="text-rd-subtle text-base">
                   {stats.totalRounds} completed round{stats.totalRounds !== 1 ? 's' : ''}
                 </p>
               </div>
@@ -126,16 +126,16 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
             </div>
 
             {stats.totalRounds === 0 ? (
-              <p className="text-rd-muted text-sm text-center py-8">
+              <p className="text-rd-muted text-base text-center py-8">
                 No completed rounds yet. Finish at least one round to see stats.
               </p>
             ) : stats.podium.length === 0 ? (
-              <p className="text-rd-muted text-sm text-center py-8">
+              <p className="text-rd-muted text-base text-center py-8">
                 No numeric votes recorded.
               </p>
             ) : (
               <div className="space-y-3">
-                <p className="text-rd-subtle text-xs font-medium uppercase tracking-wider mb-4">
+                <p className="text-rd-subtle text-sm font-medium uppercase tracking-wider mb-4">
                   🏆 Best estimators this session
                 </p>
                 {stats.podium.map((entry, i) => {
@@ -157,7 +157,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
 
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-semibold truncate">{entry.name}</p>
-                        <p className="text-rd-subtle text-xs mt-0.5">
+                        <p className="text-rd-subtle text-sm mt-0.5">
                           {badge.emoji}{' '}
                           <span className="text-rd-yellow font-medium">{badge.label}</span>
                           {' — '}{badge.message}
@@ -166,10 +166,10 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
 
                       <div className="text-right flex-shrink-0">
                         <p className={[
-                          'font-bold text-lg',
+                          'font-bold text-xl',
                           i === 0 ? 'text-rd-yellow' : 'text-white',
                         ].join(' ')}>{pct}%</p>
-                        <p className="text-rd-muted text-xs">{entry.matches}/{entry.totalRounds}</p>
+                        <p className="text-rd-muted text-sm">{entry.matches}/{entry.totalRounds}</p>
                       </div>
                     </div>
                   );
