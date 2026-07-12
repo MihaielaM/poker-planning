@@ -41,7 +41,11 @@ export default function RoomClient({ code }: { code: string }) {
   const [showConsensus, setShowConsensus] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showLateVote, setShowLateVote] = useState(false);
+  const [wasKicked, setWasKicked] = useState(false);
   const welcomeShownRef = useRef(false);
+  const sessionRef = useRef<Session | null>(null);
+  sessionRef.current = session;
+  const joinedAtRef = useRef(0);
   const lastRoundRef = useRef<number | null>(null);
   const lastStatusRef = useRef<string | null>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -72,6 +76,20 @@ export default function RoomClient({ code }: { code: string }) {
       }
       const data: RoomData = await res.json();
       setRoomData(data);
+
+      // Kicked by the admin: our participant no longer exists in the room.
+      // Grace period after joining avoids reacting to a poll that started
+      // before the join request finished.
+      const current = sessionRef.current;
+      if (
+        current &&
+        Date.now() - joinedAtRef.current > 5000 &&
+        !data.participants.some(p => p.id === current.id)
+      ) {
+        localStorage.removeItem(`ppoker-${code}-session`);
+        setSession(null);
+        setWasKicked(true);
+      }
 
       if (lastRoundRef.current !== null && lastRoundRef.current !== data.room.roundNumber) {
         setSelectedCard(null);
@@ -169,8 +187,47 @@ export default function RoomClient({ code }: { code: string }) {
       isVoter: data.isVoter,
     };
     localStorage.setItem(`ppoker-${code}-session`, JSON.stringify(newSession));
+    joinedAtRef.current = Date.now();
+    setWasKicked(false);
     setSession(newSession);
     fetchRoom();
+  };
+
+  const handleLeave = async () => {
+    if (!session) return;
+    if (!window.confirm('Leave this room? Your vote in the current round will not be counted.')) return;
+    try {
+      await fetch(`/api/rooms/${code}/leave`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ participantToken: session.token }),
+      });
+    } catch {
+      // leave anyway — worst case the participant goes offline
+    }
+    localStorage.removeItem(`ppoker-${code}-session`);
+    window.location.href = '/';
+  };
+
+  const handleKick = async (participantId: string, participantName: string) => {
+    if (!adminToken) return;
+    if (!window.confirm(`Remove ${participantName} from the room? Their vote in the current round will not be counted.`)) return;
+    setActionError('');
+    try {
+      const res = await fetch(`/api/rooms/${code}/kick`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminToken, participantId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setActionError(data.error || 'Failed to remove participant');
+      } else {
+        fetchRoom();
+      }
+    } catch {
+      setActionError('Network error');
+    }
   };
 
   const handleVote = async (value: string) => {
@@ -261,7 +318,15 @@ export default function RoomClient({ code }: { code: string }) {
   if (!session) {
     return (
       <div className="min-h-screen bg-rd-dark flex items-center justify-center p-4">
-        <JoinForm code={code} isAdmin={!!adminToken} onJoin={handleJoin} />
+        <div className="w-full max-w-md space-y-4">
+          {wasKicked && (
+            <div className="bg-rd-surface border border-rd-yellow/40 text-rd-subtle text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+              <span>🚪</span>
+              <span>You were removed from the room by the admin. You can join again below.</span>
+            </div>
+          )}
+          <JoinForm code={code} isAdmin={!!adminToken} onJoin={handleJoin} />
+        </div>
       </div>
     );
   }
@@ -327,6 +392,14 @@ export default function RoomClient({ code }: { code: string }) {
             >
               {copied ? '✓ Copied!' : '🔗 Copy link'}
             </button>
+            {!adminToken && (
+              <button
+                onClick={handleLeave}
+                className="bg-rd-surface-2 hover:bg-red-950 border border-rd-border-2 hover:border-red-800 text-rd-subtle hover:text-red-300 text-base px-3 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+              >
+                🚪 Leave room
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -374,6 +447,7 @@ export default function RoomClient({ code }: { code: string }) {
             currentUserId={session.id}
             isRevealed={isRevealed ?? false}
             roundNumber={roundNumber}
+            onKick={adminToken ? handleKick : undefined}
           />
         )}
 

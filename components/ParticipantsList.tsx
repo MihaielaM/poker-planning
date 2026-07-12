@@ -9,9 +9,10 @@ type Props = {
   currentUserId: string;
   isRevealed: boolean;
   roundNumber: number;
+  onKick?: (participantId: string, participantName: string) => void;
 };
 
-export default function ParticipantsList({ participants, currentUserId, isRevealed, roundNumber }: Props) {
+export default function ParticipantsList({ participants, currentUserId, isRevealed, roundNumber, onKick }: Props) {
   const voters = participants.filter(p => p.isVoter);
   const votedCount = voters.filter(p => p.hasVoted).length;
   const totalVoters = voters.length;
@@ -51,6 +52,7 @@ export default function ParticipantsList({ participants, currentUserId, isReveal
             justRevealed={justRevealed}
             showSlowMessage={!isRevealed && majorityVoted && p.isVoter && !p.hasVoted}
             roundNumber={roundNumber}
+            onKick={onKick && p.id !== currentUserId ? onKick : undefined}
           />
         ))}
       </div>
@@ -65,6 +67,7 @@ function ParticipantCard({
   justRevealed,
   showSlowMessage,
   roundNumber,
+  onKick,
 }: {
   participant: Participant;
   isCurrentUser: boolean;
@@ -72,6 +75,7 @@ function ParticipantCard({
   justRevealed: boolean;
   showSlowMessage: boolean;
   roundNumber: number;
+  onKick?: (participantId: string, participantName: string) => void;
 }) {
   const slowMessage = showSlowMessage
     ? seededPick(SLOW_VOTER_MESSAGES, p.id + roundNumber)
@@ -87,13 +91,22 @@ function ParticipantCard({
   return (
     <div
       className={[
-        'flex flex-col items-center gap-2 p-3 rounded-xl border transition-all',
+        'relative group flex flex-col items-center gap-2 p-3 rounded-xl border transition-all',
         isCurrentUser
           ? 'bg-rd-surface-2 border-rd-yellow/40'
           : 'bg-rd-surface/50 border-rd-border',
         showSlowMessage ? 'border-rd-yellow/30' : '',
       ].join(' ')}
     >
+      {onKick && (
+        <button
+          onClick={() => onKick(p.id, p.name)}
+          title={`Remove ${p.name} from the room`}
+          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center text-rd-muted hover:text-red-300 hover:bg-red-950 border border-transparent hover:border-red-800 text-sm opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all"
+        >
+          ✕
+        </button>
+      )}
       {/* Card visual */}
       {!p.isVoter ? (
         <div className="w-12 h-16 rounded-lg border-2 border-dashed border-rd-border-2 flex items-center justify-center text-rd-muted text-xl">
