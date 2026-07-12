@@ -12,6 +12,7 @@ import WelcomeOverlay from './WelcomeOverlay';
 import LateVoteToast from './LateVoteToast';
 import RoomExpired from './RoomExpired';
 import JesterHat from './JesterHat';
+import ConfirmDialog from './ConfirmDialog';
 
 type Session = {
   token: string;
@@ -42,10 +43,18 @@ export default function RoomClient({ code }: { code: string }) {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showLateVote, setShowLateVote] = useState(false);
   const [wasKicked, setWasKicked] = useState(false);
+  const [pendingLeave, setPendingLeave] = useState(false);
+  const [pendingKick, setPendingKick] = useState<{ id: string; name: string } | null>(null);
+  const [departureNotice, setDepartureNotice] = useState<string | null>(null);
   const welcomeShownRef = useRef(false);
   const sessionRef = useRef<Session | null>(null);
   sessionRef.current = session;
+  const adminTokenRef = useRef<string | null>(null);
+  adminTokenRef.current = adminToken;
   const joinedAtRef = useRef(0);
+  const prevParticipantsRef = useRef<Map<string, string> | null>(null);
+  const kickedByMeRef = useRef<Set<string>>(new Set());
+  const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastRoundRef = useRef<number | null>(null);
   const lastStatusRef = useRef<string | null>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -90,6 +99,27 @@ export default function RoomClient({ code }: { code: string }) {
         setSession(null);
         setWasKicked(true);
       }
+
+      // Admin notification: someone disappeared from the participant list
+      // (left on their own, or was just kicked by this admin).
+      const prev = prevParticipantsRef.current;
+      if (prev && adminTokenRef.current) {
+        const departed = [...prev].filter(
+          ([id]) => id !== current?.id && !data.participants.some(p => p.id === id)
+        );
+        if (departed.length > 0) {
+          const parts = departed.map(([id, name]) =>
+            kickedByMeRef.current.has(id)
+              ? `${name} was removed from the room`
+              : `${name} left the room`
+          );
+          departed.forEach(([id]) => kickedByMeRef.current.delete(id));
+          setDepartureNotice(parts.join(' · '));
+          if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current);
+          noticeTimerRef.current = setTimeout(() => setDepartureNotice(null), 4000);
+        }
+      }
+      prevParticipantsRef.current = new Map(data.participants.map(p => [p.id, p.name]));
 
       if (lastRoundRef.current !== null && lastRoundRef.current !== data.room.roundNumber) {
         setSelectedCard(null);
@@ -193,9 +223,14 @@ export default function RoomClient({ code }: { code: string }) {
     fetchRoom();
   };
 
-  const handleLeave = async () => {
+  const handleLeave = () => {
     if (!session) return;
-    if (!window.confirm('Leave this room? Your vote in the current round will not be counted.')) return;
+    setPendingLeave(true);
+  };
+
+  const performLeave = async () => {
+    if (!session) return;
+    setPendingLeave(false);
     try {
       await fetch(`/api/rooms/${code}/leave`, {
         method: 'POST',
@@ -209,20 +244,27 @@ export default function RoomClient({ code }: { code: string }) {
     window.location.href = '/';
   };
 
-  const handleKick = async (participantId: string, participantName: string) => {
+  const handleKick = (participantId: string, participantName: string) => {
     if (!adminToken) return;
-    if (!window.confirm(`Remove ${participantName} from the room? Their vote in the current round will not be counted.`)) return;
+    setPendingKick({ id: participantId, name: participantName });
+  };
+
+  const performKick = async () => {
+    if (!adminToken || !pendingKick) return;
+    const { id } = pendingKick;
+    setPendingKick(null);
     setActionError('');
     try {
       const res = await fetch(`/api/rooms/${code}/kick`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminToken, participantId }),
+        body: JSON.stringify({ adminToken, participantId: id }),
       });
       if (!res.ok) {
         const data = await res.json();
         setActionError(data.error || 'Failed to remove participant');
       } else {
+        kickedByMeRef.current.add(id);
         fetchRoom();
       }
     } catch {
@@ -346,6 +388,31 @@ export default function RoomClient({ code }: { code: string }) {
       {showWelcome && <WelcomeOverlay name={session.name} />}
       {showLateVote && <LateVoteToast onDone={() => setShowLateVote(false)} />}
       {showConsensus && <ConsensusAlert roundNumber={roundNumber} />}
+
+      {pendingLeave && (
+        <ConfirmDialog
+          title="Leave this room?"
+          message="Your vote in the current round will not be counted."
+          confirmLabel="Leave room"
+          onConfirm={performLeave}
+          onCancel={() => setPendingLeave(false)}
+        />
+      )}
+      {pendingKick && (
+        <ConfirmDialog
+          title={`Remove ${pendingKick.name}?`}
+          message={`${pendingKick.name} will be removed from the room and their vote in the current round will not be counted. They can join again with the room link.`}
+          confirmLabel="Remove"
+          onConfirm={performKick}
+          onCancel={() => setPendingKick(null)}
+        />
+      )}
+      {departureNotice && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-rd-surface border border-rd-border-2 rounded-xl px-4 py-3 shadow-2xl flex items-center gap-2 max-w-[90vw]">
+          <span>🚪</span>
+          <span className="text-rd-subtle text-sm">{departureNotice}</span>
+        </div>
+      )}
 
       {/* ── Header ── */}
       <header className="bg-rd-surface/80 backdrop-blur-sm border-b border-rd-border px-4 py-2 sticky top-0 z-10">
