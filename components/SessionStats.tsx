@@ -56,11 +56,37 @@ function seededIndex(name: string, len: number) {
   return h % len;
 }
 
-function getBadge(matches: number, totalRounds: number, name: string, podiumIndex: number) {
-  const pct = totalRounds > 0 ? (matches / totalRounds) * 100 : 0;
-  const tier = BADGES.find(b => pct >= b.minPct) ?? BADGES[BADGES.length - 1];
-  const idx = (seededIndex(name, tier.variants.length) + podiumIndex) % tier.variants.length;
-  return tier.variants[idx];
+// Assigns one badge per podium entry, guaranteeing no two entries ever share
+// the same badge text. Preference order: seeded pick inside the entry's own
+// tier, then the first free variant in that tier, then free variants borrowed
+// from the nearest tiers (lower first) once the tier runs out of variants.
+function assignBadges(podium: PodiumEntry[]) {
+  const used = new Set<{ label: string; emoji: string; message: string }>();
+
+  return podium.map(entry => {
+    const pct = entry.totalRounds > 0 ? (entry.matches / entry.totalRounds) * 100 : 0;
+    const tierIdx = Math.max(0, BADGES.findIndex(b => pct >= b.minPct));
+    // search own tier first, then neighbours: lower tiers, then higher ones
+    const searchOrder = [
+      BADGES[tierIdx],
+      ...BADGES.slice(tierIdx + 1),
+      ...BADGES.slice(0, tierIdx).reverse(),
+    ];
+
+    for (const tier of searchOrder) {
+      const start = seededIndex(entry.name, tier.variants.length);
+      for (let step = 0; step < tier.variants.length; step++) {
+        const variant = tier.variants[(start + step) % tier.variants.length];
+        if (!used.has(variant)) {
+          used.add(variant);
+          return variant;
+        }
+      }
+    }
+    // all 23 variants taken (podium larger than the full pool) — last resort
+    const tier = BADGES[tierIdx];
+    return tier.variants[seededIndex(entry.name, tier.variants.length)];
+  });
 }
 
 type Props = {
@@ -90,6 +116,8 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
   };
 
   if (!adminToken) return null;
+
+  const badges = stats ? assignBadges(stats.podium) : [];
 
   return (
     <>
@@ -139,7 +167,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
                   🏆 Best estimators this session
                 </p>
                 {stats.podium.map((entry, i) => {
-                  const badge = getBadge(entry.matches, entry.totalRounds, entry.name, i);
+                  const badge = badges[i];
                   const pct = Math.round((entry.matches / entry.totalRounds) * 100);
                   return (
                     <div
