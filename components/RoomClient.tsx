@@ -404,6 +404,12 @@ export default function RoomClient({ code }: { code: string }) {
   const totalCount = voters.length;
   const roundNumber = roomData?.room.roundNumber ?? 1;
   const finalSp = roomData?.room.finalSp ?? null;
+  const votedVoterVotes = voters.filter(p => p.hasVoted).map(p => p.vote);
+  const isUnanimous =
+    isRevealed &&
+    votedVoterVotes.length > 1 &&
+    new Set(votedVoterVotes).size === 1 &&
+    FIBONACCI_NUMBERS.map(String).includes(votedVoterVotes[0] as string);
 
   return (
     <div className="min-h-screen bg-rd-dark text-white">
@@ -608,7 +614,7 @@ export default function RoomClient({ code }: { code: string }) {
               )}
             </div>
 
-            {isRevealed && (
+            {isRevealed && !isUnanimous && (
               <div className="mt-4 pt-4 border-t border-rd-border">
                 <p className="text-rd-muted text-sm mb-2 font-medium">
                   Final SP for this ticket
