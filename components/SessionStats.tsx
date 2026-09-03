@@ -125,6 +125,15 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
   if (!adminToken) return null;
 
   const badges = stats ? assignBadges(stats.podium) : [];
+  // Competition ranking: ties share the same rank (1, 1, 3 rather than 1, 2, 3).
+  const ranks: number[] = [];
+  stats?.podium.forEach((entry, i) => {
+    if (i === 0) ranks.push(1);
+    else if (entry.matches === stats.podium[i - 1].matches) ranks.push(ranks[i - 1]);
+    else ranks.push(i + 1);
+  });
+  const rankEmoji = (rank: number) =>
+    rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
 
   return (
     <>
@@ -180,18 +189,20 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
                 {stats.podium.map((entry, i) => {
                   const badge = badges[i];
                   const pct = Math.round((entry.matches / entry.totalRounds) * 100);
+                  const rank = ranks[i];
+                  const isFirst = rank === 1;
                   return (
                     <div
                       key={entry.name}
                       className={[
                         'flex items-center gap-4 p-4 rounded-xl border',
-                        i === 0
+                        isFirst
                           ? 'bg-rd-yellow-dim border-rd-yellow-border'
                           : 'bg-rd-surface-2 border-rd-border',
                       ].join(' ')}
                     >
                       <span className="text-2xl w-8 text-center flex-shrink-0">
-                        {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                        {rankEmoji(rank)}
                       </span>
 
                       <div className="flex-1 min-w-0">
@@ -206,7 +217,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
                       <div className="text-right flex-shrink-0">
                         <p className={[
                           'font-bold text-xl',
-                          i === 0 ? 'text-rd-yellow' : 'text-white',
+                          isFirst ? 'text-rd-yellow' : 'text-white',
                         ].join(' ')}>{pct}%</p>
                         <p className="text-rd-muted text-sm">{entry.matches}/{entry.totalRounds}</p>
                       </div>

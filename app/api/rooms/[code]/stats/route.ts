@@ -27,7 +27,10 @@ export async function GET(
     const highestScorable = currentIsRevealed ? currentRound : currentRound - 1;
 
     if (highestScorable < 1) {
-      return NextResponse.json({ totalRounds: 0, totalPlayed: 0, podium: [] });
+      return NextResponse.json(
+        { totalRounds: 0, totalPlayed: 0, podium: [] },
+        { headers: { 'Cache-Control': 'no-store' } }
+      );
     }
 
     // All voter votes across scorable rounds — used both for scoring and to
@@ -90,7 +93,10 @@ export async function GET(
     const totalPlayed = highestScorable;
 
     if (scoredRounds === 0) {
-      return NextResponse.json({ totalRounds: 0, totalPlayed, podium: [] });
+      return NextResponse.json(
+        { totalRounds: 0, totalPlayed, podium: [] },
+        { headers: { 'Cache-Control': 'no-store' } }
+      );
     }
 
     // Everyone who cast at least one vote in a scored round shows up on the
@@ -119,7 +125,10 @@ export async function GET(
       }))
       .sort((a, b) => b.matches - a.matches || a.name.localeCompare(b.name));
 
-    return NextResponse.json({ totalRounds: scoredRounds, totalPlayed, podium });
+    return NextResponse.json(
+      { totalRounds: scoredRounds, totalPlayed, podium },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
   } catch (error) {
     console.error('Stats error:', error);
     return NextResponse.json({ error: 'Failed to get stats' }, { status: 500 });
