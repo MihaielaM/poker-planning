@@ -77,7 +77,7 @@ export async function GET(
         effectiveFinals.set(round, explicit);
         continue;
       }
-      if (roundVotes.length > 1) {
+      if (roundVotes.length >= 1) {
         const unique = new Set(roundVotes.map(v => v.value));
         const only = unique.size === 1 ? [...unique][0] : null;
         if (only && NUMERIC_DECK.has(only)) {

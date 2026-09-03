@@ -407,7 +407,7 @@ export default function RoomClient({ code }: { code: string }) {
   const votedVoterVotes = voters.filter(p => p.hasVoted).map(p => p.vote);
   const isUnanimous =
     isRevealed &&
-    votedVoterVotes.length > 1 &&
+    votedVoterVotes.length >= 1 &&
     new Set(votedVoterVotes).size === 1 &&
     FIBONACCI_NUMBERS.map(String).includes(votedVoterVotes[0] as string);
 

@@ -41,7 +41,7 @@ export async function POST(
         AND v.round_number = ${room.round_number}
         AND p.is_voter = TRUE
     `;
-    if (voterVotes.length > 1) {
+    if (voterVotes.length >= 1) {
       const unique = new Set(voterVotes.map(v => v.value as string));
       const only = unique.size === 1 ? [...unique][0] : null;
       if (only && NUMERIC_DECK.has(only)) {
