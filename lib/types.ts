@@ -19,6 +19,7 @@ export type RoomData = {
     code: string;
     status: 'waiting' | 'revealed';
     roundNumber: number;
+    finalSp: string | null;
   };
   participants: Participant[];
   reactions: Reaction[];

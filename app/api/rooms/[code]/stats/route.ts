@@ -17,68 +17,68 @@ export async function GET(
       return NextResponse.json({ error: 'Room not found' }, { status: 404 });
     }
     const room = rooms[0];
-    const totalRounds = room.round_number; // current round_number = rounds played so far
+    const totalPlayed = Math.max(0, Number(room.round_number) - 1);
 
-    if (totalRounds <= 1) {
-      return NextResponse.json({ totalRounds: 0, podium: [] });
+    if (totalPlayed === 0) {
+      return NextResponse.json({ totalRounds: 0, totalPlayed: 0, podium: [] });
     }
 
-    // For each completed round, find the mode vote (most common numeric value)
-    // Then count per participant how many times they matched the mode
+    // Fetch admin-set final SP per completed round (graceful fallback if table missing)
+    let finals: { round_number: number; final_sp: string }[] = [];
+    try {
+      const rows = await sql`
+        SELECT round_number, final_sp FROM round_finals
+        WHERE room_id = ${room.id} AND round_number < ${room.round_number}
+      `;
+      finals = rows.map(r => ({
+        round_number: Number(r.round_number),
+        final_sp: r.final_sp as string,
+      }));
+    } catch {
+      // round_finals table may not exist yet — no scored rounds
+    }
+
+    const scoredRounds = finals.length;
+    if (scoredRounds === 0) {
+      return NextResponse.json({ totalRounds: 0, totalPlayed, podium: [] });
+    }
+
+    const finalByRound = new Map(finals.map(f => [f.round_number, f.final_sp]));
+    const scoredRoundNumbers = finals.map(f => f.round_number);
+
     const votes = await sql`
       SELECT v.round_number, v.value, p.id AS participant_id, p.name
       FROM votes v
       JOIN participants p ON p.id = v.participant_id
       WHERE v.room_id = ${room.id}
-        AND v.round_number < ${totalRounds}
         AND p.is_voter = TRUE
-        AND v.value != '?'
-        AND v.value != '∞'
+        AND v.round_number = ANY(${scoredRoundNumbers}::int[])
     `;
 
-    // Group votes by round
-    const byRound = new Map<number, { value: string; participantId: string; name: string }[]>();
+    const matchCount = new Map<string, { name: string; matches: number }>();
     for (const v of votes) {
       const round = Number(v.round_number);
-      if (!byRound.has(round)) byRound.set(round, []);
-      byRound.get(round)!.push({ value: v.value, participantId: v.participant_id, name: v.name });
+      const finalSp = finalByRound.get(round);
+      if (!finalSp) continue;
+      if (v.value !== finalSp) continue;
+
+      const key = v.participant_id as string;
+      if (!matchCount.has(key)) {
+        matchCount.set(key, { name: v.name as string, matches: 0 });
+      }
+      matchCount.get(key)!.matches += 1;
     }
 
-    // Per participant: count rounds where their vote matched the mode
-    const matchCount = new Map<string, { name: string; matches: number }>();
-
-    for (const [, roundVotes] of byRound) {
-      // Find mode for this round
-      const freq = new Map<string, number>();
-      for (const v of roundVotes) {
-        freq.set(v.value, (freq.get(v.value) ?? 0) + 1);
-      }
-      const maxFreq = Math.max(...freq.values());
-      const modes = [...freq.entries()].filter(([, f]) => f === maxFreq).map(([v]) => v);
-
-      // Credit participants who voted a mode value
-      for (const v of roundVotes) {
-        if (modes.includes(v.value)) {
-          if (!matchCount.has(v.participantId)) {
-            matchCount.set(v.participantId, { name: v.name, matches: 0 });
-          }
-          matchCount.get(v.participantId)!.matches += 1;
-        }
-      }
-    }
-
-    // Build podium: only participants with at least 1 match, sorted desc
-    const completedRounds = byRound.size;
     const podium = [...matchCount.values()]
       .filter(p => p.matches > 0)
       .sort((a, b) => b.matches - a.matches)
       .map(p => ({
         name: p.name,
         matches: p.matches,
-        totalRounds: completedRounds,
+        totalRounds: scoredRounds,
       }));
 
-    return NextResponse.json({ totalRounds: completedRounds, podium });
+    return NextResponse.json({ totalRounds: scoredRounds, totalPlayed, podium });
   } catch (error) {
     console.error('Stats error:', error);
     return NextResponse.json({ error: 'Failed to get stats' }, { status: 500 });

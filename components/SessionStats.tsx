@@ -11,6 +11,7 @@ type PodiumEntry = {
 
 type StatsData = {
   totalRounds: number;
+  totalPlayed: number;
   podium: PodiumEntry[];
 };
 
@@ -142,7 +143,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
               <div>
                 <h2 className="text-xl font-bold text-white">Session Summary</h2>
                 <p className="text-rd-subtle text-base">
-                  {stats.totalRounds} completed round{stats.totalRounds !== 1 ? 's' : ''}
+                  {stats.totalRounds} scored / {stats.totalPlayed} total round{stats.totalPlayed !== 1 ? 's' : ''}
                 </p>
               </div>
               <button
@@ -153,13 +154,17 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
               </button>
             </div>
 
-            {stats.totalRounds === 0 ? (
+            {stats.totalPlayed === 0 ? (
               <p className="text-rd-muted text-base text-center py-8">
                 No completed rounds yet. Finish at least one round to see stats.
               </p>
+            ) : stats.totalRounds === 0 ? (
+              <p className="text-rd-muted text-base text-center py-8">
+                No rounds scored yet. Set a <span className="text-rd-yellow font-medium">Final SP</span> after reveal to include a round in the leaderboard.
+              </p>
             ) : stats.podium.length === 0 ? (
               <p className="text-rd-muted text-base text-center py-8">
-                No numeric votes recorded.
+                No one matched the Final SP in any scored round.
               </p>
             ) : (
               <div className="space-y-3">

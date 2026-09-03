@@ -75,11 +75,24 @@ export async function GET(
       // reactions table may not exist yet — return empty
     }
 
+    // Fetch final SP for current round (graceful fallback if table missing)
+    let finalSp: string | null = null;
+    try {
+      const rows = await sql`
+        SELECT final_sp FROM round_finals
+        WHERE room_id = ${room.id} AND round_number = ${room.round_number}
+      `;
+      if (rows.length > 0) finalSp = rows[0].final_sp as string;
+    } catch {
+      // round_finals table may not exist yet — treat as unset
+    }
+
     return NextResponse.json({
       room: {
         code: room.code,
         status: room.status,
         roundNumber: room.round_number,
+        finalSp,
       },
       participants: participantsData,
       reactions: recentReactions.map(r => ({

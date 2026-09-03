@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { RoomData } from '@/lib/types';
+import { FIBONACCI_NUMBERS } from '@/lib/constants';
 import JoinForm from './JoinForm';
 import VotingCards from './VotingCards';
 import ParticipantsList from './ParticipantsList';
@@ -318,6 +319,26 @@ export default function RoomClient({ code }: { code: string }) {
     }
   };
 
+  const handleSetFinalSp = async (value: string) => {
+    if (!adminToken) return;
+    setActionError('');
+    try {
+      const res = await fetch(`/api/rooms/${code}/set-final-sp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminToken, finalSp: value }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setActionError(data.error || 'Failed to set final SP');
+      } else {
+        fetchRoom();
+      }
+    } catch {
+      setActionError('Network error');
+    }
+  };
+
   const handleReset = async () => {
     if (!adminToken) return;
     setActionError('');
@@ -382,6 +403,7 @@ export default function RoomClient({ code }: { code: string }) {
   const votedCount = voters.filter(p => p.hasVoted).length;
   const totalCount = voters.length;
   const roundNumber = roomData?.room.roundNumber ?? 1;
+  const finalSp = roomData?.room.finalSp ?? null;
 
   return (
     <div className="min-h-screen bg-rd-dark text-white">
@@ -502,9 +524,16 @@ export default function RoomClient({ code }: { code: string }) {
               {isRevealed ? 'Votes revealed' : 'Voting in progress'}
             </span>
           </div>
-          <span className="text-rd-subtle text-base font-mono">
-            {votedCount}/{totalCount} voters · Round {roundNumber}
-          </span>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {isRevealed && finalSp && (
+              <span className="bg-rd-yellow/15 text-rd-yellow border border-rd-yellow/30 text-sm font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                🎯 Final SP: <span className="font-mono">{finalSp}</span>
+              </span>
+            )}
+            <span className="text-rd-subtle text-base font-mono">
+              {votedCount}/{totalCount} voters · Round {roundNumber}
+            </span>
+          </div>
         </div>
 
         {/* Participants */}
@@ -578,6 +607,38 @@ export default function RoomClient({ code }: { code: string }) {
                 </button>
               )}
             </div>
+
+            {isRevealed && (
+              <div className="mt-4 pt-4 border-t border-rd-border">
+                <p className="text-rd-muted text-sm mb-2 font-medium">
+                  Final SP for this ticket
+                  <span className="text-rd-subtle font-normal ml-1.5">
+                    — pick the value the team agreed on (counts for the leaderboard)
+                  </span>
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {FIBONACCI_NUMBERS.map(n => {
+                    const val = String(n);
+                    const selected = finalSp === val;
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => handleSetFinalSp(val)}
+                        className={[
+                          'font-mono font-bold text-base w-11 h-11 rounded-lg border transition-colors',
+                          selected
+                            ? 'bg-rd-yellow text-rd-dark border-rd-yellow'
+                            : 'bg-rd-surface-2 text-rd-subtle border-rd-border-2 hover:bg-rd-border hover:text-white',
+                        ].join(' ')}
+                        aria-pressed={selected}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>

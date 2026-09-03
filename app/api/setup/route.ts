@@ -57,6 +57,16 @@ export async function POST(request: NextRequest) {
       )
     `;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS round_finals (
+        room_id      UUID NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+        round_number INTEGER NOT NULL,
+        final_sp     VARCHAR(10) NOT NULL,
+        set_at       TIMESTAMPTZ DEFAULT NOW(),
+        PRIMARY KEY (room_id, round_number)
+      )
+    `;
+
     return NextResponse.json({ success: true, message: 'Database tables created successfully' });
   } catch (error) {
     console.error('Setup error:', error);
