@@ -49,6 +49,12 @@ const BADGES: { minPct: number; variants: { label: string; emoji: string; messag
     { label: 'Here I Am',        emoji: '👋', message: 'Present and accounted for.' },
     { label: 'Just Vibing',      emoji: '😌', message: 'At least you were there.' },
   ]},
+  { minPct: 0, variants: [
+    { label: 'Lone Wolf',        emoji: '🐺', message: 'Marched to their own beat every round.' },
+    { label: 'The Contrarian',   emoji: '🎭', message: 'Zero matches. Perfectly disagreeable.' },
+    { label: 'Free Spirit',      emoji: '🕊️', message: 'Never quite with the herd.' },
+    { label: 'The Rebel',        emoji: '🃏', message: 'Everyone else zigged. They zagged.' },
+  ]},
 ];
 
 function seededIndex(name: string, len: number) {
@@ -164,7 +170,7 @@ export default function SessionStats({ roomCode, adminToken }: Props) {
               </p>
             ) : stats.podium.length === 0 ? (
               <p className="text-rd-muted text-base text-center py-8">
-                No one matched the Final SP in any scored round.
+                No votes recorded in the scored rounds.
               </p>
             ) : (
               <div className="space-y-3">

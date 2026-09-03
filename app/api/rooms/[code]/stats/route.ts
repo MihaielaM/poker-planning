@@ -93,27 +93,31 @@ export async function GET(
       return NextResponse.json({ totalRounds: 0, totalPlayed, podium: [] });
     }
 
-    const matchCount = new Map<string, { name: string; matches: number }>();
+    // Everyone who cast at least one vote in a scored round shows up on the
+    // podium, even with 0 matches — the summary is a full session recap, not
+    // a hall of fame filtered by score.
+    const participants = new Map<string, string>();
+    const matchCount = new Map<string, number>();
     for (const [round, roundVotes] of byRound) {
       const finalSp = effectiveFinals.get(round);
       if (!finalSp) continue;
       for (const v of roundVotes) {
-        if (v.value !== finalSp) continue;
-        if (!matchCount.has(v.participantId)) {
-          matchCount.set(v.participantId, { name: v.name, matches: 0 });
+        if (!participants.has(v.participantId)) {
+          participants.set(v.participantId, v.name);
         }
-        matchCount.get(v.participantId)!.matches += 1;
+        if (v.value === finalSp) {
+          matchCount.set(v.participantId, (matchCount.get(v.participantId) ?? 0) + 1);
+        }
       }
     }
 
-    const podium = [...matchCount.values()]
-      .filter(p => p.matches > 0)
-      .sort((a, b) => b.matches - a.matches)
-      .map(p => ({
-        name: p.name,
-        matches: p.matches,
+    const podium = [...participants.entries()]
+      .map(([id, name]) => ({
+        name,
+        matches: matchCount.get(id) ?? 0,
         totalRounds: scoredRounds,
-      }));
+      }))
+      .sort((a, b) => b.matches - a.matches || a.name.localeCompare(b.name));
 
     return NextResponse.json({ totalRounds: scoredRounds, totalPlayed, podium });
   } catch (error) {
