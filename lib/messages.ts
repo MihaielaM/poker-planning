@@ -65,14 +65,14 @@ export const SLOW_VOTER_MESSAGES = [
 
 // Short messages shown on highlighted (extreme) vote cards
 export const EXTREME_CARD_MESSAGES = [
-  'Explain yourself! 😅',
-  'Bold move! 🔥',
-  'Convince us! 🎤',
-  'Interesting... 🤔',
-  'Why though? 👀',
-  'We\'re curious! 🧐',
-  'Are you sure? 😬',
-  'Tell us more! 💬',
+  'Curious to hear more 🧐',
+  'Different angle? 🤔',
+  'What are you seeing? 👀',
+  'Walk us through it 🎤',
+  'Share your read 💬',
+  'Something we missed? 🔍',
+  'Open to your take 🤝',
+  'Any context to add? 💡',
 ];
 
 // Banner messages shown below results when there are extreme votes
